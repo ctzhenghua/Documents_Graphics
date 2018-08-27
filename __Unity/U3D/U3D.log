@@ -1,4 +1,4 @@
-This is XeTeX, Version 3.14159265-2.6-0.99992 (TeX Live 2015/W32TeX) (preloaded format=xelatex 2018.7.13)  22 AUG 2018 20:41
+This is XeTeX, Version 3.14159265-2.6-0.99992 (TeX Live 2015/W32TeX) (preloaded format=xelatex 2018.7.13)  27 AUG 2018 20:21
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -2196,14 +2196,11 @@ Underfull \vbox (badness 1655) has occurred while \output is active []
 Underfull \vbox (badness 2680) has occurred while \output is active []
 
  [6]
-Underfull \vbox (badness 3919) has occurred while \output is active []
-
- [7])
+[7])
 \tf@toc=\write7
 \openout7 = `U3D.toc'.
 
-
-[8]
+ [8]
 第一章
 \g__fontspec_family_FangSong_int=\count218
 .................................................
@@ -2366,7 +2363,7 @@ Overfull \hbox (8.60123pt too wide) in paragraph at lines 547--550
 ]
 第十章
 
-Overfull \hbox (218.66357pt too wide) in paragraph at lines 643--644
+Overfull \hbox (218.66357pt too wide) in paragraph at lines 645--646
 []\EU1/SimSun(0)/m/n/12 如 果 建 立 工 程 时 选 择 的 是 \EU1/lmr/m/n/12 3D \EU1/SimSun(0)
 /m/n/12 工 程，|  那 么 导 入 的 所 有 图 片 需 要 手 动 的 设 置 为 \EU1/lmr/m/it/12 Spirit\EU1/Si
 mSun(0)/m/it/12 。| []\EU1/lmtt/m/n/12 Inspector -> Texture Type -> Spirit(2D an
@@ -2411,7 +2408,11 @@ File: figure/Anchors-2.png Graphic file (type QTm)
 <use  "figure/Anchors-2.png" > [46]
 File: figure/RectTransform-rect.png Graphic file (type QTm)
  <use  "figure/RectTransform-rect.png" >
-[47] [48] [49] [50]
+[47] [48]
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+ [49]
+[50]
 第十一章
 [51
 
@@ -2420,7 +2421,7 @@ File: figure/RectTransform-rect.png Graphic file (type QTm)
 ]
 第十二章
 LaTeX Font Info:    Font shape `EU1/lmtt/bx/n' in size <12> not available
-(Font)              Font shape `EU1/lmtt/b/n' tried instead on input line 976.
+(Font)              Font shape `EU1/lmtt/b/n' tried instead on input line 986.
 [53] [54
 
 ]
@@ -2429,26 +2430,39 @@ LaTeX Font Info:    Font shape `EU1/lmtt/bx/n' in size <12> not available
 
 ]
 第十四章
-[57] [58
+File: figure/arch.png Graphic file (type QTm)
+<use  "figure/arch.png" >
+Underfull \vbox (badness 10000) has occurred while \output is active []
 
-]
+ [57]
+[58] [59]
+Overfull \hbox (9.63928pt too wide) in paragraph at lines 1075--1076
+[][]\EU1/lmtt/m/n/12 UNITY_MATRIX_IT_MV\EU1/SimSun(0)/m/n/12 ：|  逆 转 置 模 型 \EU1
+/lmr/m/n/12 -> \EU1/SimSun(0)/m/n/12 视 矩 阵\EU1/lmr/m/n/12 , \EU1/SimSun(0)/m/n/
+12 用 于 将 法 线 从[]\EU1/lmtt/m/n/12 ObjectSpace \EU1/SimSun(0)/m/n/12 旋 转 到[]\EU1/
+lmtt/m/n/12 WorldSpace\EU1/SimSun(0)/m/n/12 。|
+ []
+
+[60]
 第十五章
-[59] [60] [61] [62
+[61
+
+] [62] [63] [64
 
 ]
 第十六章
 
-Overfull \hbox (17.06772pt too wide) in paragraph at lines 1071--1072
+Overfull \hbox (17.06772pt too wide) in paragraph at lines 1160--1161
 []\EU1/SimSun(0)/bx/n/12 写 静 态 方 法 \EU1/SimSun(0)/m/it/12 既 菜 单 的 功 能\EU1/SimSu
 n(0)/m/n/12 ，|  类 似 于[]\EU1/lmtt/m/n/12 [SerilizedFiled] \EU1/SimSun(0)/m/n/12 
 下 的 东 西\EU1/lmr/m/n/12 , \EU1/SimSun(0)/m/n/12 与[]\EU1/lmtt/m/n/12 [Menuitem("N
 etease/xx")]
  []
 
-[63] [64]
+[65] [66]
 第十七章
 
-Overfull \hbox (23.97632pt too wide) in paragraph at lines 1122--1123
+Overfull \hbox (23.97632pt too wide) in paragraph at lines 1211--1212
 []\EU1/SimSun(0)/m/n/12 在 \EU1/lmr/m/n/12 unity \EU1/SimSun(0)/m/n/12 中 的[]\EU1
 /lmtt/m/n/12 edit \EU1/SimSun(0)/m/n/12 选 项 下 的[]\EU1/lmtt/m/n/12 preferences\E
 U1/lmr/m/n/12 , \EU1/SimSun(0)/m/n/12 并 选 中[]\EU1/lmtt/m/n/12 External Tools \E
@@ -2457,32 +2471,32 @@ EU1/lmtt/m/n/12 Android SDK
  []
 
 
-Overfull \hbox (35.10811pt too wide) in paragraph at lines 1130--1131
+Overfull \hbox (35.10811pt too wide) in paragraph at lines 1219--1220
 [][]\EU1/lmtt/m/n/12 Other Settings -> Identification \EU1/lmr/m/n/12 : \EU1/Si
 mSun(0)/m/n/12 修 改 为[]\EU1/lmtt/m/n/12 com.netease(Or Other).TestName(Or Other)
  
  []
 
-[65
+[67
 
-] [66
+] [68
 
 ]
 第十八章
-[67]
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 1144.
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 1144.
+[69]
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 1233.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 1233.
  (./U3D.aux)
-Package atveryend Info: Empty hook `AtVeryEndDocument' on input line 1144.
-Package atveryend Info: Empty hook `AtEndAfterFileList' on input line 1144.
+Package atveryend Info: Empty hook `AtVeryEndDocument' on input line 1233.
+Package atveryend Info: Empty hook `AtEndAfterFileList' on input line 1233.
  ) 
 Here is how much of TeX's memory you used:
- 44761 strings out of 493706
- 934199 string characters out of 6148913
+ 44770 strings out of 493706
+ 934298 string characters out of 6148913
  1008236 words of memory out of 5000000
- 47436 multiletter control sequences out of 15000+600000
+ 47439 multiletter control sequences out of 15000+600000
  11662 words of font info for 84 fonts, out of 8000000 for 9000
  1328 hyphenation exceptions out of 8191
  63i,12n,75p,10411b,1789s stack positions out of 5000i,500n,10000p,200000b,80000s
 
-Output written on U3D.pdf (67 pages).
+Output written on U3D.pdf (69 pages).

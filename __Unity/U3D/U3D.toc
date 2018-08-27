@@ -83,6 +83,7 @@
 \contentsline {chapter}{\numberline {第七章\hspace {0.3em}}数学}{33}{chapter.7}
 \contentsline {section}{\numberline {7.1}Random 类}{33}{section.7.1}
 \contentsline {section}{\numberline {7.2}Mathf 类}{33}{section.7.2}
+\contentsline {section}{\numberline {7.3}坐标系}{33}{section.7.3}
 \contentsline {chapter}{\numberline {第八章\hspace {0.3em}}光照}{35}{chapter.8}
 \contentsline {section}{\numberline {8.1}光照}{35}{section.8.1}
 \contentsline {section}{\numberline {8.2}烘培}{35}{section.8.2}
@@ -121,11 +122,12 @@
 \contentsline {subsection}{\numberline {10.3.5}示例}{47}{subsection.10.3.5}
 \contentsline {subsection}{\numberline {10.3.6}FramDebug}{48}{subsection.10.3.6}
 \contentsline {section}{\numberline {10.4}按钮}{48}{section.10.4}
-\contentsline {subsection}{\numberline {10.4.1}原始Button}{48}{subsection.10.4.1}
-\contentsline {subsection}{\numberline {10.4.2}Image等 -添加button 组件}{48}{subsection.10.4.2}
-\contentsline {subsection}{\numberline {10.4.3}添加事件处理脚本}{48}{subsection.10.4.3}
-\contentsline {section}{\numberline {10.5}文本- Text}{48}{section.10.5}
-\contentsline {subsection}{\numberline {10.5.1}添加文字阴影 -shadow 组件}{48}{subsection.10.5.1}
+\contentsline {subsection}{\numberline {10.4.1}RayCast Target-点击事件的获取原理}{48}{subsection.10.4.1}
+\contentsline {subsection}{\numberline {10.4.2}原始Button}{48}{subsection.10.4.2}
+\contentsline {subsection}{\numberline {10.4.3}Image等 -添加button 组件}{48}{subsection.10.4.3}
+\contentsline {subsection}{\numberline {10.4.4}添加事件处理脚本}{48}{subsection.10.4.4}
+\contentsline {section}{\numberline {10.5}文本- Text}{49}{section.10.5}
+\contentsline {subsection}{\numberline {10.5.1}添加文字阴影 -shadow 组件}{49}{subsection.10.5.1}
 \contentsline {subsection}{\numberline {10.5.2}添加文子边框 -outline 组件}{49}{subsection.10.5.2}
 \contentsline {section}{\numberline {10.6}图片- ImageView}{49}{section.10.6}
 \contentsline {section}{\numberline {10.7}选中标记- Toggle}{49}{section.10.7}
@@ -133,10 +135,10 @@
 \contentsline {paragraph}{Toggle Group}{49}{section*.49}
 \contentsline {subparagraph}{选项栏设定}{49}{section*.50}
 \contentsline {subparagraph}{预设}{49}{section*.51}
-\contentsline {section}{\numberline {10.8}滚动区域、滚动条}{49}{section.10.8}
-\contentsline {section}{\numberline {10.9}其他工具条}{49}{section.10.9}
-\contentsline {section}{\numberline {10.10}布局- Layout}{49}{section.10.10}
-\contentsline {subsection}{\numberline {10.10.1}grid layout group}{49}{subsection.10.10.1}
+\contentsline {section}{\numberline {10.8}滚动区域、滚动条}{50}{section.10.8}
+\contentsline {section}{\numberline {10.9}其他工具条}{50}{section.10.9}
+\contentsline {section}{\numberline {10.10}布局- Layout}{50}{section.10.10}
+\contentsline {subsection}{\numberline {10.10.1}grid layout group}{50}{subsection.10.10.1}
 \contentsline {subsection}{\numberline {10.10.2}horizontal layout group}{50}{subsection.10.10.2}
 \contentsline {subsection}{\numberline {10.10.3}vertical layout group}{50}{subsection.10.10.3}
 \contentsline {chapter}{\numberline {第十一章\hspace {0.3em}}物理}{51}{chapter.11}
@@ -149,36 +151,47 @@
 \contentsline {section}{\numberline {11.7}关节}{51}{section.11.7}
 \contentsline {chapter}{\numberline {第十二章\hspace {0.3em}}动画}{53}{chapter.12}
 \contentsline {section}{\numberline {12.1}流程}{53}{section.12.1}
+\contentsline {section}{\numberline {12.2}iTween 动画用法}{53}{section.12.2}
 \contentsline {chapter}{\numberline {第十三章\hspace {0.3em}}粒子系统}{55}{chapter.13}
-\contentsline {chapter}{\numberline {第十四章\hspace {0.3em}}着色器渲染}{57}{chapter.14}
-\contentsline {chapter}{\numberline {第十五章\hspace {0.3em}}资源管理- AssetBundle}{59}{chapter.15}
-\contentsline {section}{\numberline {15.1}工作流程}{59}{section.15.1}
-\contentsline {section}{\numberline {15.2}创建}{59}{section.15.2}
-\contentsline {subsection}{\numberline {15.2.1}BuildAssetBundle}{59}{subsection.15.2.1}
-\contentsline {paragraph}{BuildAssetBundleOptions}{60}{section*.52}
-\contentsline {subparagraph}{CompleteAssets}{60}{section*.53}
-\contentsline {subparagraph}{CollectDependencies}{60}{section*.54}
-\contentsline {subparagraph}{DisableWriteTypeTree}{60}{section*.55}
-\contentsline {subparagraph}{DeterministricAssetBundle}{60}{section*.56}
-\contentsline {subparagraph}{UncompressedAssetBundle}{60}{section*.57}
-\contentsline {paragraph}{AssetBundle之间的依赖}{60}{section*.58}
-\contentsline {subsection}{\numberline {15.2.2}BuildStreamedSceneAssetBundle}{60}{subsection.15.2.2}
-\contentsline {subsection}{\numberline {15.2.3}BuildAssetBundleExplicitAssetNames}{61}{subsection.15.2.3}
-\contentsline {section}{\numberline {15.3}使用}{61}{section.15.3}
-\contentsline {section}{\numberline {15.4}卸载}{61}{section.15.4}
-\contentsline {section}{\numberline {15.5}内存模型}{61}{section.15.5}
-\contentsline {section}{\numberline {15.6}其他}{61}{section.15.6}
-\contentsline {chapter}{\numberline {第十六章\hspace {0.3em}}Editor 扩展}{63}{chapter.16}
-\contentsline {section}{\numberline {16.1}流程}{63}{section.16.1}
-\contentsline {section}{\numberline {16.2}在编辑器上增加一个MenuItem}{63}{section.16.2}
-\contentsline {section}{\numberline {16.3}创建一个对话框}{63}{section.16.3}
-\contentsline {section}{\numberline {16.4}扩展Inspector面板}{63}{section.16.4}
-\contentsline {section}{\numberline {16.5}编辑器插件常用函数}{63}{section.16.5}
-\contentsline {subsection}{\numberline {16.5.1}资源导入回调函数}{63}{subsection.16.5.1}
-\contentsline {section}{\numberline {16.6}一些常用的Inspector属性设置}{64}{section.16.6}
-\contentsline {section}{\numberline {16.7}参考}{64}{section.16.7}
-\contentsline {chapter}{\numberline {第十七章\hspace {0.3em}}跨平台发布apk}{65}{chapter.17}
-\contentsline {section}{\numberline {17.1}流程}{65}{section.17.1}
-\contentsline {section}{\numberline {17.2}Apk 安装常见错误}{65}{section.17.2}
-\contentsline {chapter}{\numberline {第十八章\hspace {0.3em}}调试技巧}{67}{chapter.18}
-\contentsline {section}{\numberline {18.1}以父类为基点}{67}{section.18.1}
+\contentsline {chapter}{\numberline {第十四章\hspace {0.3em}}着色器}{57}{chapter.14}
+\contentsline {section}{\numberline {14.1}Shader 版本}{57}{section.14.1}
+\contentsline {section}{\numberline {14.2}结构}{58}{section.14.2}
+\contentsline {section}{\numberline {14.3}Shader2.0}{59}{section.14.3}
+\contentsline {paragraph}{大概流程}{59}{section*.52}
+\contentsline {paragraph}{定义顶点着色器入口函数}{59}{section*.53}
+\contentsline {paragraph}{定义片段着色器入口函数}{59}{section*.54}
+\contentsline {paragraph}{定义平面着色器入口函数}{59}{section*.55}
+\contentsline {paragraph}{常用语义}{59}{section*.56}
+\contentsline {paragraph}{常用坐标系}{60}{section*.57}
+\contentsline {paragraph}{常用矩阵表示}{60}{section*.58}
+\contentsline {chapter}{\numberline {第十五章\hspace {0.3em}}资源管理- AssetBundle}{61}{chapter.15}
+\contentsline {section}{\numberline {15.1}工作流程}{61}{section.15.1}
+\contentsline {section}{\numberline {15.2}创建}{61}{section.15.2}
+\contentsline {subsection}{\numberline {15.2.1}BuildAssetBundle}{61}{subsection.15.2.1}
+\contentsline {paragraph}{BuildAssetBundleOptions}{62}{section*.59}
+\contentsline {subparagraph}{CompleteAssets}{62}{section*.60}
+\contentsline {subparagraph}{CollectDependencies}{62}{section*.61}
+\contentsline {subparagraph}{DisableWriteTypeTree}{62}{section*.62}
+\contentsline {subparagraph}{DeterministricAssetBundle}{62}{section*.63}
+\contentsline {subparagraph}{UncompressedAssetBundle}{62}{section*.64}
+\contentsline {paragraph}{AssetBundle之间的依赖}{62}{section*.65}
+\contentsline {subsection}{\numberline {15.2.2}BuildStreamedSceneAssetBundle}{62}{subsection.15.2.2}
+\contentsline {subsection}{\numberline {15.2.3}BuildAssetBundleExplicitAssetNames}{63}{subsection.15.2.3}
+\contentsline {section}{\numberline {15.3}使用}{63}{section.15.3}
+\contentsline {section}{\numberline {15.4}卸载}{63}{section.15.4}
+\contentsline {section}{\numberline {15.5}内存模型}{63}{section.15.5}
+\contentsline {section}{\numberline {15.6}其他}{63}{section.15.6}
+\contentsline {chapter}{\numberline {第十六章\hspace {0.3em}}Editor 扩展}{65}{chapter.16}
+\contentsline {section}{\numberline {16.1}流程}{65}{section.16.1}
+\contentsline {section}{\numberline {16.2}在编辑器上增加一个MenuItem}{65}{section.16.2}
+\contentsline {section}{\numberline {16.3}创建一个对话框}{65}{section.16.3}
+\contentsline {section}{\numberline {16.4}扩展Inspector面板}{65}{section.16.4}
+\contentsline {section}{\numberline {16.5}编辑器插件常用函数}{65}{section.16.5}
+\contentsline {subsection}{\numberline {16.5.1}资源导入回调函数}{65}{subsection.16.5.1}
+\contentsline {section}{\numberline {16.6}一些常用的Inspector属性设置}{66}{section.16.6}
+\contentsline {section}{\numberline {16.7}参考}{66}{section.16.7}
+\contentsline {chapter}{\numberline {第十七章\hspace {0.3em}}跨平台发布apk}{67}{chapter.17}
+\contentsline {section}{\numberline {17.1}流程}{67}{section.17.1}
+\contentsline {section}{\numberline {17.2}Apk 安装常见错误}{67}{section.17.2}
+\contentsline {chapter}{\numberline {第十八章\hspace {0.3em}}调试技巧}{69}{chapter.18}
+\contentsline {section}{\numberline {18.1}以父类为基点}{69}{section.18.1}

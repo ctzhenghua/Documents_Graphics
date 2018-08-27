@@ -602,6 +602,8 @@
 	\section{Mathf 类}
 		数学类
 	
+	\section{坐标系}
+		左右手坐标系：\url{http://www.cnblogs.com/mythou/p/3327046.html}
 	
 \chapter{光照}
 	\section{光照}
@@ -884,6 +886,14 @@
 			
 			\verb|windows->FrameDebug |	
 	\section{按钮}
+		\subsection{RayCast Target-点击事件的获取原理}
+			参考文献：\url{https://blog.csdn.net/liujunjie612/article/details/55097789}
+			
+			UGUI会遍历屏幕中所有RaycastTarget是true的UI，接着就会发射线，并且排序找到玩家最先触发的那个UI，在抛出事件给逻辑层去响应。
+			
+			团队多人在开发游戏界面，很多时候都是复制黏贴，比如上一个图片是\textbf{需要响应}RaycastTarget，然后ctrl+d以后复制出来的也就带了这个属性，很可能新复制出来的图片是\textbf{不需要响应的}，开发人员\textbf{又没有取消勾选掉}，\textit{这就出问题了}。
+			
+			所以RaycastTarget如果被勾选的过多的话， 效率必然会低。
 		\subsection{原始Button}
 			
 		\subsection{Image等 -添加button 组件}
@@ -983,10 +993,88 @@
 \chapter{粒子系统}
 
 		
-\chapter{着色器渲染}
+\chapter{着色器}
+	入门参考网址：\url{https://blog.csdn.net/ring0hx/article/details/46440037}
+	
+	\section{Shader 版本}
+		Shader 1.0（DirectX8.0）、
+		Shader 2.0（DirectX9.0b）、
+		Shader 3.0（DirectX9.0c）、
+		Shader 4.0（DirectX10）、
+		Shader 4.1（DirectX10.1）
+		和Shader 5（DirectX11）。
 
+	\section{结构}
+		\begin{figure}[H]
+			\centering
+			\includegraphics[scale=0.8]{arch}
+			\caption{着色器结构}
+		\end{figure}
+		
+		\begin{itemize}
+			\item \textbf{属性定义（Property Definition）}：定义Shader的输入，并且绑定到编辑器上。
+			\item \textbf{子着色器（SubShader）}：\underline{一个Shader可以有多个子着色器。}这些子着色器互不相干且\textbf{只有一个会在最终的平台运行}。\textit{编写多个的目的是解决兼容性问题。Unity会自己选择兼容终端平台的Shader运行}。
+			\item \textbf{回滚（Fallback）}：如果子着色器在终端平台上都无法运行，那么使用Fallback指定的备用Shader，\textbf{俗称备胎}。
+			\item \textbf{Pass}：\textit{一个Pass就是一次绘制}。\textbf{对于表面着色器，只能有一个Pass}，所以不存在Pass节。\textbf{顶点片段着色器可以有多个Pass。}多次Pass可以实现很多特殊效果，例如当人物被环境遮挡时还可以看到人物轮廓就可以用多Pass来实现。
+			\item \textbf{Cg代码}：每个Pass中都可以包含自定义的Cg代码，\textbf{从CGPROGRAM开始到ENDCG结束}。
+		\end{itemize}
+	\section{Shader2.0}
+		可以实现编程。
+		
+		\url{https://www.cnblogs.com/lixiang-share/p/5025662.html}
+		
+		\paragraph{大概流程}
+			\dirtree{%
+				.1 .
+				.2 MeshRender 将CPU数据传入至GPU .
+				.3 然后传递给顶点着色器 .
+				.4 顶点着色器处理完成后，将自己的输出数据传递给 片段着色器处理 .
+			}
 
+		
+		\paragraph{定义顶点着色器入口函数}
+			\verb|#pragma vertex _vertexFunctionName |
+			
+		\paragraph{定义片段着色器入口函数}
+			\verb|#pragma fragment _fragmentFunctionName |
 
+		\paragraph{定义平面着色器入口函数}
+			\verb|#pragma surface _surfaceFunctionName |
+			
+		
+		\paragraph{常用语义}
+			POSITION\textbf{语义}等相当于告诉渲染引擎，这个变量是代表什么含义。
+			
+			\begin{itemize}
+				\item \verb|POSITION| 获取模型顶点信息。
+				\item \verb|NORMAL| 获取法线信息。
+				\item \verb|TEXCOORD n| 第(n)张贴图的uv坐标
+				\item \verb|COLOR n| 第n个定点色。\verb|float4|
+				\item \verb|TANGENT| 获取切线信息
+				\item \verb|SV_POSITION| 表示经过MVP 矩阵已经转化到屏幕坐标的位置
+				\item \verb|SV_TARGET| 输出到哪个Render Target 上
+ 			\end{itemize}
+		
+		\paragraph{常用坐标系}
+			\begin{itemize}
+				\item \verb|模型坐标系|：也叫物体坐标系，3D建模的时候每个模型都是在自己的坐标系下建立的，如果一个人物模型脚底是(0,0,0) 点的话它的身上其它点的坐标都是相对脚底这个原点的。 
+				\item \verb|世界坐标系|：我们场景是一个世界，有自己的原点，模型放置到场景中后模型上的每个顶点就有了一个新的世界坐标。这个坐标可以通过模型矩阵×模型上顶点的模型坐标得到。 
+				\item \verb|视图坐标系|：又叫观察坐标系，是以观察者（相机）为原点的坐标系。场景中的物体只有被相机观察到才会绘制到屏幕上，相机可以设置视口大小和裁剪平面来控制可视范围，这些都是相对相机来说的，所以需要把世界坐标转换到视图坐标系来方便处理。 
+				\item \verb|投影坐标系|：场景是3D的，但是最终绘制到屏幕上是2D，投影坐标系完成这个降维的工作，投影变换后3D的坐标就变成2D的坐标了。投影有平行投影和透视投影两种，可以在Unity的相机上设置。 
+				\item \verb|屏幕坐标系|: 最终绘制到屏幕上的坐标。屏幕的左下角为原点。
+			\end{itemize}
+
+		\paragraph{常用矩阵表示}
+			\begin{itemize}
+				\item \verb|UNITY_MATRIX_MVP|：当前模型 -> 视图 -> 投影矩阵。（注：模型矩阵为 本地->世界）
+				\item \verb|UNITY_MATRIX_MV|：当前模型 -> 视图矩阵
+				\item \verb|UNITY_MATRIX_V|：当前视图矩阵
+				\item \verb|UNITY_MATRIX_P|：当前投影矩阵
+				\item \verb|UNITY_MATRIX_VP|：当前视图 -> 投影矩阵
+				\item \verb|UNITY_MATRIX_T_MV|：转置模型 -> 视图矩阵
+				\item \verb|UNITY_MATRIX_IT_MV|：逆转置模型 -> 视矩阵, 用于将法线从\verb|ObjectSpace|旋转到\verb|WorldSpace|。为什么法线变化不能和位置变换一样用\verb|UNITY_MATRIX_MV|呢？一是因为法线是3维的向量而- \verb|UNITY_MATRIX_MV|是一个4x4矩阵，二是因为法线是向量，我们只希望对它旋转，但是在进行空间变换的时候，如果发生非等比缩放，方向会发生偏移。
+				\item \verb|UNITY_MATRIX_TEXTURE0 |to \verb|UNITY_MATRIX_TEXTURE3|：纹理变换矩阵
+			\end{itemize}
 \chapter{资源管理- AssetBundle}
 	\section{工作流程}
 		\dirtree{%
