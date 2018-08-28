@@ -605,6 +605,13 @@
 	\section{坐标系}
 		左右手坐标系：\url{http://www.cnblogs.com/mythou/p/3327046.html}
 	
+	\section{向量计算}
+	
+	
+	\section{矩阵计算}
+	
+	
+	
 \chapter{光照}
 	\section{光照}
 		
@@ -1075,6 +1082,98 @@
 				\item \verb|UNITY_MATRIX_IT_MV|：逆转置模型 -> 视矩阵, 用于将法线从\verb|ObjectSpace|旋转到\verb|WorldSpace|。为什么法线变化不能和位置变换一样用\verb|UNITY_MATRIX_MV|呢？一是因为法线是3维的向量而- \verb|UNITY_MATRIX_MV|是一个4x4矩阵，二是因为法线是向量，我们只希望对它旋转，但是在进行空间变换的时候，如果发生非等比缩放，方向会发生偏移。
 				\item \verb|UNITY_MATRIX_TEXTURE0 |to \verb|UNITY_MATRIX_TEXTURE3|：纹理变换矩阵
 			\end{itemize}
+			
+	\section{材质、贴图、纹理}
+			材质 Material包含贴图 Map，贴图包含纹理 Texture。
+			
+			\paragraph{纹理}\verb|->|
+			
+				是最基本的数据输入单位，游戏领域基本上都用的是位图。常见格式有PNG，TGA，BMP，TIFF此外还有程序化生成的纹理 Procedural Texture。 
+				在内存中通常表示为二维像素数组。
+				
+			\paragraph{贴图}\verb|->|
+			
+				英语 Map 其实包含了另一层含义就是“映射”。其功能就是\underline{把}\textbf{纹理}通过 \verb|UV 坐标| \underline{映射}到 \textit{3D 物体表面}。
+				
+				\textbf{贴图}\textit{包含了}\textbf{除了纹理以外其他很多信息}，比方说 \textbf{UV 坐标}、\textbf{贴图输入输出控制}等等。 
+				一张图便能说明其之间的关系 
+				\begin{figure}[H]
+					\centering
+					\includegraphics[scale=0.57]{Texture}
+					\caption{纹理与贴图}
+				\end{figure}
+				
+			\paragraph{材质}\verb|->|
+			
+				本质就是一个\textbf{数据集}，主要功能就是\textbf{给渲染器}\textit{提供数据和光照算法}。
+				
+				\textbf{贴图}就是其中\textbf{数据的一部分}，根据用途不同，贴图也会被分成不同的类型，比方说 \verb|Diffuse Map|，\verb|Specular Map|，\verb|Normal Map| 和 \verb|Gloss Map| 等等。
+				
+				\textbf{另外一个重要部分}就是\textbf{光照模型 Shader} ，用以实现不同的渲染效果。 贴图种类繁多：我做个不完全总结
+				
+				\subparagraph{Diffuse Map}
+					漫反射贴图/也被称作反照率贴图albedo map， 存储了物体相应部分漫反射颜色
+					
+				\subparagraph{Normal Map}
+					法线贴图 本质上存储的是被RGB值编码的法向量 表现凹凸，\textbf{比如一些凹凸不平的表面，光影在表面产生实时变化，常用来低精度多边形表现高精度多边形细节}， \textbf{比如在高多边形下生成normal map在匹配给低多边形模型 是一种常见的降低性能要求的做法}
+					
+					\begin{figure}[H]
+						\centering
+						\includegraphics[scale=0.8]{normalMap}
+						\caption{法线贴图演示}
+					\end{figure}
+					
+					建议参考：\url{https://blog.csdn.net/cywater2000/article/details/749341#comments}
+					
+				\subparagraph{Specular Map}
+					高光贴图 表现质感 高光区域大小可真实反映材质区别
+					
+				\subparagraph{Gloss Map}
+					光泽贴图，每个纹理元素上描述光泽程度
+					
+			总体上说 他们都是要被shader加工的原材料.
+	
+	\section{光照模型}
+		参考：\url{https://blog.csdn.net/admintan/article/details/53913624}
+		
+		\subsection{Phone 光照模型}
+			真实世界中的光照效果抽象为三种独立的光照效果的叠加。
+				$$Color = Ambient + Diffuse + Specular$$
+			
+			\paragraph{环境光-Ambient}
+				此为模拟环境中的整体光照水平，是间接反射光的粗略估计，间接反射的光使阴影部分不会变成全黑 关于环境光还有个事实，1某个可以独立分析的局部场合的环境光强和能够进入这个地方的光的强度有关。 
+					
+					$$Ambient = K_a * GlobalAmbient $$
+					
+			\paragraph{漫反射光-Diffuse}
+				模拟直接光源在表面均匀的向各个方向反射，能够逼近真实光源照射到哑光表面的反射。比如在阳光下，由于路面粗糙的性质，我们发现从任意一个角度观察路面，亮度都是差不多。 
+				
+					$$Diffuse = K_d * lightColor * dot(L,N) $$
+			\paragraph{镜面反射光-Specular}
+				模拟在光滑表面会看到的光亮高光。会出现在光源的直接反射方向。镜子、金属等表面光亮的物体会有镜面反射光。镜面反射光同时与物体表面朝向、光线方向、视点位置有关。如图：
+					\begin{figure}[H]
+						\centering
+						\includegraphics[scale=0.8]{Specular}
+						\caption{高光演示}
+					\end{figure}
+				
+				$I$是入射光，$N$是表面法线，$R$是反射光线，$V$是从物体上的目标观察点指向视点的向量，$a$是$V$和$R$的夹角。
+				
+				我们可以判断出一个规律，夹角$a$越小，即视线与反射方向的偏离越小，则目标点的光强越大,计算公式为：
+					
+					$$Specular = K_s * lightColor * (dot(V,R))^{shininess}$$ 
+				
+					\begin{itemize}
+						\item Ks为物体对于反射光线的衰减系数
+						\item Shininess为高光指数,高光指数反映了物体表面的光泽程度。
+						\begin{itemize}
+							\item Shininess越大，反射光越集中，当偏离反射方向时，光线衰减的越厉害，只有当视线方向与反射光线方向非常接近时才能看到镜面反射的高光现象，此时，镜面反射光将会在反射方向附近形成亮且小的光斑；
+							\item Shininess 越小，表示物体越粗糙，反射光分散，观察到的光斑区域小，强度弱。
+						\end{itemize}
+					\end{itemize}
+			
+			\paragraph{总结}
+				至于更多的光照模型结合了更多的物理光学等信息　在模拟单种材质例如塑料　合金　石膏陶瓷等等上要好于Phone式模型的效果 但是基本上属于Phone式模型的扩充
 \chapter{资源管理- AssetBundle}
 	\section{工作流程}
 		\dirtree{%
@@ -1229,6 +1328,143 @@
 		在Inspector 中查看是否存在父类脚本\verb|[SerializedField]| 的变量，这样方便对空间进行查找，并且添加新的\textbf{控制}			
 	
 	
-		    
+	
+\chapter{GPU 相关}
+	大部分时间在\textbf{知其然不知其所以然}。该部分将\textit{从GPU讲到游戏引擎再到游戏}逐层介绍，以打通任督2脉。 
+
+	介绍绘画流程的video：\url{https://v.youku.com/v_show/id_XNjY3MTY4NjAw.html}
+	
+	本节参考：\url{https://blog.csdn.net/admintan/article/details/53861781}
+	\section{最底层——GPU/硬件原理}
+		
+		\subsection{硬件基础}
+			\paragraph{ALU-Arithmetic Logic Unit 算数逻辑单元}\verb|->|
+			
+				整数算术运算（加、减，有时还包括乘和除，不过成本较高）、位逻辑运算（与、或、非、异或）、移位运算（将一个字向左或向右移位或浮动特定位，而无符号延伸），移位可被认为是乘以2或除以 2。 ALU可以说是计算机处理器的核心部件之一。
+
+			\paragraph{Cache-缓存SRAM}\verb|->|
+			
+				SRAM叫静态内存，“静态”指的是当我们将一笔数据写入SRAM后，除非重新写入新数据或关闭电源，否则写入的数据保持不变。 
+				
+				由于CPU的速度比内存和硬盘的速度要快得多，所以在存取数据时会使CPU等待，影响计算机的速度。SRAM的存取速度比其它内存和硬盘都要快，所以它被用作电脑的高速缓存(Cache)。
+		\subsection{CPU with GPU 异同}
+		
+			参考：\url{https://www.jianshu.com/p/fae645d70e0e}
+		
+			\begin{figure}[H]
+				\centering
+				\includegraphics[scale=0.4]{CpuWithGpu}
+				\includegraphics[scale=0.4]{CpuWithGpu2}
+				\caption{CPU with GPU}
+			\end{figure}
+		
+			\paragraph{CPU}\verb|->|
+					量小但能力强
+					\begin{itemize}
+						\item 	ALU\textbf{部分会很强大}，可以在很少的时钟周期内完成算数计算。 对于一个64bit双精度的CPU来说 浮点加法和乘法只需要1-3个时钟周期。 							
+						\item 	\textbf{大的Cache}也将延时降低很多, 结合了现在的各种高级调节技术比如超线程、多核等技术CPU对于复杂逻辑的运算能力得到了极大提升。
+					\end{itemize}
+			
+			\paragraph{GPU}\verb|->|
+					量大但能力弱
+					\begin{itemize}
+						\item ALU的\textbf{数量会非常大}、\textbf{功能会更少}、\textbf{能耗很低}、\textbf{cache就会很小}，
+						这样带来的好处就是针对大吞吐量的需要简单计算的数据来说，处理效率就高了非常多。
+						
+						如果有很多线程需要访问同一个相同的数据，\textit{缓存会合并这些访问，然后再去访问DRAM}（因为需要访问的数据保存在DRAM中而不是Cache里面），\textbf{获取数据后Cache会转发这个数据给对应的线程，这个时候是数据转发的角色}。但是由于需要访问DRAM，自然会带来延时的问题。
+						
+						\item GPU的控制单元（左边黄色区域块）\textbf{可以把多个的访问合并}成少的访问。
+						
+						\item GPU的虽然有DRAM延时，\textbf{却有非常多的ALU和非常多线程}. 为了平衡内存延时的问题，我们可以中充分利用多的ALU的特性达到一个非常大的吞吐量的效果。尽可能多的分配多的线程.通常来看GPU ALU会有非常重的pipeline就是因为这样。
+					\end{itemize}
+			
+			\paragraph{结论}\verb|->|
+			
+				我们可以先得出一个简单结论:\color{blue}\textbf{对显卡来说}\color{black}-\textbf{更适合做高并行，高数据密度，简单逻辑的运算}。
+	
+		\newpage
+		\subsection{GPU 架构}
+			\paragraph{4D向量 和 4+1}\verb|->|
+							
+				3D物件的成像過程中，VS（Vertex Shader，\textbf{顶点着色引擎}）PS（Pixel Shader，\textbf{像素著色引擎} 或片段着色器）\textbf{最主要的作用就是运算坐标（XYZW）@（RGBA）}。
+				
+				此时数据的\textbf{基本单位是scalar（标量）}，1个单位的变量操作，为1D标量简称1D。 
+				而跟标量相對的就是vector（向量），\textbf{向量是由多個标量构成}。\textit{例如每個周期可执行4個向量平行运算，就称为4D向量架构}。若GPU指令发射口只有1个，卻可執行4個数据的平行运算，这就是SIMD(单指令多数据流)架构。	
+			
+			\paragraph{运算单元计算机制}\verb|->|
+				
+				以GPU的矩阵加法为例：
+				\begin{figure}[H]
+					\centering
+					\includegraphics[scale=0.84]{comU}
+					\caption{运算单元计算机制}
+				\end{figure}
+
+			
+			\paragraph{NVIDIA}\verb|->|
+			
+				NVIDIA架构如下
+				\begin{figure}[H]
+					\centering
+					\includegraphics[scale=0.5]{NVIDIA}
+					\caption{NVIDIA架构演示}
+				\end{figure}
+				
+				标注的是\verb|Stream Processing|(流处理器)数量， 
+				NVIDIA的流处理器每个都具有完整的ALU(可以理解为数学、逻辑等运算)。NVIDIA从G80以后采用全标量设计，\textbf{所有运算全都转为标量计算。但是这么做一旦遇到4D矢量运算时，就需要4次运算才能完成}，所以NVIDIA显卡的Shader频率几乎比核心频率高一倍，就是为了弥补这个缺点。 
+				NV的流处理器都具有完整的ALU功能，所以每个流处理器消耗的晶体管数量较多，成本较高。在加上现在的CUDA功能所以晶体管数量大幅多于AMD-ATI。
+				
+			\paragraph{AMD/ATI}\verb|->|
+				
+				AMD 架构如下
+				\begin{figure}[H]
+					\centering
+					\includegraphics[scale=0.5]{AMD}
+					\caption{AMD架构演示}
+				\end{figure}			
+			
+				标注的是Stream Processing Units(统一渲染单元)数量，也可以叫流处理器单元。 
+				AMD-ATI从RV670以后，流处理器是\textbf{5个固定的统一渲染单元为一组}，4D矢量+1D标量组合。\textbf{其中4个只能进行MADD(乘加)运算，1个可以进行超运算(函数等运算)}。\textit{因为是5个固定为一组，不能拆分，所以遇到纯标量运算时就会有4个SPU处于闲置状态而无法加入其它SP组合协助运算}。但换句话说如果分配得当让每个SPU都充分工作，那么AMD显卡的效率可是非常高的。\textbf{这也是玩家公认A卡驱动提升性能比N卡要高}，但也就是这个原因导致A卡驱动设计难度非常高，游戏想要为A卡优化的难度也一样很高。 
+				
+	\section{更高层-硬件流程}
+		\subsection{数据存储转换}
+		 	资源信息和指令信息由\textbf{硬盘}经过CPU调度 传输到\textbf{内存}中转，再传输进\textbf{显存}中备用.
+		 		\begin{figure}[H]
+		 			\centering
+		 			\includegraphics[scale=1]{transfer}
+		 			\includegraphics[scale=0.9]{transfer2}
+		 			\caption{资源转移}
+		 		\end{figure}
+		
+			由图中的典型的带宽可见 \textbf{GPU和显存之间的内部带宽} 要比单纯的\textbf{系统总线带宽}要高很多。
+			所以典型情况下\textbf{渲染资源和渲染指令都被加载进显存}, 所以GPU\textit{在渲染过程中} \textbf{只需向显存调度渲染指令},\underline{避免了和系统总线频繁IO}。
+				
+		\subsection{进入渲染预备状态}
+			\begin{figure}[H]
+				\centering
+				\includegraphics[scale=0.7]{PreShader}
+				\caption{渲染预备状态}
+			\end{figure}
+			
+			此时GPU的\textbf{显存越大则依靠CPU的加载额外渲染指令的需要就越少}，显存中的信息一般包括： 
+			显存和内存一样用于存储GPU处理过后的数据，在显存中有几种不同的储存区域，用于储存不同阶段需要的数据。 
+			\begin{enumerate}
+				\item \textbf{顶点缓冲区}：用于储存从内存中传递过来的顶点数据。
+				\item \textbf{索引缓冲区}：用于储存每个顶点的索引值，我们可以根据索引来使用相应的顶点 
+				\item \textbf{纹理缓冲区}：用于储存从内存中传递过来的纹理数据 
+				\item \textbf{深度缓冲区}：用于存储每个像素的深度信息
+				\item \textbf{模板缓冲区}：用于存储像素的模板值，且模板缓冲区域深度缓冲区公用一片内存。
+				\item \textbf{颜色缓冲区}：用于储存像素的颜色数据
+			\end{enumerate}	
+			
+	\section{软件}   
+		\begin{figure}[H]
+			\centering
+			\includegraphics[scale=0.59]{ShaderPro}
+			\includegraphics[scale=0.69]{ShaderProc}
+			\includegraphics[scale=0.59]{ShaderPro2}
+			\caption{Shader 流程(1,4)}
+		\end{figure}
+	
 \end{document} 
  		    
