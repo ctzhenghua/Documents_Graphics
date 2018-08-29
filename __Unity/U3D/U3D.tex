@@ -1011,6 +1011,13 @@
 		Shader 4.1（DirectX10.1）
 		和Shader 5（DirectX11）。
 
+		\begin{figure}[H]
+			\centering
+			\includegraphics[scale=0.71]{ShaderArc}
+			\caption{shader  通用架构}
+		\end{figure}
+		
+		
 	\section{结构}
 		\begin{figure}[H]
 			\centering
@@ -1125,6 +1132,7 @@
 					
 					建议参考：\url{https://blog.csdn.net/cywater2000/article/details/749341#comments}
 					
+					常规来说就是\textbf{光向量}和\textbf{法向量}的\textbf{点积}\textit{来确定明暗以表现凹凸质感}，也就是把法线存在纹理中。
 				\subparagraph{Specular Map}
 					高光贴图 表现质感 高光区域大小可真实反映材质区别
 					
@@ -1174,6 +1182,8 @@
 			
 			\paragraph{总结}
 				至于更多的光照模型结合了更多的物理光学等信息　在模拟单种材质例如塑料　合金　石膏陶瓷等等上要好于Phone式模型的效果 但是基本上属于Phone式模型的扩充
+				
+				
 \chapter{资源管理- AssetBundle}
 	\section{工作流程}
 		\dirtree{%
@@ -1465,6 +1475,15 @@
 			\includegraphics[scale=0.59]{ShaderPro2}
 			\caption{Shader 流程(1,4)}
 		\end{figure}
+	
+	
+\chapter{书籍推荐}
+	
+	GPU Gems:\url{https://developer.nvidia.com/gpugems/GPUGems/gpugems_ch01.html}
+	
+	Real Time Rendering
+	
+	Uniyt Shader 入门精要
 	
 \end{document} 
  		    
