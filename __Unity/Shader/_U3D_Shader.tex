@@ -9,9 +9,6 @@
 \usepackage{listings}%代码
 \usepackage{xcolor}  %颜色
 \usepackage{enumitem}%列表格式
-\setenumerate[1]{itemsep=0pt,partopsep=0pt,parsep=\parskip,topsep=5pt}
-\setitemize[1]{itemsep=0pt,partopsep=0pt,parsep=\parskip,topsep=5pt}
-\setdescription{itemsep=0pt,partopsep=0pt,parsep=\parskip,topsep=5pt}
 \usepackage{tcolorbox}
 \usepackage{algorithm}  %format of the algorithm
 \usepackage{algorithmic}%format of the algorithm
@@ -22,29 +19,6 @@
 \usepackage{tikz}
 \usepackage{dirtree}
 
-
-\usetikzlibrary{intersections,
-	positioning,
-	petri,
-	backgrounds,
-	fit,
-	decorations.pathmorphing,
-	arrows,
-	arrows.meta,
-	bending,
-	calc,
-	intersections,
-	through,
-	backgrounds,
-	shapes.geometric,
-	quotes,
-	matrix,
-	trees,
-	shapes.symbols,
-	graphs,
-	math,
-	patterns,
-	external}
 \CTEXsetup[format+={\flushleft}]{section}
 
 %%%% 设置图片目录
@@ -97,30 +71,692 @@
 	keywordstyle=\color{blue},       % keyword style
 	stringstyle=\color{mymauve}\ttfamily,     % string literal style
 	frame=single,
+	xleftmargin = .05\textwidth,
 	rulesepcolor=\color{red!20!green!20!blue!20},
 	% identifierstyle=\color{red},
 	language=c++,
 }
  \author{\kaishu 郑华}
- \title{\heiti UnityShader笔记}
+ \title{\heiti Shader 笔记}
  
 \begin{document}          %正文排版开始
  	\maketitle
- 	
-\chapter{Shader2.0}
-	\section{矩阵变换}
-		\verb|Unity 3D |矩阵一般是\textbf{左乘}。在\verb|Shader| 中的前缀为\verb|UNITY_MATRIX_|
+	\tableofcontents 
+	
+\chapter{基础概念}
+	\section{Draw Call}	
+
+	\section{渲染状态}
+		\subsection{Texture}
 		
-		\begin{enumerate}[itemindent = 1em]
-			\item \verb|M|: 将物体坐标系变换到世界坐标系
-			\item \verb|V|: 将世界坐标系 变换到 相机坐标系
-			\item \verb|P|: 将3D坐标系 转换成 2维屏幕坐标系
-		\end{enumerate}
+		\subsection{Material}
 		
-		当然在脚本中也可以完成类似功能，如
+		\subsection{Etc}
+
+	\section{批处理}
+	
+	
+	\section{Shader}
+		\paragraph{可以干啥}
 		
-		\verb|Transform.parent.localToWorldMatrix.MultiplyPoint(tranform.localPosition)|.
+		屏幕特效实现下雪
 		
-		    
-\end{document} 
- 		    
+		静态纹理的动态化，如波浪、水流等
+		
+		光照的应用
+		
+		投影
+	
+		\paragraph{常用的Shader 语言}
+				\begin{itemize}
+					\item OpenGL GLSL(opengGL Shader Language) SGI公司开发的跨平台。
+					\item DirectX  HLSL(High Level Shader Language) 微软
+					\item \textbf{->CG} 微软和英伟达联合开发的跨平台， 基于C语言。
+					\item \textbf{->Shader Lab} Unity3D 自己的shader 语言。
+				\end{itemize}
+		
+		\paragraph{矩阵变换}
+				\verb|Unity 3D |矩阵一般是\textbf{左乘}。在\verb|Shader| 中的前缀为\verb|UNITY_MATRIX_|
+				
+				\begin{enumerate}[itemindent = 1em]
+					\item \verb|M|: 将物体坐标系变换到世界坐标系
+					\item \verb|V|: 将世界坐标系 变换到 相机坐标系
+					\item \verb|P|: 将3D坐标系 转换成 2维屏幕坐标系
+				\end{enumerate}
+				
+				当然在脚本中也可以完成类似功能，如
+			
+			\verb|Transform.parent.localToWorldMatrix.MultiplyPoint(tranform.localPosition)|.
+\chapter{流水线}
+	The Main Function of the pipeline is \textbf{to Generate} or \textbf{Render}, \textbf{a two-dimensional Image}, \textit{given a virtual camera, three-dimensional objects, light sources, and more}.
+	
+	
+	\section{渲染流水线}
+		\begin{tikzpicture}\\
+			\def \width {16};
+			\def \height {3};
+			\def \leftBottom {(0, 0)};
+			\def \rightTop {(\width, \height)};
+			
+			%基底
+			\draw[ultra thick] \leftBottom rectangle \rightTop;
+			
+			%应用阶段
+			\draw[fill=blue,ultra thick] (\width/5*0,\height/3*1) rectangle (\width/5*1, \height/3*2);
+			\node[yellow, ultra thick,scale = 1.5] at (\width/5*0.5,\height/2) {\textbf{应用阶段}};
+			\draw[->,line width =.2cm] (\width/5, \height/2) -- (\width/5*2, \height/2);
+			
+			%几何阶段
+			\draw[fill=red,ultra thick] (\width/5*2,\height/3*1) rectangle (\width/5*3, \height/3*2);
+			\node[yellow, ultra thick,scale = 1.5] at (\width/5*2.5,\height/2) {\textbf{几何阶段}};
+			\draw[->,line width =.2cm] (\width/5*3, \height/2) -- (\width/5*4, \height/2);
+
+			
+			\draw[fill=red,ultra thick] (\width/5*4,\height/3*1) rectangle (\width, \height/3*2);
+			\node[yellow, ultra thick,scale = 1.5] at (\width/5*4.5,\height/2) {\textbf{光栅化阶段}};
+		\end{tikzpicture}
+		
+		\paragraph{应用阶段}
+			这个阶段主要由应用主导的，通常由CPU 负责实现。即这个阶段开发者拥有绝对控制权。
+			\begin{enumerate}
+				\item \textbf{准备场景数据}
+					\begin{itemize}
+						\item 模型、贴图
+						\item 相对位置(世界变换)
+						\item 摄像机
+						\item 视椎体(投影变换)
+						\item 光源等。
+					\end{itemize}
+				\item \textbf{粗粒度剔除工作}
+					\begin{itemize}
+						\item 将不在场景中的物体剔除出去。
+					\end{itemize}
+				\item \textbf{设置好每个模型的渲染状态}
+					\begin{itemize}
+						\item 使用的材质
+						\item 使用的纹理
+						\item 使用的Shader
+					\end{itemize}
+			\end{enumerate}
+		
+		\paragraph{几何阶段}
+			这个阶段决定需要绘制的图元是什么，怎么绘制他们，在哪里绘制他们，这一阶段一般在GPU上。
+			
+			\begin{enumerate}
+				\item \textbf{顶点着色器}
+					\begin{itemize}
+						\item 计算顶点的颜色
+						\item 将物体坐标系 转换到 相机坐标系(相机变换)
+						\item 
+					\end{itemize}
+				\item 裁剪
+				\item 屏幕映射
+			\end{enumerate}
+		
+		\paragraph{光栅化阶段}
+			将\textbf{顶点}\underline{转换为}\textbf{像素}。
+			
+			\begin{enumerate}
+				\item 三角形设置
+				\item 三角形遍历
+					\begin{itemize}
+						\item 输入：顶点
+						\item 插值：将适当地方填充
+						\item 输出：像素
+					\end{itemize}
+				\item \textbf{片段着色器}
+					\begin{itemize}
+						\item 输入：像素(RGBA 4通道组成)
+						\item \textbf{纹理采样}: 从纹理像素 赋值给 像素，\textbf{覆盖}以前默认像素（三角形遍历阶段插值的像素颜色）颜色值。
+						\item 像素跟\textbf{灯光计算}。
+					\end{itemize}					
+				\item \textbf{三大测试}
+					\begin{itemize}
+						\item alpha 测试：挑选合格的\textbf{alpha 像素}显示。即透明度达到某个阈值予以显示。
+						\item 模板测试：达到合格RGBA 像素，像素还可以携带\textbf{模板信息}， 达到条件的模板值予以显示。
+						\item 深度测试：测试与相机间的距离。
+					\end{itemize}
+				\item Blend 混合 ：将当前\textbf{要渲染的像素} 和 \textbf{已经渲染出来的像素}进行混合。
+				\item GPU Buffer ：RGBA、模板值、深度值等
+				\item Front Buffer 
+				\item Frame Buffer
+				\item 显示器
+			\end{enumerate}
+	
+	
+			\subparagraph{Notice}
+				当场景中有一个4个顶点的组成的矩形， 并假设其映射在屏幕的区域为100*100，那么在GPU计算的过程中:
+				\begin{itemize}
+					\item 在几何阶段的顶点着色器阶段运行4次.
+					\item 在光栅化阶段的片段着色器阶段运行10000次.	
+				\end{itemize}
+				
+				所以在顶点着色器和片段着色器对的运算级别不是一个级别。故而能把运算放到顶点着色器阶段的时候尽量不要放到片段着色器中。ss
+				
+	\section{OpenGL 渲染流程}
+			
+		
+\chapter{CPU与GPU}
+	
+
+
+\chapter{Unity -Shader 着色器}
+	\section{基础概念}
+		\paragraph{CPU} 将FBX、OBJ 等文件信息(UV，顶点位置，法线，切线等)读入\verb|MeshRender|.
+		
+		\paragraph{MeshRender} 将这些信息传递到GPU。主要有两种
+			\begin{itemize}
+				\item Skin Mesh Render :带蒙皮的骨骼。
+				\item Mesh Render + Mesh Filter：不带蒙皮的模型、没骨骼的，如cube 等基础场景信息。其中meshRender 将数据传递到GPU，而filter 做的是决定将哪个模型传递给GPU。
+			\end{itemize}
+		
+		\paragraph{哪些我们可以操作}
+			\begin{itemize}
+				\item 顶点着色器
+				\item 片段着色器
+				\item 三大测试
+			\end{itemize}
+	
+		\paragraph{Unity Shader 分类}
+			\begin{itemize}
+				\item Fixed Shader: Shader 1.0，开关式
+				\item 顶点、片段着色器：Shader 2.0，功能里面的\textbf{公式}可以自己定义。
+				\item Surface Shader: Fixed + 顶点、片段着色器
+			\end{itemize}	
+				
+		\paragraph{Shader 结构}
+			Unity Shader Lab 的语法结构。
+			\begin{lstlisting}
+	Shader "Custom/My_XX_Shader"
+	{
+		// 定义面板显示的属性
+		Properities
+		{
+			
+		}
+		
+		// 定义某种条件为显卡，如果合适就进行运行。
+		// 可以定于多个，但是最少要有一个
+		SubShader
+		{
+			// subShader 的标签
+			[Tags]
+			
+			// 给多个 pass 公用的设置，如是否 开启测试等。
+			[Common State]
+			
+			// 可能存在多个pass，每个pass 都会引起一次渲染过程。
+			Pass
+			{
+				// Pass 的标签
+				[Pass Tags]
+				
+				// 渲染设置，如颜色混合
+				[Render Setup]
+				
+				// 纹理设置，只有在 Fixed Function Shader 中才可以使用。
+				[Texture Setup]
+			}
+		}
+		
+		// 当所有的 subShader 失败的时候，使用该项指定的shader.
+		[Fallback]
+		
+		
+	}
+			\end{lstlisting}
+			
+		
+		\paragraph{材质球与Shader 的关系}
+			\subparagraph{材质球}
+				比喻为人的衣服
+			
+			\subparagraph{Shader}
+				材质（衣服）跟灯光的作用，Shader \textbf{决定}这个衣服怎么去作用。
+								
+		
+		\paragraph{Properities 使用说明}
+			定义使用3步曲
+			\begin{enumerate}
+				\item 定义每个属性的名称
+				\item 定义每个属性对应的变量名称与类型
+				\item 定义变量的默认值
+			\end{enumerate}
+		
+			\verb|name ("Display Namee", Int) = number|
+			\begin{lstlisting}
+	Properities
+	{
+		_TestInt ("TestInt", Int) = 1
+		_TestFloat ("TestFloat", Float) = 1.0
+		_TestRange ("TestRange", Range(1,5)) = 2
+		_TestVector ("TestVector", Vector) = (1,1,1,1)
+	}
+			\end{lstlisting}
+			
+			
+		\paragraph{SubShader 使用说明}
+			\subparagraph{Tags}
+				设置按照什么方式、什么时候渲染。
+				\begin{lstlisting}
+	Tags {"Queue" = "Transparent"}
+	Tags {"RenderType" = "Opaquee"}
+	Tags {"DisableBatching" = "True"}
+	Tags {"ForceNoShadowCasting" = "True"}
+	Tags {"IgnoreProjector" = "True"}	
+	Tags {"CanUseSpriteAtlas" = "True"}
+	Tags {"PreviewType" = "Plane"}
+				\end{lstlisting}
+			
+			\subparagraph{RenderSetup}
+				设置显卡的各种状态
+				\begin{lstlisting}
+	Cull Back //Front Off 设置剔除方式
+	ZTest Less Greater // GEqual 设置深度测试使用的函数
+	ZWrite On // Off 开启关闭深度写入
+	Blend SrcFactor DstFactor // 开启并设置混合模式
+				\end{lstlisting}
+						
+		
+			\subparagraph{Pass}
+			
+			
+		
+		
+	\section{顶点着色器}
+		\paragraph{计算顶点颜色}
+			在Pass 中有如下两种方式：
+			\begin{itemize}
+				\item 直接使用自定义颜色值：\verb|Color (0,1,0,1)|
+				\item 使用属性变量： \verb|Color [_Var]| //\verb|_Var ("TestColor", Color) = (1,1,1,1)|
+			\end{itemize}
+		
+		\paragraph{顶点变换}
+		
+		
+		\paragraph{灯光作用}
+			$$\mathbf{Ambient}*Ambient Intensity+ (Light Color * \mathbf{Diffuse} + Light  Color* \mathbf{Specular}) + \mathbf{Emission}$$
+			
+			\subparagraph{Ambient} 环境光
+			
+			\subparagraph{Diffuse} 漫反射
+			
+			\subparagraph{Specular} 镜面反射
+			
+			\subparagraph{Emission} 自发光
+	
+			\subparagraph{渲染脚本灯光开关}
+				\begin{itemize}
+					\item 所有灯光的开关 \verb|Lighting On|
+					\item 高光开关 \verb|SeperateSpecular On|
+				\end{itemize}
+			
+			\begin{lstlisting}
+	Pass{
+		Color[_TestCorlor]
+		
+		Material
+		{
+			Ambient[_TestColor]
+			Diffuse[_TestColor] // Or Diffuse(1,1,1,1) 
+			Specular[_TestColor]
+			Emission[_TestColor]
+		}
+		
+		Lighting On 
+		SeparateSpecular On
+	}
+			\end{lstlisting}
+	\section{片段着色器-1.0 各显卡均可}
+		\paragraph{纹理采样}
+			\subparagraph{纹理等于显示区域时}
+				1对1 映射
+				
+				等比例映射：UV坐标
+									
+				\begin{tikzpicture}
+					\def \leftBottom {(0,0)};
+					\node at \leftBottom {.};
+					\draw[<->] (4,4) -- (4,0) -- (8,0);
+					\node[below left] at (4, 0) {O};
+					\node[left] at (4, 4) {X};
+					\node[below] at (8, 0) {Y};
+					
+					\draw (4,0) rectangle (7,3);
+					\node[above] at (7,3){(1,1)};
+					\node[below] at (7,0){(1,0)};
+					\node[below right] at (4,0) {(0,0)};
+					\node[above right] at (4,3) {(0,1)};
+				\end{tikzpicture}
+			\subparagraph{纹理大于显示区域时}
+				这样的话，一个屏幕像素需要显示纹理的多个像素，此时就存在多种选择方式，常用的方式有
+				\begin{itemize}
+					\item Point：就近采样,
+					\item Bi-linear: 就近周围4个像素的平均
+					\item Tri-linear:就近周围8个像素的平均
+				\end{itemize}
+			
+			\subparagraph{纹理小于显示区域时}
+				那么屏幕像素将出现多对一的情况，即多个屏幕像素格都将显示同一个纹理像素，这样将产生锯齿和马赛克现象。
+				
+				所以在实际的应用中，会在这种情况应用很多抗锯齿的算法。
+				
+		\paragraph{设置纹理}
+			格式：\verb|SetTexture[VarTextureName]{block}|
+			
+			在block 中常常使用Combine 进行混合，并且常常使用以下预定于的变量，需要注意以下几点
+			\begin{itemize}
+				\item Previous: 表示前一个 SetTexture 的Texture变量
+				\item Primary: 表示顶点计算出来的颜色
+				\item Texture: 等于 SetTexture 当前的Texture
+				\item Constant: 表示一个固定的颜色值
+			\end{itemize}
+		
+			在使用combine 利用中间图进行插值计算是，具体使用如下：
+			函数格式：\verb|combine src1 lerp(src2) src3|, 混合src1 与 src3. 混合的方式取决于Src2 的alpha值，并且lerp 的具体公式如下$(1-t)A + tB$
+			\begin{lstlisting}
+	Pass{
+		Color[_TestColor]
+		SetTexture[_TestTexture]
+		{
+			// Texture Block
+			combine Primary*Texture	 // 融合顶点颜色与纹理颜色
+			combine Texture // 只使用纹理颜色，不使用顶点颜色
+		}
+		
+		SetTexure[_TestTexture2]
+		{
+			combine Previous*Texture // 将之前调用的SetTexture 的纹理变量与当前Texture 混合
+		}
+		
+		SetTexture[_TestTexture]
+		{
+			combine Texture lerp(Previous) Previous // 利用之前的纹理进行之前纹理与当前纹理的混合。
+		}
+		
+		SetTexture[_TestTexture]
+		{
+			constantColor(1,1,1,1)
+			combine Texture + constant
+		}
+	}
+			\end{lstlisting}
+		
+		\paragraph{示例-轮廓}
+			\subparagraph{方法一：一大一小}
+				写两个Pass，先渲染大的，然后再渲染小的。
+				\begin{lstlisting}[frame=l]
+	SubShader{
+		// 先渲染轮廓
+		Pass
+		{
+			CGPROGRAM
+			#pragma vertex vert
+			#pragma fragment frag
+			
+			#include "UnityCG.cginc"
+			
+			struct appdata
+			{
+				float4 vertex : POSITION;
+				float2 uv: TEXCOORDO;
+			};
+			
+			struct v2f
+			{
+				float2 uv: TEXCOORDO;
+				float4 vertex: SV_POSITION;
+			};
+			
+			// 定义的顶点着色器
+			v2f vert(appdata v)
+			{
+				v2f o;
+				v.vertex.xy *= 1.2f; // 将顶点坐标放大的x、y 放大
+				o.vertex = mul(UNITY_MATRIX_MVP, v.vertex);
+				o.uv = v.uv;
+				return o;
+			}
+			
+			// 定义的片元着色器
+			fixed4 frag(v2f i):SV_Target
+			{
+				reuturn fixed4(1,0,0,1); //给每个片元都返回红色
+			}
+			ENDCG
+		}
+		
+		// 再渲染原纹理
+		Pass
+		{
+			ZTest Always // 深度测试总是通过
+			
+			CGPROGRAM
+			#pragma vertex vert
+			#pragma fragment frag
+			
+			#include "UnityCG.cginc"
+			
+			struct appdata
+			{
+				float4 vertex : POSITION;
+				float2 uv: TEXCOORDO;
+			};
+			
+			struct v2f
+			{
+				float2 uv: TEXCOORDO;
+				float4 vertex: SV_POSITION;
+			};
+			
+			// 定义的顶点着色器
+			v2f vert(appdata v)
+			{
+				v2f o;
+				o.vertex = mul(UNITY_MATRIX_MVP, v.vertex);
+				o.uv = v.uv;
+				return o;
+			}
+			
+			//引用变量需要在这块重新声明
+			sampler2D _MainTex;
+			// 定义的片元着色器
+			fixed4 frag(v2f i):SV_Target
+			{
+				fixed4 col = tex2D(_MainTex, i.uv);
+				return col;
+			}
+			ENDCG
+		}
+	
+	}
+				\end{lstlisting}
+				
+			\subparagraph{方法二：梯度求边缘}
+				\begin{itemize}
+					\item 找到边缘
+					\item 给边缘着色
+					\item 非边缘地带正常纹理采样
+				\end{itemize}
+		
+			
+		\paragraph{示例-屏幕后期特效}
+			Render 运行完成后，会生成一张已经\textit{渲染完成的}\textbf{图片}，此后会进入RenderImage 步骤，完成屏幕后期渲染。
+			
+			具体的实践过程如下：
+				\begin{enumerate}[itemindent = 1em]
+					\item 创建脚本，重写\verb|OnRenderImage()方法|
+					\item 在脚本中创建一个新的材质(Material),并将新的shader添加到该材质球中，在此处即是下一步Blit用到的Shader.
+					\item 在该方法中用Unity 提供的接口完成对图片的渲染，\verb|Graphics.Blit()|
+					\item 最后将该脚本挂到主相机上。
+				\end{enumerate}
+		
+			\subparagraph{一般实现方法如下}:
+			
+			1- 重写OnRenderImage:
+			
+			\begin{lstlisting}
+	void OnRenderImage(RenderTexture sourceTexture, RenderTexture desTexture)
+	{
+		Graphics.Blit(sourceTexture, desTexture, newShader);
+	}	
+			\end{lstlisting}
+		
+			2- 添加新的片元Shader, 上述的newShader
+			
+			\begin{lstlisting}
+	float _Offset;
+	fixed4 frag(v2f i):SV_Target
+	{
+		float2 tmpUV = i.uv;
+		fixed4 col1 = tex2D(_MainTex, tmpUV);
+		fixed4 col2 = tex2D(_MainTex, tmpUV+float2(0, -Offset));
+		fixed4 col3 = tex2D(_MainTex, tmpUV+float2(0, Offset));
+		fixed4 col4 = tex2D(_MainTex, tmpUV+float2(-Offset,0));
+		fixed4 col5 = tex2D(_MainTex, tmpUV+float2(Offset,0));
+		
+		return (col1 + col2 + col3 + col4 + col5)/6.0;
+	}
+			\end{lstlisting}
+			
+		
+	\section{片段着色器-2.0 }		
+\chapter{光照}
+	如何在shader 中实现光照模型，如漫反射、高光反射等。
+
+	$$\mathbf{Ambient} + (Light Color * \mathbf{Diffuse} + Light  Color* \mathbf{Specular}) + \mathbf{Emission}$$
+
+\chapter{纹理}
+	可以理解为贴图，但是纹理远不止皮肤，还有皮肤的沟壑信息等，也是需要渲染的，以模拟的更加真实。
+
+\chapter{深度、法线 纹理}
+	
+
+
+\chapter{透明效果}
+	如何实现透明度测试，如何透明度混合。
+
+
+\chapter{动态效果}
+	使用时间变量来实现纹理动画。
+
+
+\chapter{屏幕后处理}
+	高斯模糊、边缘处理。
+
+
+
+\chapter{噪声处理}
+
+
+
+\chapter{渲染优化}
+
+
+
+\chapter{基于物理的渲染}
+
+
+
+
+\chapter{数学理论}
+	
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	
+\end{document}
+>>>>>>> 60c3ef137c68755ec7ada884e4816b78be4ab7cd

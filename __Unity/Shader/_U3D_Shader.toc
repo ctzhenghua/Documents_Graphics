@@ -1,0 +1,65 @@
+\contentsline {chapter}{\numberline {第一章\hspace {0.3em}}基础概念}{5}{chapter.1}
+\contentsline {section}{\numberline {1.1}Draw Call}{5}{section.1.1}
+\contentsline {section}{\numberline {1.2}渲染状态}{5}{section.1.2}
+\contentsline {subsection}{\numberline {1.2.1}Texture}{5}{subsection.1.2.1}
+\contentsline {subsection}{\numberline {1.2.2}Material}{5}{subsection.1.2.2}
+\contentsline {subsection}{\numberline {1.2.3}Etc}{5}{subsection.1.2.3}
+\contentsline {section}{\numberline {1.3}批处理}{5}{section.1.3}
+\contentsline {section}{\numberline {1.4}Shader}{5}{section.1.4}
+\contentsline {paragraph}{可以干啥}{5}{section*.2}
+\contentsline {paragraph}{常用的Shader 语言}{5}{section*.3}
+\contentsline {paragraph}{矩阵变换}{6}{section*.4}
+\contentsline {chapter}{\numberline {第二章\hspace {0.3em}}流水线}{7}{chapter.2}
+\contentsline {section}{\numberline {2.1}渲染流水线}{7}{section.2.1}
+\contentsline {paragraph}{应用阶段}{7}{section*.5}
+\contentsline {paragraph}{几何阶段}{8}{section*.6}
+\contentsline {paragraph}{光栅化阶段}{8}{section*.7}
+\contentsline {subparagraph}{Notice}{9}{section*.8}
+\contentsline {section}{\numberline {2.2}OpenGL 渲染流程}{9}{section.2.2}
+\contentsline {chapter}{\numberline {第三章\hspace {0.3em}}CPU与GPU}{11}{chapter.3}
+\contentsline {chapter}{\numberline {第四章\hspace {0.3em}}Unity -Shader 着色器}{13}{chapter.4}
+\contentsline {section}{\numberline {4.1}基础概念}{13}{section.4.1}
+\contentsline {paragraph}{CPU}{13}{section*.9}
+\contentsline {paragraph}{MeshRender}{13}{section*.10}
+\contentsline {paragraph}{哪些我们可以操作}{13}{section*.11}
+\contentsline {paragraph}{Unity Shader 分类}{13}{section*.12}
+\contentsline {paragraph}{Shader 结构}{13}{section*.13}
+\contentsline {paragraph}{材质球与Shader 的关系}{14}{section*.14}
+\contentsline {subparagraph}{材质球}{14}{section*.15}
+\contentsline {subparagraph}{Shader}{15}{section*.16}
+\contentsline {paragraph}{Properities 使用说明}{15}{section*.17}
+\contentsline {paragraph}{SubShader 使用说明}{15}{section*.18}
+\contentsline {subparagraph}{Tags}{15}{section*.19}
+\contentsline {subparagraph}{RenderSetup}{15}{section*.20}
+\contentsline {subparagraph}{Pass}{15}{section*.21}
+\contentsline {section}{\numberline {4.2}顶点着色器}{16}{section.4.2}
+\contentsline {paragraph}{计算顶点颜色}{16}{section*.22}
+\contentsline {paragraph}{顶点变换}{16}{section*.23}
+\contentsline {paragraph}{灯光作用}{16}{section*.24}
+\contentsline {subparagraph}{Ambient}{16}{section*.25}
+\contentsline {subparagraph}{Diffuse}{16}{section*.26}
+\contentsline {subparagraph}{Specular}{16}{section*.27}
+\contentsline {subparagraph}{Emission}{16}{section*.28}
+\contentsline {subparagraph}{渲染脚本灯光开关}{16}{section*.29}
+\contentsline {section}{\numberline {4.3}片段着色器-1.0 各显卡均可}{17}{section.4.3}
+\contentsline {paragraph}{纹理采样}{17}{section*.30}
+\contentsline {subparagraph}{纹理等于显示区域时}{17}{section*.31}
+\contentsline {subparagraph}{纹理大于显示区域时}{17}{section*.32}
+\contentsline {subparagraph}{纹理小于显示区域时}{17}{section*.33}
+\contentsline {paragraph}{设置纹理}{17}{section*.34}
+\contentsline {paragraph}{示例-轮廓}{18}{section*.35}
+\contentsline {subparagraph}{方法一：一大一小}{18}{section*.36}
+\contentsline {subparagraph}{方法二：梯度求边缘}{20}{section*.37}
+\contentsline {paragraph}{示例-屏幕后期特效}{21}{section*.38}
+\contentsline {subparagraph}{一般实现方法如下}{21}{section*.39}
+\contentsline {section}{\numberline {4.4}片段着色器-2.0 }{21}{section.4.4}
+\contentsline {chapter}{\numberline {第五章\hspace {0.3em}}光照}{23}{chapter.5}
+\contentsline {chapter}{\numberline {第六章\hspace {0.3em}}纹理}{25}{chapter.6}
+\contentsline {chapter}{\numberline {第七章\hspace {0.3em}}深度、法线 纹理}{27}{chapter.7}
+\contentsline {chapter}{\numberline {第八章\hspace {0.3em}}透明效果}{29}{chapter.8}
+\contentsline {chapter}{\numberline {第九章\hspace {0.3em}}动态效果}{31}{chapter.9}
+\contentsline {chapter}{\numberline {第十章\hspace {0.3em}}屏幕后处理}{33}{chapter.10}
+\contentsline {chapter}{\numberline {第十一章\hspace {0.3em}}噪声处理}{35}{chapter.11}
+\contentsline {chapter}{\numberline {第十二章\hspace {0.3em}}渲染优化}{37}{chapter.12}
+\contentsline {chapter}{\numberline {第十三章\hspace {0.3em}}基于物理的渲染}{39}{chapter.13}
+\contentsline {chapter}{\numberline {第十四章\hspace {0.3em}}数学理论}{41}{chapter.14}
