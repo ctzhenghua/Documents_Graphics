@@ -805,7 +805,143 @@
 		
 	\section{片段着色器-2.0 }
 	
+	\section{动态纹理}
+	 \paragraph{河流}
+		\subparagraph{核心}
+			平移纹理坐标
+			\verb|i.uv*Time.xy|
+
+	 \paragraph{动态加载}
+		\begin{itemize}
+			\item UV 旋转
+			\item 在GPU中使用旋转矩阵进行旋转。
+			\item Notice: 旋转矩阵是以原点为基准的。
+		\end{itemize}
+		\subparagraph{旋转矩阵}以原点的为旋转中心点，计算公式如下
+
+			以Z 轴为旋转轴的旋转矩阵
+				$$
+				\left[
+					\begin{array}{c}
+						X_n\\
+						Y_n\\
+						Z_n\\		
+					\end{array}
+				\right]	
+				= \left[
+					\begin{array}{ccc}
+						cos(\theta) & -sin(\theta) & 0\\
+						sin(\theta) & cos(\theta) & 0\\
+						0 & 0 & 1\\
+					\end{array}
+				\right]
+				\left[
+					\begin{array}{c}
+						X\\
+						Y\\
+						Z\\		
+					\end{array}
+				\right]	
+				$$
+
+			以X 轴为旋转轴的旋转矩阵
+				$$
+				\left[
+				\begin{array}{c}
+				X_n\\
+				Y_n\\
+				Z_n\\		
+				\end{array}
+				\right]	
+				= \left[
+				\begin{array}{ccc}
+				1 & 0 & 0\\
+				0 & cos(\theta) & -sin(\theta)\\
+				0 & sin(\theta) & cos(\theta)\\
+				\end{array}
+				\right]
+				\left[
+				\begin{array}{c}
+				X\\
+				Y\\
+				Z\\		
+				\end{array}
+				\right]	
+				$$				
+
+			以Y 轴为旋转轴的旋转矩阵
+				$$
+				\left[
+				\begin{array}{c}
+				X_n\\
+				Y_n\\
+				Z_n\\		
+				\end{array}
+				\right]	
+				= \left[
+				\begin{array}{ccc}
+				cos(\theta) & 0 & sin(\theta)\\
+				0 & 1 & 0\\
+				-sin(\theta) & 1 & cos(\theta)\\
+				\end{array}
+				\right]
+				\left[
+				\begin{array}{c}
+				X\\
+				Y\\
+				Z\\		
+				\end{array}
+				\right]	
+				$$		
+
+		\subparagraph{旋转过程}
+			\begin{enumerate}
+				\item 先将纹理以中心为基准平移至原点
+				\item 旋转
+				\item 再将纹理原路返回
+			\end{enumerate}	 	
+
+			\begin{lstlisting}
+	fixed frag(v2f i):SV_Target
+	{
+		float2 tmpUV = i.uv;
+		// 将以纹理中心为基准平移至原点
+		tempUV -= float2(0.5, 0.5);
+		// 防止UV坐标上的对角线超过旋转半径
+		if(length(tempUV) >0.5)
+			return fixed4(0,0,0,0);
+		
+		// 旋转操作
+		// 1- 平移
+		float2 finalUV = 0;
+		float angle = _Time.x*_speed;
+		// 2- 旋转
+		finalUV.x = tempUV.x*cos(angle) - tempUV.y*sin(angle);
+		finalUV.y = tempUV.x*sin(angle) + tempUV.y*cos(angle);
+		finalUV.z = tempUV.z;
+		// 3- 平移回原点
+		finalUV += float2(0.5,0.5);
+		
+		fixed4 col = tex2D(_MainTex, finalUV);
+		return col;
+	}
+				\end{lstlisting}
 	
+	\section{三大测试}
+		\subsection{透明测试}
+			Alpha test是可以通过测试然后丢弃不需要渲染的像素的。顾名思义就是根据他的alpha值与某特定值比较。
+			
+			
+		\subsection{模板测试}
+			符合条件的通过，不符合条件的像素丢弃掉
+			
+			
+		\subsection{深度测试}
+		
+	\section{混合-Blend}
+	
+	
+	\section{渲染队列-RenderQueue}
 	
 			
 \chapter{光照}
