@@ -14,38 +14,39 @@
 \contentsline {paragraph}{StartCoroutine(IEnumerator method)}{16}{section*.5}
 \contentsline {subsection}{\numberline {1.6.2}终止方式}{16}{subsection.1.6.2}
 \contentsline {paragraph}{StopCoroutine(string MethodName)}{16}{section*.6}
-\contentsline {paragraph}{StopAllCoroutine()}{16}{section*.7}
+\contentsline {paragraph}{StopAllCoroutine()}{17}{section*.7}
 \contentsline {subsection}{\numberline {1.6.3}yield 方式}{17}{subsection.1.6.3}
 \contentsline {paragraph}{yield return}{17}{section*.8}
 \contentsline {paragraph}{yield break}{17}{section*.9}
 \contentsline {subsection}{\numberline {1.6.4}执行原理}{17}{subsection.1.6.4}
-\contentsline {paragraph}{委托+协程}{17}{section*.10}
+\contentsline {paragraph}{委托+协程}{18}{section*.10}
 \contentsline {chapter}{\numberline {第二章\hspace {0.3em}}事件}{19}{chapter.2}
 \contentsline {section}{\numberline {2.1}必然事件}{19}{section.2.1}
 \contentsline {section}{\numberline {2.2}碰撞事件}{19}{section.2.2}
 \contentsline {section}{\numberline {2.3}触发器事件}{19}{section.2.3}
 \contentsline {chapter}{\numberline {第三章\hspace {0.3em}}实体-人物、物体、组件}{21}{chapter.3}
-\contentsline {section}{\numberline {3.1}实体类}{21}{section.3.1}
+\contentsline {section}{\numberline {3.1}实体之间的关系}{21}{section.3.1}
+\contentsline {section}{\numberline {3.2}实体类}{21}{section.3.2}
 \contentsline {paragraph}{复制}{21}{section*.11}
-\contentsline {paragraph}{销毁}{21}{section*.12}
-\contentsline {paragraph}{可见否}{21}{section*.13}
-\contentsline {paragraph}{游戏中获取}{21}{section*.14}
-\contentsline {section}{\numberline {3.2}Prefabs -预设体}{22}{section.3.2}
+\contentsline {paragraph}{销毁}{22}{section*.12}
+\contentsline {paragraph}{可见否}{22}{section*.13}
+\contentsline {paragraph}{游戏中获取或查找}{22}{section*.14}
+\contentsline {section}{\numberline {3.3}Prefabs -预设体}{22}{section.3.3}
 \contentsline {subparagraph}{概念}{22}{section*.15}
-\contentsline {subparagraph}{作用}{22}{section*.16}
-\contentsline {subsection}{\numberline {3.2.1}预设动态加载到场景}{22}{subsection.3.2.1}
-\contentsline {paragraph}{预设体资源加载}{22}{section*.17}
-\contentsline {paragraph}{预设体实例化}{22}{section*.18}
-\contentsline {paragraph}{实例化对象属性设置}{23}{section*.19}
-\contentsline {subparagraph}{简化写法}{24}{section*.20}
-\contentsline {paragraph}{预制体添加脚本}{24}{section*.21}
-\contentsline {section}{\numberline {3.3}获取实体上的组件}{24}{section.3.3}
-\contentsline {paragraph}{调用方式}{24}{section*.22}
-\contentsline {section}{\numberline {3.4}物理作用实体类}{24}{section.3.4}
-\contentsline {paragraph}{AddForce()}{25}{section*.23}
-\contentsline {paragraph}{AddTorque()}{25}{section*.24}
-\contentsline {paragraph}{Sleep()}{25}{section*.25}
-\contentsline {paragraph}{WakeUp()}{25}{section*.26}
+\contentsline {subparagraph}{作用}{23}{section*.16}
+\contentsline {subsection}{\numberline {3.3.1}预设动态加载到场景}{23}{subsection.3.3.1}
+\contentsline {paragraph}{预设体资源加载}{23}{section*.17}
+\contentsline {paragraph}{预设体实例化}{23}{section*.18}
+\contentsline {paragraph}{实例化对象属性设置}{24}{section*.19}
+\contentsline {subparagraph}{简化写法}{25}{section*.20}
+\contentsline {paragraph}{预制体添加脚本}{25}{section*.21}
+\contentsline {section}{\numberline {3.4}获取实体上的组件}{25}{section.3.4}
+\contentsline {paragraph}{调用方式}{25}{section*.22}
+\contentsline {section}{\numberline {3.5}物理作用实体类}{25}{section.3.5}
+\contentsline {paragraph}{AddForce()}{26}{section*.23}
+\contentsline {paragraph}{AddTorque()}{26}{section*.24}
+\contentsline {paragraph}{Sleep()}{26}{section*.25}
+\contentsline {paragraph}{WakeUp()}{26}{section*.26}
 \contentsline {chapter}{\numberline {第四章\hspace {0.3em}}世界空间相关3D基础}{27}{chapter.4}
 \contentsline {section}{\numberline {4.1}Transform 类}{27}{section.4.1}
 \contentsline {subsection}{\numberline {4.1.1}位置}{27}{subsection.4.1.1}
@@ -155,78 +156,67 @@
 \contentsline {section}{\numberline {12.1}流程}{55}{section.12.1}
 \contentsline {section}{\numberline {12.2}iTween 动画用法}{55}{section.12.2}
 \contentsline {chapter}{\numberline {第十三章\hspace {0.3em}}粒子系统}{57}{chapter.13}
-\contentsline {chapter}{\numberline {第十四章\hspace {0.3em}}着色器}{59}{chapter.14}
-\contentsline {section}{\numberline {14.1}Shader 版本}{59}{section.14.1}
-\contentsline {section}{\numberline {14.2}结构}{60}{section.14.2}
-\contentsline {section}{\numberline {14.3}Shader2.0}{61}{section.14.3}
-\contentsline {paragraph}{大概流程}{61}{section*.52}
-\contentsline {paragraph}{定义顶点着色器入口函数}{61}{section*.53}
-\contentsline {paragraph}{定义片段着色器入口函数}{61}{section*.54}
-\contentsline {paragraph}{定义平面着色器入口函数}{61}{section*.55}
-\contentsline {paragraph}{常用语义}{61}{section*.56}
-\contentsline {paragraph}{常用坐标系}{62}{section*.57}
-\contentsline {paragraph}{常用矩阵表示}{62}{section*.58}
-\contentsline {section}{\numberline {14.4}材质、贴图、纹理}{63}{section.14.4}
-\contentsline {paragraph}{纹理}{63}{section*.59}
-\contentsline {paragraph}{贴图}{63}{section*.60}
-\contentsline {paragraph}{材质}{63}{section*.61}
-\contentsline {subparagraph}{Diffuse Map}{64}{section*.62}
-\contentsline {subparagraph}{Normal Map}{64}{section*.63}
-\contentsline {subparagraph}{Specular Map}{64}{section*.64}
-\contentsline {subparagraph}{Gloss Map}{64}{section*.65}
-\contentsline {section}{\numberline {14.5}光照模型}{65}{section.14.5}
-\contentsline {subsection}{\numberline {14.5.1}Phone 光照模型}{65}{subsection.14.5.1}
-\contentsline {paragraph}{环境光-Ambient}{65}{section*.66}
-\contentsline {paragraph}{漫反射光-Diffuse}{65}{section*.67}
-\contentsline {paragraph}{镜面反射光-Specular}{65}{section*.68}
-\contentsline {paragraph}{总结}{66}{section*.69}
-\contentsline {chapter}{\numberline {第十五章\hspace {0.3em}}资源管理- AssetBundle}{67}{chapter.15}
-\contentsline {section}{\numberline {15.1}工作流程}{67}{section.15.1}
-\contentsline {section}{\numberline {15.2}创建}{67}{section.15.2}
-\contentsline {subsection}{\numberline {15.2.1}BuildAssetBundle}{67}{subsection.15.2.1}
-\contentsline {paragraph}{BuildAssetBundleOptions}{68}{section*.70}
-\contentsline {subparagraph}{CompleteAssets}{68}{section*.71}
-\contentsline {subparagraph}{CollectDependencies}{68}{section*.72}
-\contentsline {subparagraph}{DisableWriteTypeTree}{68}{section*.73}
-\contentsline {subparagraph}{DeterministricAssetBundle}{68}{section*.74}
-\contentsline {subparagraph}{UncompressedAssetBundle}{68}{section*.75}
-\contentsline {paragraph}{AssetBundle之间的依赖}{68}{section*.76}
-\contentsline {subsection}{\numberline {15.2.2}BuildStreamedSceneAssetBundle}{68}{subsection.15.2.2}
-\contentsline {subsection}{\numberline {15.2.3}BuildAssetBundleExplicitAssetNames}{69}{subsection.15.2.3}
-\contentsline {section}{\numberline {15.3}使用}{69}{section.15.3}
-\contentsline {section}{\numberline {15.4}卸载}{69}{section.15.4}
-\contentsline {section}{\numberline {15.5}内存模型}{69}{section.15.5}
-\contentsline {section}{\numberline {15.6}其他}{69}{section.15.6}
-\contentsline {chapter}{\numberline {第十六章\hspace {0.3em}}Editor 扩展}{71}{chapter.16}
-\contentsline {section}{\numberline {16.1}流程}{71}{section.16.1}
-\contentsline {section}{\numberline {16.2}在编辑器上增加一个MenuItem}{71}{section.16.2}
-\contentsline {section}{\numberline {16.3}创建一个对话框}{71}{section.16.3}
-\contentsline {section}{\numberline {16.4}扩展Inspector面板}{71}{section.16.4}
-\contentsline {section}{\numberline {16.5}编辑器插件常用函数}{71}{section.16.5}
-\contentsline {subsection}{\numberline {16.5.1}资源导入回调函数}{71}{subsection.16.5.1}
-\contentsline {section}{\numberline {16.6}一些常用的Inspector属性设置}{72}{section.16.6}
-\contentsline {section}{\numberline {16.7}参考}{72}{section.16.7}
-\contentsline {chapter}{\numberline {第十七章\hspace {0.3em}}跨平台发布apk}{73}{chapter.17}
-\contentsline {section}{\numberline {17.1}流程}{73}{section.17.1}
-\contentsline {section}{\numberline {17.2}Apk 安装常见错误}{73}{section.17.2}
-\contentsline {chapter}{\numberline {第十八章\hspace {0.3em}}调试技巧}{75}{chapter.18}
-\contentsline {section}{\numberline {18.1}以父类为基点}{75}{section.18.1}
-\contentsline {chapter}{\numberline {第十九章\hspace {0.3em}}GPU 相关}{77}{chapter.19}
-\contentsline {section}{\numberline {19.1}最底层——GPU/硬件原理}{77}{section.19.1}
-\contentsline {subsection}{\numberline {19.1.1}硬件基础}{77}{subsection.19.1.1}
-\contentsline {paragraph}{ALU-Arithmetic Logic Unit 算数逻辑单元}{77}{section*.77}
-\contentsline {paragraph}{Cache-缓存SRAM}{77}{section*.78}
-\contentsline {subsection}{\numberline {19.1.2}CPU with GPU 异同}{77}{subsection.19.1.2}
-\contentsline {paragraph}{CPU}{78}{section*.79}
-\contentsline {paragraph}{GPU}{78}{section*.80}
-\contentsline {paragraph}{结论}{79}{section*.81}
-\contentsline {subsection}{\numberline {19.1.3}GPU 架构}{80}{subsection.19.1.3}
-\contentsline {paragraph}{4D向量 和 4+1}{80}{section*.82}
-\contentsline {paragraph}{运算单元计算机制}{80}{section*.83}
-\contentsline {paragraph}{NVIDIA}{80}{section*.84}
-\contentsline {paragraph}{AMD/ATI}{81}{section*.85}
-\contentsline {section}{\numberline {19.2}更高层-硬件流程}{82}{section.19.2}
-\contentsline {subsection}{\numberline {19.2.1}数据存储转换}{82}{subsection.19.2.1}
-\contentsline {subsection}{\numberline {19.2.2}进入渲染预备状态}{84}{subsection.19.2.2}
-\contentsline {section}{\numberline {19.3}软件}{85}{section.19.3}
-\contentsline {chapter}{\numberline {第二十章\hspace {0.3em}}书籍推荐}{87}{chapter.20}
+\contentsline {chapter}{\numberline {第十四章\hspace {0.3em}}资源管理}{59}{chapter.14}
+\contentsline {section}{\numberline {14.1}资源}{59}{section.14.1}
+\contentsline {subsection}{\numberline {14.1.1}GUID 与 fileID}{59}{subsection.14.1.1}
+\contentsline {subsection}{\numberline {14.1.2}InstanceID}{62}{subsection.14.1.2}
+\contentsline {subsection}{\numberline {14.1.3}资源的生命周期}{63}{subsection.14.1.3}
+\contentsline {subsection}{\numberline {14.1.4}MonoScripts}{63}{subsection.14.1.4}
+\contentsline {section}{\numberline {14.2}资源文件夹}{63}{section.14.2}
+\contentsline {subsection}{\numberline {14.2.1}Assets 文件夹}{63}{subsection.14.2.1}
+\contentsline {subsection}{\numberline {14.2.2}Resources 文件夹}{64}{subsection.14.2.2}
+\contentsline {paragraph}{资源载入}{64}{section*.52}
+\contentsline {paragraph}{相关机制}{64}{section*.53}
+\contentsline {paragraph}{资源卸载}{64}{section*.54}
+\contentsline {subsection}{\numberline {14.2.3}StreamingAssets 文件夹}{65}{subsection.14.2.3}
+\contentsline {paragraph}{简介}{65}{section*.55}
+\contentsline {paragraph}{文件读取}{65}{section*.56}
+\contentsline {subparagraph}{IO Stream 方式}{66}{section*.57}
+\contentsline {subparagraph}{WWW 方式}{66}{section*.58}
+\contentsline {subparagraph}{AssetBundle 特有读取方式}{66}{section*.59}
+\contentsline {paragraph}{PersistentDataPath}{66}{section*.60}
+\contentsline {section}{\numberline {14.3}WWW 载入资源}{67}{section.14.3}
+\contentsline {paragraph}{简介}{67}{section*.61}
+\contentsline {paragraph}{相关机制}{67}{section*.62}
+\contentsline {subparagraph}{通过new WWW、Try}{67}{section*.63}
+\contentsline {subparagraph}{通过Using}{67}{section*.64}
+\contentsline {paragraph}{LoadFromCacheOrDownload}{68}{section*.65}
+\contentsline {section}{\numberline {14.4}AssetBundle}{68}{section.14.4}
+\contentsline {subsection}{\numberline {14.4.1}工作流程}{68}{subsection.14.4.1}
+\contentsline {paragraph}{图例}{68}{section*.66}
+\contentsline {subsection}{\numberline {14.4.2}创建}{69}{subsection.14.4.2}
+\contentsline {subsubsection}{BuildAssetBundle}{69}{section*.67}
+\contentsline {paragraph}{BuildAssetBundleOptions}{70}{section*.68}
+\contentsline {paragraph}{AssetBundle之间的依赖}{70}{section*.69}
+\contentsline {subsubsection}{BuildStreamedSceneAssetBundle}{71}{section*.70}
+\contentsline {subsubsection}{BuildAssetBundleExplicitAssetNames}{71}{section*.71}
+\contentsline {subsection}{\numberline {14.4.3}AssetBundle压缩类型}{71}{subsection.14.4.3}
+\contentsline {subsection}{\numberline {14.4.4}LZMA 与 LZ4压缩对比}{72}{subsection.14.4.4}
+\contentsline {subsection}{\numberline {14.4.5}选择策略}{72}{subsection.14.4.5}
+\contentsline {subsection}{\numberline {14.4.6}加载方式}{72}{subsection.14.4.6}
+\contentsline {subsection}{\numberline {14.4.7}使用}{73}{subsection.14.4.7}
+\contentsline {subsection}{\numberline {14.4.8}卸载}{74}{subsection.14.4.8}
+\contentsline {subsection}{\numberline {14.4.9}内存模型}{74}{subsection.14.4.9}
+\contentsline {section}{\numberline {14.5}资源打包}{74}{section.14.5}
+\contentsline {subsection}{\numberline {14.5.1}降低包体准则}{75}{subsection.14.5.1}
+\contentsline {subsection}{\numberline {14.5.2}针对删除无用资源的方案}{75}{subsection.14.5.2}
+\contentsline {section}{\numberline {14.6}参考}{76}{section.14.6}
+\contentsline {chapter}{\numberline {第十五章\hspace {0.3em}}Editor 扩展}{77}{chapter.15}
+\contentsline {section}{\numberline {15.1}流程}{77}{section.15.1}
+\contentsline {section}{\numberline {15.2}在编辑器上增加一个MenuItem}{77}{section.15.2}
+\contentsline {section}{\numberline {15.3}创建一个对话框}{77}{section.15.3}
+\contentsline {section}{\numberline {15.4}扩展Inspector面板}{77}{section.15.4}
+\contentsline {section}{\numberline {15.5}编辑器插件常用函数}{77}{section.15.5}
+\contentsline {subsection}{\numberline {15.5.1}资源导入回调函数}{77}{subsection.15.5.1}
+\contentsline {section}{\numberline {15.6}一些常用的Inspector属性设置}{78}{section.15.6}
+\contentsline {section}{\numberline {15.7}参考}{78}{section.15.7}
+\contentsline {chapter}{\numberline {第十六章\hspace {0.3em}}跨平台发布apk}{79}{chapter.16}
+\contentsline {section}{\numberline {16.1}流程}{79}{section.16.1}
+\contentsline {section}{\numberline {16.2}Apk 安装常见错误}{79}{section.16.2}
+\contentsline {chapter}{\numberline {第十七章\hspace {0.3em}}调试技巧}{81}{chapter.17}
+\contentsline {section}{\numberline {17.1}以父类为基点}{81}{section.17.1}
+\contentsline {section}{\numberline {17.2}Android 与 Unity 互相调用}{81}{section.17.2}
+\contentsline {subsection}{\numberline {17.2.1}Unity 调用 Android 非静态方法}{81}{subsection.17.2.1}
+\contentsline {subsection}{\numberline {17.2.2}Unity 调用 Android 静态方法}{82}{subsection.17.2.2}
+\contentsline {subsection}{\numberline {17.2.3}Android 调用 Unity}{82}{subsection.17.2.3}
+\contentsline {chapter}{\numberline {第十八章\hspace {0.3em}}书籍推荐}{85}{chapter.18}

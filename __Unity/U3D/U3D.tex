@@ -206,6 +206,8 @@
 		\subsection{开启方式}
 			协程：协同程序，在主程序运行的同时，开启另外一段逻辑处理，来协同当前程序的执行。
 			
+			\textbf{将一段程序在多帧运行。}
+			
 			\paragraph{StartCoroutine(string MethodName)}
 				\begin{itemize}
 					\item 参数是方法名					
@@ -318,6 +320,13 @@
 		
 
 \chapter{实体-人物、物体、组件}
+	
+	\section{实体之间的关系}
+		\begin{figure}[H]
+			\centering
+			\includegraphics[scale=0.5]{class}
+			\caption{Unity 类之间的关系}
+		\end{figure}	
 		
 	\section{实体类} \verb|GameObject 类|,游戏基础对象，用于填充世界。
 		\paragraph{复制}
@@ -335,7 +344,9 @@
 		\paragraph{可见否}
 			通过设置该参数调整该实体是否可以在游戏中显示，具体设置方法为\verb|gameObject.SetActive(true) 为可以显示，false 则隐藏|
 		
-		\paragraph{游戏中获取}
+		\paragraph{游戏中获取或查找}
+			参考：\url{https://blog.csdn.net/u010145745/article/details/39160141}
+			
 			\begin{enumerate}
 				\item 在整个场景中寻找名为xx的游戏对象，并赋予obj 变量
 					
@@ -343,11 +354,15 @@
 					
 				\item 当需要获取某个\verb|gameObject| 下的组件时,使用\verb|Transform.Find.GetComponent|
 					
-					\verb|gameObjVar1.transform.Find("ImageItemIcon/TextMonthCardLeftDays").\label{GetComponen\left( }t<Text>().text = "xx";|
+					\verb|gameObjVar1.transform.Find("ImageItemIcon/TextMonthCardLeftDays").GetComponent<Text>().text = "xx";|
 				
-				\item 但是设置为激活状态则需要如下通过\verb|gameObject|进行设置。
+				\item 返回一个用tag做标识的活动的游戏物体的列表，如果没有找到则为null: 
 				
-					\verb|obj = gameObjVar1.transform.Find("xx/xx").gameObject.SetActive(true);|
+					\verb|static GameObject[] FindGameObjectsWithTag (string tag);|
+				
+				\item 遍历场景中所有物体,获取泛型T类型物体,\verb|FindObjectsOfType(typeof(Type))|返回\verb|Type|类型的所有激活的加载的物体列表，它将返回\textit{任何资源（网格，纹理，预设，...）}\textbf{或未激活的物体}
+				
+					\verb|object[] gameObjects = GameObject.FindSceneObjectsOfType(typeof(Transform));|
 			\end{enumerate}
 	\section{Prefabs -预设体}
 		prefabs基础：\url{https://www.cnblogs.com/yuyaonorthroad/p/6107320.html}
@@ -1000,265 +1015,485 @@
 \chapter{粒子系统}
 
 		
-\chapter{着色器}
-	入门参考网址：\url{https://blog.csdn.net/ring0hx/article/details/46440037}
+
+				
+				
+\chapter{资源管理}
+	\section{资源}
+		Unity必须通过导入将所支持的资源序列化，生成AssetComponents后，才能被Unity使用。
+		
+		资源(Asset)是硬盘中的文件，存储在Unity工程的Assets文件夹内。有些资源的数据格式是Unity原声支持的，有些资源则需要转换为源生的数据格式后才能被使用。
 	
-	\section{Shader 版本}
-		Shader 1.0（DirectX8.0）、
-		Shader 2.0（DirectX9.0b）、
-		Shader 3.0（DirectX9.0c）、
-		Shader 4.0（DirectX10）、
-		Shader 4.1（DirectX10.1）
-		和Shader 5（DirectX11）。
-
-		\begin{figure}[H]
-			\centering
-			\includegraphics[scale=0.71]{ShaderArc}
-			\caption{shader  通用架构}
-		\end{figure}
+		资源与对象时一对多的关系。
 		
-		
-	\section{结构}
-		\begin{figure}[H]
-			\centering
-			\includegraphics[scale=0.8]{arch}
-			\caption{着色器结构}
-		\end{figure}
-		
-		\begin{itemize}
-			\item \textbf{属性定义（Property Definition）}：定义Shader的输入，并且绑定到编辑器上。
-			\item \textbf{子着色器（SubShader）}：\underline{一个Shader可以有多个子着色器。}这些子着色器互不相干且\textbf{只有一个会在最终的平台运行}。\textit{编写多个的目的是解决兼容性问题。Unity会自己选择兼容终端平台的Shader运行}。
-			\item \textbf{回滚（Fallback）}：如果子着色器在终端平台上都无法运行，那么使用Fallback指定的备用Shader，\textbf{俗称备胎}。
-			\item \textbf{Pass}：\textit{一个Pass就是一次绘制}。\textbf{对于表面着色器，只能有一个Pass}，所以不存在Pass节。\textbf{顶点片段着色器可以有多个Pass。}多次Pass可以实现很多特殊效果，例如当人物被环境遮挡时还可以看到人物轮廓就可以用多Pass来实现。
-			\item \textbf{Cg代码}：每个Pass中都可以包含自定义的Cg代码，\textbf{从CGPROGRAM开始到ENDCG结束}。
-		\end{itemize}
-	\section{Shader2.0}
-		可以实现编程。
-		
-		\url{https://www.cnblogs.com/lixiang-share/p/5025662.html}
-		
-		\paragraph{大概流程}
-			\dirtree{%
-				.1 .
-				.2 MeshRender 将CPU数据传入至GPU .
-				.3 然后传递给顶点着色器 .
-				.4 顶点着色器处理完成后，将自己的输出数据传递给 片段着色器处理 .
-			}
-
-		
-		\paragraph{定义顶点着色器入口函数}
-			\verb|#pragma vertex _vertexFunctionName |
+		想使用Unity不支持未经导入的资源，只能使用IO Stream或者WWW 方法进行。
+	
+		\subsection{GUID 与 fileID}
+			Unity会为每个导入到Assets目录中的资源创建一个\verb|meta文件|，文件中记录了\verb|GUID|，\textbf{GUID用来记录资源之间的引用关系}。还有\verb|local ID|（本地ID），\textbf{用于标识资源内部的资源}。
 			
-		\paragraph{定义片段着色器入口函数}
-			\verb|#pragma fragment _fragmentFunctionName |
-
-		\paragraph{定义平面着色器入口函数}
-			\verb|#pragma surface _surfaceFunctionName |
-			
-		
-		\paragraph{常用语义}
-			POSITION\textbf{语义}等相当于告诉渲染引擎，这个变量是代表什么含义。
-			
-			\begin{itemize}
-				\item \verb|POSITION| 获取模型顶点信息。
-				\item \verb|NORMAL| 获取法线信息。
-				\item \verb|TEXCOORD n| 第(n)张贴图的uv坐标
-				\item \verb|COLOR n| 第n个定点色。\verb|float4|
-				\item \verb|TANGENT| 获取切线信息
-				\item \verb|SV_POSITION| 表示经过MVP 矩阵已经转化到屏幕坐标的位置
-				\item \verb|SV_TARGET| 输出到哪个Render Target 上
- 			\end{itemize}
-		
-		\paragraph{常用坐标系}
-			\begin{itemize}
-				\item \verb|模型坐标系|：也叫物体坐标系，3D建模的时候每个模型都是在自己的坐标系下建立的，如果一个人物模型脚底是(0,0,0) 点的话它的身上其它点的坐标都是相对脚底这个原点的。 
-				\item \verb|世界坐标系|：我们场景是一个世界，有自己的原点，模型放置到场景中后模型上的每个顶点就有了一个新的世界坐标。这个坐标可以通过模型矩阵×模型上顶点的模型坐标得到。 
-				\item \verb|视图坐标系|：又叫观察坐标系，是以观察者（相机）为原点的坐标系。场景中的物体只有被相机观察到才会绘制到屏幕上，相机可以设置视口大小和裁剪平面来控制可视范围，这些都是相对相机来说的，所以需要把世界坐标转换到视图坐标系来方便处理。 
-				\item \verb|投影坐标系|：场景是3D的，但是最终绘制到屏幕上是2D，投影坐标系完成这个降维的工作，投影变换后3D的坐标就变成2D的坐标了。投影有平行投影和透视投影两种，可以在Unity的相机上设置。 
-				\item \verb|屏幕坐标系|: 最终绘制到屏幕上的坐标。屏幕的左下角为原点。
-			\end{itemize}
-
-		\paragraph{常用矩阵表示}
-			\begin{itemize}
-				\item \verb|UNITY_MATRIX_MVP|：当前模型 -> 视图 -> 投影矩阵。（注：模型矩阵为 本地->世界）
-				\item \verb|UNITY_MATRIX_MV|：当前模型 -> 视图矩阵
-				\item \verb|UNITY_MATRIX_V|：当前视图矩阵
-				\item \verb|UNITY_MATRIX_P|：当前投影矩阵
-				\item \verb|UNITY_MATRIX_VP|：当前视图 -> 投影矩阵
-				\item \verb|UNITY_MATRIX_T_MV|：转置模型 -> 视图矩阵
-				\item \verb|UNITY_MATRIX_IT_MV|：逆转置模型 -> 视矩阵, 用于将法线从\verb|ObjectSpace|旋转到\verb|WorldSpace|。为什么法线变化不能和位置变换一样用\verb|UNITY_MATRIX_MV|呢？一是因为法线是3维的向量而- \verb|UNITY_MATRIX_MV|是一个4x4矩阵，二是因为法线是向量，我们只希望对它旋转，但是在进行空间变换的时候，如果发生非等比缩放，方向会发生偏移。
-				\item \verb|UNITY_MATRIX_TEXTURE0 |to \verb|UNITY_MATRIX_TEXTURE3|：纹理变换矩阵
-			\end{itemize}
-			
-	\section{材质、贴图、纹理}
-			材质 Material包含贴图 Map，贴图包含纹理 Texture。
-			
-			\paragraph{纹理}\verb|->|
-			
-				是最基本的数据输入单位，游戏领域基本上都用的是位图。常见格式有PNG，TGA，BMP，TIFF此外还有程序化生成的纹理 Procedural Texture。 
-				在内存中通常表示为二维像素数组。
+			\textbf{\underline{资源间}的依赖关系}通过\verb| GUID|来确定；
+					\begin{figure}[H]
+						\centering
+						\includegraphics[scale=1]{guid}
+						\caption{GUID 演示}
+					\end{figure}
+			如果一个资源引用了另一个外部资源，比如一个Prefab引用了其他脚本、纹理或Prefab等，则一定会标明引用资源文件的File GUID
+					\begin{figure}[H]
+						\centering
+						\includegraphics[scale=0.9]{guidRef}
+						\caption{引用演示}
+					\end{figure}
 				
-			\paragraph{贴图}\verb|->|
-			
-				英语 Map 其实包含了另一层含义就是“映射”。其功能就是\underline{把}\textbf{纹理}通过 \verb|UV 坐标| \underline{映射}到 \textit{3D 物体表面}。
-				
-				\textbf{贴图}\textit{包含了}\textbf{除了纹理以外其他很多信息}，比方说 \textbf{UV 坐标}、\textbf{贴图输入输出控制}等等。 
-				一张图便能说明其之间的关系 
+			\textbf{\underline{资源内部}的依赖关系}使用\verb| local ID|来确定。\textit{如果说File GUID表示为文件和文件之间的关系}，那么\textbf{Local ID表示的就是文件内部各对象之间的关系}，打开一个\verb|*.Prefab|文件可以很清晰的看到：
 				\begin{figure}[H]
 					\centering
-					\includegraphics[scale=0.57]{Texture}
-					\caption{纹理与贴图}
+					\includegraphics[scale=1.12]{localId}
+					\caption{LocalId 演示}
 				\end{figure}
-				
-			\paragraph{材质}\verb|->|
-			
-				本质就是一个\textbf{数据集}，主要功能就是\textbf{给渲染器}\textit{提供数据和光照算法}。
-				
-				\textbf{贴图}就是其中\textbf{数据的一部分}，根据用途不同，贴图也会被分成不同的类型，比方说 \verb|Diffuse Map|，\verb|Specular Map|，\verb|Normal Map| 和 \verb|Gloss Map| 等等。
-				
-				\textbf{另外一个重要部分}就是\textbf{光照模型 Shader} ，用以实现不同的渲染效果。 贴图种类繁多：我做个不完全总结
-				
-				\subparagraph{Diffuse Map}
-					漫反射贴图/也被称作反照率贴图albedo map， 存储了物体相应部分漫反射颜色
-					
-				\subparagraph{Normal Map}
-					法线贴图 本质上存储的是被RGB值编码的法向量 表现凹凸，\textbf{比如一些凹凸不平的表面，光影在表面产生实时变化，常用来低精度多边形表现高精度多边形细节}， \textbf{比如在高多边形下生成normal map在匹配给低多边形模型 是一种常见的降低性能要求的做法}
-					
-					\begin{figure}[H]
-						\centering
-						\includegraphics[scale=0.8]{normalMap}
-						\caption{法线贴图演示}
-					\end{figure}
-					
-					建议参考：\url{https://blog.csdn.net/cywater2000/article/details/749341#comments}
-					
-					常规来说就是\textbf{光向量}和\textbf{法向量}的\textbf{点积}\textit{来确定明暗以表现凹凸质感}，也就是把法线存在纹理中。
-				\subparagraph{Specular Map}
-					高光贴图 表现质感 高光区域大小可真实反映材质区别
-					
-				\subparagraph{Gloss Map}
-					光泽贴图，每个纹理元素上描述光泽程度
-					
-			总体上说 他们都是要被shader加工的原材料.
-	
-	\section{光照模型}
-		参考：\url{https://blog.csdn.net/admintan/article/details/53913624}
 		
-		\subsection{Phone 光照模型}
-			真实世界中的光照效果抽象为三种独立的光照效果的叠加。
-				$$Color = Ambient + Diffuse + Specular$$
+			\textbf{一个对象通常是由一个或多个对象构成}，每个记录在\&符号后面的数字都是一个\verb|Local ID|，每一个\verb|Local ID|也表示这它将来也会被实例化成一个对象。也就是说，当一个prefab文件要实例化成一个GameObject时，它会自动尝试获取其内部\verb|Local ID|所指的那个对象。如果这个所指的对象当前还没有被实例化出来，那么Unity会自动实例化这个对象，如此递归，直到所有涉及的对象都被实例化。
 			
-			\paragraph{环境光-Ambient}
-				此为模拟环境中的整体光照水平，是间接反射光的粗略估计，间接反射的光使阴影部分不会变成全黑 关于环境光还有个事实，1某个可以独立分析的局部场合的环境光强和能够进入这个地方的光的强度有关。 
-					
-					$$Ambient = K_a * GlobalAmbient $$
-					
-			\paragraph{漫反射光-Diffuse}
-				模拟直接光源在表面均匀的向各个方向反射，能够逼近真实光源照射到哑光表面的反射。比如在阳光下，由于路面粗糙的性质，我们发现从任意一个角度观察路面，亮度都是差不多。 
+		\subsection{InstanceID}
+			 Unity为了在运行时，提升资源管理的效率，会在内部维护一个缓存表，负责\textbf{将文件的GUID与fileID转换成为整数数值}，这个数值在本次会话中是唯一的，\textbf{称作实例ID(InstanceID)}。
 				
-					$$Diffuse = K_d * lightColor * dot(L,N) $$
-			\paragraph{镜面反射光-Specular}
-				模拟在光滑表面会看到的光亮高光。会出现在光源的直接反射方向。镜子、金属等表面光亮的物体会有镜面反射光。镜面反射光同时与物体表面朝向、光线方向、视点位置有关。如图：
-					\begin{figure}[H]
-						\centering
-						\includegraphics[scale=0.8]{Specular}
-						\caption{高光演示}
-					\end{figure}
-				
-				$I$是入射光，$N$是表面法线，$R$是反射光线，$V$是从物体上的目标观察点指向视点的向量，$a$是$V$和$R$的夹角。
-				
-				我们可以判断出一个规律，夹角$a$越小，即视线与反射方向的偏离越小，则目标点的光强越大,计算公式为：
+			 Unity通过\textbf{Instance ID}，\textbf{来获取或判断一个对象是否已经被加载完毕}。
+			
+			 每当Unity读入一个\textbf{File GUID和LocalID}时，就会自动将其转换成一个简单好记的数字牌，\textit{因为通过File GUID和Local ID定位资源的效率并没有直接解引用一个地址那么快}。
+			 
+			 \color{blue}\textbf{如果发现这个牌上并没有挂着一把钥匙，表示当前这个这个资源还在磁盘中，尚不在内存里(没有加载)；相反，如果这个牌子上有一把钥匙，表示这个资源已经被加载完毕，你可以快速的找到并使用它。}\color{black}
+			 
+			 Unity会在项目启动后，创建并一直维护一张“\textbf{映射表}”，这张映射表记录的就是\textbf{File GUID、Local ID}以及由它们转换而成的\textbf{Instance ID}之间的关系，\textbf{这样下次在请求资源时就可以快速的通过查看钥匙牌来获取资源了}
+			 
+			 \textit{程序启动时，实例ID缓存与所有工程内建的对象(例如在场景中被引用)，以及Resource文件夹下的所有对象，都会被一起初始化。如果在运行时导入了新的资源，或从AssetBundle中载入了新的对象，缓存会被更新，并为这些对象添加相应条目。实例ID仅在失效时才会被从缓存中移除，当提供了指定文件GUID和fileID的AssetBundle被卸载时会产生移除操作}。
 					
-					$$Specular = K_s * lightColor * (dot(V,R))^{shininess}$$ 
+			 \textit{卸载AssetBundle会使实例ID失效，实例ID与其文件GUID和fileID之间的映射会被删除以便节省内存。重新载入AssetBundle后，载入的每个对象都会获得新的实例ID。}
+			 
+			 Unity维护的一套将GUID和LocalID解析为数据源地址的机制，这套机制中的信息，来自于：
+			 	\begin{itemize}
+			 		\item \textbf{场景加载时}，Unity收集了与\textbf{该场景关联的}资源信息
+			 		\item \textbf{项目启动时}，Unity收集了所有\textbf{Resources文件夹下的}资源信息
+			 		\item \textbf{读取AssetBundle时}，Unity获取了\textbf{AssetBundle文件的}头部信息(Header)
+			 	\end{itemize}
+			 	
+		\subsection{资源的生命周期}
+			Object从内存中加载或卸载的时间点是定义好的。Object有两种加载方式：\textbf{自动加载}与\textbf{外部加载}。当对象的实例ID与对象本身解引用，对象当前未被加载到内存中，而且可以定位到对象的源数据，此时对象会被自动加载。对象也可以外部加载，通过在脚本中创建对象或者调用资源加载API来载入对象（例如：AssetBundle.LoadAsset） 
+			
+			对象加载后，Unity会尝试修复任何可能存在的引用关系，通过将每个引用文件的GUID与FileID转化成实例ID的方式。一旦对象的实例ID被解引用且满足以下两个标准时，对象会被强制加载：
+			
+	        实例ID引用了一个没有被加载的对象。
+			
+	        实例ID在缓存中存在对应的有效GUID和本地ID。
+			
+	        如果文件GUID和本地ID没有实例ID，或一个已卸载对象的实例ID引用了非法的文件GUID和本地ID，则引用本身会被保留，但实例对象不会被加载。在Unity编辑器中表现为空引用，在运行的应用中，或场景视图里，空对象会以多种方式表示，取决于丢失对象的类型：网格会变得不可见，纹理呈现为紫红色等等。
+	        
+		\subsection{MonoScripts}
+			一个MonoScripts含有三个字符串：\textit{程序库名称，类名称，命名空间}。 
+			
+			构建工程时，Unity会收集\textbf{Assets文件夹}中\textbf{独立的脚本文件}并编译他们，\textbf{组成一个Mono程序库}。Unity会将Assets目录中的语言分开编译，\textbf{Assets/Plugins目录}中的脚本\textbf{同理}。\textit{Plugin子目录之外的C\#脚本会放在Assembly-CSharp.dll中}。而Plugin及其子目录中的脚本则放置在\textit{Assembly-CSharp-firstpass.dll}中。 
+			
+			这些程序库会被MonoScripts所引用，并在程序第一次启动时被加载。
+	
+	\section{资源文件夹}	
+		\subsection{Assets 文件夹}
+		
+		    为Unity编辑器下的资源文件夹，Unity项目编辑时的所有资源都将置入此文件夹内。在编辑器下，可以使用以下方法获得资源对象：
+			
+	        \verb|AssetDatabase.LoadAssetAtPath("Assets/x.txt");| 
+			
+	        注意：\textbf{此方法只能在编辑器下使用}，当项目打包后，在游戏内无法运作。参数为包含Assets内的文件全路径，并且需要文件后缀。 
+			
+	        \color{blue}\textbf{Assets下的资源除特殊文件夹内，或者在会打入包内的场景中引用的资源，其余资源不会被打入包中}。\color{black}
+	        
+		\subsection{Resources 文件夹}
+			\paragraph{资源载入}\verb|->|
+			
+				Assets下的特殊文件夹，\textbf{此文件夹内的资源将会在项目打包时，全部打入包内}，并能通过以下方法获得对象：
+
+					\verb|Resources.Load("fileName");|
+					
+		        注意：\textbf{函数内的参数为相对于Resource目录下的文件路径与名称}，\textit{不包含后缀}。Assets目录下可以拥有任意路径及数量的Resources文件夹，在运行时,Resources下的文件路径将被合并。
+					
+		        例：\verb|Assets/Resources/test.txt|与 \verb|Assets/TestFloder/Resources/test.png|在使用\textit{Resource.Load("test")}载入时，\textit{将被视为同一资源，只会返回第一个符合名称的对象}。如果使用\textit{Resource.Load(“test”)}将返回\textit{text.txt}；
+					
+		        如果在\verb|Resources|下有\textbf{相同路径及名称的资源}，使用以上方法只能获得第一个符合查找条件的对象，使用以下方法能\textbf{获得到所有符合条件的对象}：
+					\begin{lstlisting}
+	Object[] assets = Resources.LoadAll("fileName");
+	TextAsset[] assets = Resources.LoadAll("fileName");
+					\end{lstlisting}
+				 		 
+			
+			\paragraph{相关机制}\verb|->|
+				
+				在工程进行打包后，Resource文件夹中的资源将进行加密与压缩，\textbf{打包后的程序内将不存在Resource文件夹}，\textbf{故无法通过路径访问以及更新资源}。
+				
+				在程序启动时会为Resource下的所有对象进行初始化，构建实例ID。随着Resource内资源的数量增加，此过程耗时的增加是非线性的。故会出现程序启动时间过长的问题，请密切留意Resource内的资源数量。
+
+			\paragraph{资源卸载}\verb|->|	
+					
+				所有实例化后的\verb|GameObject| 可以通过\verb|Destroy|函数销毁。请留意\verb|Object|与\verb|GameObject|之间的区别与联系.
+				
+				\verb|Object|可以通过\verb|Resources|中的相关\verb|Api|进行卸载
+					\begin{lstlisting}
+	Resources.UnloadAsset(Object);//卸载对应Object 
+	Resources.UnloadUnusedAssets();//卸载所有没有被引用以及实例化的Object
+					\end{lstlisting}
+
+				注意以下情况：
+					\begin{lstlisting}
+	Object obj = Resources.Load("MyPrefab"); 			
+	GameObject instance = Instantiate(obj) as GameObjct; 
+	...... 
+	Destroy(instance); 
+	Resources.UnloadUnusedAssets(); 
+					\end{lstlisting}
+					
+				此时\verb|UnloadUnusedAssets|将不会生效，因为\verb|obj|依然引用了\verb|MyPrefab|，需要将\verb|obj = null|，才可生效。
+
+		\subsection{StreamingAssets 文件夹}
+			\paragraph{简介}\verb|->|
+			
+				\verb|StreamingAssets|文件夹为\textbf{流媒体文件夹}，此文件夹内的资源将\underline{\textbf{不会经过压缩与加密}}，\textbf{原封不动的打包进游戏包内}。在游戏安装时，StreamAssets文件件内的资源将根据平台，移动到对应的文件夹内。\verb|StreamingAssets|文件夹在Android与IOS平台上为\textbf{只读文件夹}. 
+				
+				你可以使用以下函数获得不同平台下的StreamingAssets文件夹路径：
+				
+					\verb|Application.streamingAssetsPath| 
+				
+				 请参考以下各平台下StreamingAssets文件夹的等价路径，\verb|Application.dataPath|为程序安装路径。Android平台下的路径比较特殊，请留意此路径的前缀，在一些资源读取的方法中是不必要的（\textit{AssetBundle.LoadFromFile}，下详）
 				
 					\begin{itemize}
-						\item Ks为物体对于反射光线的衰减系数
-						\item Shininess为高光指数,高光指数反映了物体表面的光泽程度。
-						\begin{itemize}
-							\item Shininess越大，反射光越集中，当偏离反射方向时，光线衰减的越厉害，只有当视线方向与反射光线方向非常接近时才能看到镜面反射的高光现象，此时，镜面反射光将会在反射方向附近形成亮且小的光斑；
-							\item Shininess 越小，表示物体越粗糙，反射光分散，观察到的光斑区域小，强度弱。
-						\end{itemize}
+						\item Application.dataPath+"/StreamingAssets"//Windows OR MacOS
+						\item Application.dataPath+"/Raw" //IOS
+						\item "jar:file://"+Application.dataPath+"!/assets/" //Android 
 					\end{itemize}
+				 
+			\paragraph{文件读取}\verb|->|
+				
+				\verb|StreamingAssets|文件夹下的文件在游戏中\textbf{只能通过}\verb|IO Stream|或者\verb|WWW|的方式\textbf{读取}（AssetBundle除外）.
+				\subparagraph{IO Stream 方式}\verb|->|
+					\begin{lstlisting}
+	using
+	(
+		FileStream stream = 
+		File.Open(Application.streamingAssetsPath+"fileName", FileMode.Open)
+	) 
+	{ 
+		//处理方法 
+	} 
+					\end{lstlisting}
+				
+				\subparagraph{WWW 方式}\verb|->|
+					\begin{lstlisting}
+	using
+	(
+		WWW www = 
+		new WWW(Application.streamingAssetsPath+"fileName")
+	) 
+	{ 
+		yield return www; 
+		www.text; 
+		www.texture; 
+	} 
+					\end{lstlisting}
+				
+				\subparagraph{AssetBundle 特有读取方式}\verb|->|
+					\begin{lstlisting}
+	string assetbundlePath = 
+	#if UNITY_ANDROID 
+		Application.dataPath+"!/assets"; 
+	#else 
+		Application.streamingAssetsPath; 
+	#endif  
+	AssetBundle.LoadFromFile(assetbundlePath+"/name.unity3d"); 
+					\end{lstlisting}
+					
+			\paragraph{PersistentDataPath}\verb|->|
 			
-			\paragraph{总结}
-				至于更多的光照模型结合了更多的物理光学等信息　在模拟单种材质例如塑料　合金　石膏陶瓷等等上要好于Phone式模型的效果 但是基本上属于Phone式模型的扩充
+				\verb|Application.persistentDataPath |
+				
+				Unity指定的一个可读写的外部文件夹，该路径因平台及系统配置不同而不同。可以用来保存数据及文件。该目录下的资源不会在打包时被打入包中，也不会自动被Unity导入及转换。该文件夹只能通过IO Stream以及WWW的方式进行资源加载。
+			
+	\section{WWW 载入资源}
+		\paragraph{简介}\verb|->|
+			
+			 WWW是一个\underline{Unity封装}的\textbf{网络下载模块}，支持\textbf{Http}以及\textbf{ftp}两种URL协议，\textit{并会尝试将资源转换成Unity能使用的AssetsComponents（如果资源是Unity不支持的格式，则只能取出byte[]）}。WWW加载是\textbf{异步方法}。
+				\begin{lstlisting}
+	byte[] bytes = WWW.bytes; 
+	string text = WWW.text; 
+	Texture2D texture = WWW.texture; 
+	MovieTexture movie = WWW.movie; 
+	AssetBundle assetbundle = WWW.assetBundle; 
+	AudioClip audioClip = WWW.audioClip; 
+				\end{lstlisting}
+			
+		\paragraph{相关机制}\verb|->|
+			
+			每次new WWW时，Unity都会启用一个线程去进行下载。通过此方式读取或者下载资源，会在内存中生成WebStream，WebStream为下载文件转换后的内容，占用内存较大。使用WWW.Dispose将终止仍在加载过程中的进程，并释放掉内存中的WebStream。 
+			
+	        如果WWW不及时释放，将占用大量的内存，推荐搭配using方式使用，以下两种方式等价。
+	        \subparagraph{通过new WWW、Try}：
+				\begin{lstlisting}
+// 方式一			
+WWW www = new WWW(Application.streamingAssetsPath+"fileName"); 
+try 
+{ 
+	yield return www; 
+	www.text; 
+	www.texture; 
+} 
+finally 
+{ 
+	www.Dispose(); 
+} 
+				\end{lstlisting}
+			
+			\subparagraph{通过Using}：	
+				\begin{lstlisting}
+// 方式二
+using(WWW www = 
+	new WWW(Application.streamingAssetsPath+"fileName")) 
+{ 
+	yield return www; 
+	www.text; 
+	www.texture; 
+} 	
+				\end{lstlisting}
+			
+			如果载入的为Assetbundle且\textbf{进行过}压缩，则\textbf{还会在}内存中\textbf{占用一份}AssetBundle解压用的缓冲区\textit{Deompresion Buffer}， \textbf{AssetBundle}压缩格式的不同会影响此区域的大小。
+			
+		\paragraph{LoadFromCacheOrDownload}\verb|->|
+			
+			\begin{lstlisting}
+	int version = 1; 
+	WWW.LoadFromCacheOrDownload(PathURL+"/fileName",version); 
+			\end{lstlisting}
+			
+	       使用此方式加载，将\textbf{先从硬盘}上的存储区域\textbf{查找是否有对应的资源}，\textbf{再验证本地}Version与传入值之间的关系，如果传入的Version\textbf{大于}本地，\textit{则从传入的URL地址下载资源，并缓存到硬盘，替换掉现有资源}，如果传入Version\textbf{小于等于}本地，\textit{则直接从本地读取资源}；\textbf{如果本地没有存储资源，则下载资源}。
+	       
+	       \color{blue}此方法的存储路径无法设定以及访问。使用此方法载入资源，不会在内存中生成 WebStream（其实已经将WebStream保存在本地），如果硬盘空间不够进行存储，将自动使用new WWW方法加载，并在内存中生成WebStream。在本地存储中，使用fileName作为标识符，所以更换URL地址而不更改文件名，将不会造成缓存资源的变更。 	
+		   保存的路径无法更改，也没有接口去获取此路径\color{black}
+			
+	\section{AssetBundle}	
+		\subsection{工作流程}
+			\dirtree{%
+				.1 \textbf{AssetBundle 的使用流程} . 
+				.2 1- 创建AssetBundle .
+				.3 2- 上传到Server .
+				.4 3- 游戏运行时根据需要下载AssetBundle 文件 .
+				.5 4- 解析加载Assets .
+				.6 5- 使用完后释放内存等资源 .
+			}
+			
+			\paragraph{图例}AssetBundle 资源组织形式：
+				\begin{figure}[H]
+					\centering
+					\includegraphics[scale=0.7]{AssetBundle}
+					\caption{AssetBundle 组织形式}
+				\end{figure}
+				
+		\subsection{创建}
+			通过编译管线BuildPipeline来创建AssetBundle文件，总共有三种方法,具体如下所示。
+			\subsubsection{BuildAssetBundle}
+				该API将编辑器中的任意类型的Assets打包成一个AssetBundle，适用于\textbf{对单个大规模场景的细分}。
+				
+				\begin{itemize}
+					\item 名称：\textbf{BuildPipeline.BuildAssetBundle}
+					\item 参数-1：\textbf{mainAsset} : Object
+					\item 参数-2：\textbf{assets} : Object[]
+					\item 参数-3：\textbf{pathName} : string
+					\item 参数-4：\textbf{options} : BuildAssetBundleOptions
+					\item 参数-5：\textbf{targetPlatform} : BuildTarget = BuildTarget.WebPlayer
+					\item 返回值：\textbf{bool}
+				\end{itemize}
+				
+				\textit{每一次调用BuildPipleLine.BuildAssetBundles时}，\textbf{将会生成一批AssetBundle文件}，具体数量根据传递AssetBundleBuild数组决定，\textbf{每一个AssetBundleBuild对象将对应\textit{一个AssetBundle}及\textit{一个同名+.manifest后缀文件}}。其中AssetBundle文件的后缀用户自行设置，比如".unity3d"，".ab"等等；而\verb|.manifest|文件是给人看的，\textbf{里面有这个AssetBundle的基本信息以及非常关键的资源列表}。
+				
+				除了AssetBundleBuild数组所定的AssetBundle外，\textit{还将额外在output路径下生成的一对与output文件夹同名的文件及一个同名.manifest后缀文件}。\textbf{这个同名文件可厉害了，它记录了这批次AssetBundle之间的相互依赖关系}。\textit{当然.manifest文件还是给人看的，我们可以用它分析资源间的依赖关系，但是在项目实际运行时，Unity并不会关心它。}
+				
+					\begin{figure}[H]
+						\centering
+						\includegraphics[scale=0.54]{AssetBuild}
+						\caption{BuildAssetBundles示例}
+					\end{figure}
+					
+				\paragraph{BuildAssetBundleOptions}
+					\begin{itemize}
+						\item CompleteAssets
+						\item CollectDependencies
+						\item DisableWriteTypeTree
+						\item DeterministricAssetBundle
+						\item UncompressedAssetBundle
+					\end{itemize}
+	
+				\paragraph{AssetBundle之间的依赖}	
+					如果游戏中的某个资源被多个资源引用（例如游戏中的Material），单独创建AssetBundle会使多个AssetBundle都包含被引用的资源（这里跟flash编译选项中的链接选项有些像），从而导致资源变大，这里可以通过指定AssetBundle之间的依赖关系来减少最终AssetBundle文件的大小（把AssetBundle解耦）。
+					
+					具体方法是在创建AssetBundle之前调用BuildPipeline.PushAssetDependencies和BuildPipeline.PopAssetDependencies来创建AssetBundle之间的依赖关系，它的用法就是一个栈，后压入栈中的元素依赖栈内的元素。
+				
+			\subsubsection{BuildStreamedSceneAssetBundle}
+				该API将一个或多个场景中的资源及其所有依赖以流加载的方式打包成AssetBundle，一般适用于\textbf{多单个或多个场景进行集中打包}
+				
+				\begin{itemize}
+					\item 名称：\textbf{BuildPipeline.BuildStreamedSceneAssetBundle}
+					\item 参数-1：\textbf{level} : string[]
+					\item 参数-2：\textbf{locationPath} : string
+					\item 参数-3：\textbf{target} : BuildTarget
+					\item 返回值：\textbf{String}
+				\end{itemize}
+	
 				
 				
-\chapter{资源管理- AssetBundle}
-	\section{工作流程}
-		\dirtree{%
-			.1 \textbf{AssetBundle 的使用流程} . 
-			.2 1- 创建AssetBundle .
-			.3 2- 上传到Server .
-			.4 3- 游戏运行时根据需要下载AssetBundle 文件 .
-			.5 4- 解析加载Assets .
-			.6 5- 使用完后释放内存等资源 .
+			\subsubsection{BuildAssetBundleExplicitAssetNames}
+				该API功能与a相同，但创建的时候可以为每个Object指定一个自定义的名字。（一般不太常用）
+				
+				\begin{itemize}
+					\item 名称：\textbf{BuildPipeline.BuildAssetBundleExplicitAssetNames}
+					\item 参数-1：\textbf{assets} : Object[]
+					\item 参数-2：\textbf{assetNames} : string[]
+					\item 参数-3：\textbf{pathName} : string
+					\item 参数-4：\textbf{options} : BuildAssetBundleOptions
+					\item 参数-5：\textbf{targetPlatform} : BuildTarget
+					\item 返回值：\textbf{bool}
+				\end{itemize}			
+		
+		\subsection{AssetBundle压缩类型}
+			\begin{itemize}
+				\item 不压缩
+				\item LZMA
+				\item LZ4
+			\end{itemize}	
+			
+			\subsection{LZMA 与 LZ4压缩对比}
+			
+			\subsection{选择策略}
+			
+		\subsection{加载方式}   
+			根据AssetBundle文件所在的位置(本地、远端)，AssetBundle有不同的加载方式，一般可以分为以下4种。
+			\begin{itemize}
+				\item WWW
+				\item LoadFromFile 或 LoadFromFileAsync
+				\item WebRequest
+				\item LoadFromMemory
+			\end{itemize} 
+			
+			\textbf{AssetBundle的加载}可以理解为：\textbf{Bundle加载}和\textbf{Asset加载}两部分。因为AssetBundle文件可以从功能上分为两大块：
+			\begin{enumerate}
+				\item Header 部分：记录文件标记、压缩信息、文件列表
+				\item Data 部分：记录资源实际内容
+			\end{enumerate}
+			
+			当使用\textit{AssetBundle.LoadFromFile}或\textit{LoadFromFileAsync}时，在pc平台及移动平台上，unity\textbf{仅会为我们读取AssetBundle的header部分，并不会将bundle的data部分整个读入内存}。
+			
+			\textbf{当调用上一步生成的AssetBundle对象读取具体资源时}（\textit{LoadAsset, LoadAssetAsync, LoadAllAssets}），Unity会参考已经缓存的文件列表，\textbf{找到目标资源在data部分的位置并读入到内存中}。
+
+			如果一个资源引用到了其他资源，则必须要先读入被引用资源的AssetBundle文件，否则就会发生引用Miss。
+			
+			为了避免上面Miss的情况，在加载资源时，首先需要将该资源的依赖项全部加载完毕，不过仅需加载依赖资源的AssetBundle文件。也就是说，我们只要将该依赖AssetBundle的Header部分加载（AssetBundle.LoadFromFile或LoadFromFileAsync）就可以，这样在真正读取Asset时，Unity会自动处理好真实依赖的Asset，我们不用操心。
+			
+			AssetBundle的依赖关系如何读取呢？加载上面提到的那个很厉害的文件就可以了。
+				\begin{lstlisting}
+	// 用与读取AssetBundle 一样的方式读取AssetBundleManifest
+	var bundle = AssetBundle.LoadFromFile(bundleManifestPath);
+	if(bundle)
+	{
+		// 读取AssetBundleManifest 资源
+		AssetBundleManifest abManifest = bundle.LoadAsset<AssetBundleManifest>("AssetBundleManifest");
+		// 获取生命的全部AssetBundle, 对应一次BuildPipeline.BuildAssetBundles
+		string[] assets = abMainifest.GetAllAssetBundles();
+		// 遍历所有AB 资源
+		foreach(var item in assets)
+		{
+			// 获取AB资源的直接依赖 A->B->C 则返回B
+			string[] dependencies = abManifest.GetDirectDependencies(item);
+			// 获取AB 资源的所有依赖资源 A->B->C 则返回BC
+			// string[] dependencies = abManifest.GetAllDependencies(item);
 		}
-	\section{创建}
-		通过编译管线BuildPipeline来创建AssetBundle文件，总共有三种方法,具体如下所示。
-		\subsection{BuildAssetBundle}
-			该API将编辑器中的任意类型的Assets打包成一个AssetBundle，适用于\textbf{对单个大规模场景的细分}。
+	}
+				\end{lstlisting}
+		\subsection{使用}
+			当\verb|AssetBundle|被成功加载后，调用该\verb|Assebbundle|对象的\verb|LoadAsset|、\verb|LoadAllAssets|或对应的异步版本即可加载资源，也就是实例化对象。\textbf{如果这个对象已经被加载过，Unity并不会重复加载}，还记得之前所说的映射表么，被加载过的资源就好比挂上了数字牌的钥匙，直接对地址解引用即可。
 			
+			\begin{table}
+				\centering
+				\caption{AssetBundle 加载方式对比}
+				\begin{tabular}{p{5cm}<{\centering}|p{3cm}<{\centering}|p{3cm}<{\centering}|p{3cm}<{\centering}}
+					\toprule
+						方式 & 不压缩 & LZ4 & LZMA\\
+					\midrule
+						WWW 加载 & & & \\
+						LoadFromCacheOrDownload 加载 & & & \\
+						LoadFromMemory (异步)加载 & & & \\
+						LoadFromFile(异步)加载 & & & \\
+						WebRequest 加载 & & & \\
+					\bottomrule
+				\end{tabular}
+			\end{table}
+		\subsection{卸载}
+		
+		\subsection{内存模型}
+			\begin{figure}[H]
+				\centering
+				\includegraphics[scale=0.7]{assetBundel}
+				\caption{AssetBundle 内存模型}
+		\end{figure}
+		
+	\section{资源打包}
+		Unity  以下资源会被打进包里。
+		\begin{itemize}
+			\item Assets下所有脚本
+			\item Assets下所有被引用到的所有文件
+			\item Resource下的所有文件
+			\item Plugins下的对应平台下的所有文件
+			\item StreamingAssets下的所有文件
+			\item AB包打成大包的时候会打进包体
+		\end{itemize}
+		
+		\subsection{降低包体准则}
 			\begin{itemize}
-				\item 名称：\textbf{BuildPipeline.BuildAssetBundle}
-				\item 参数-1：\textbf{mainAsset} : Object
-				\item 参数-2：\textbf{assets} : Object[]
-				\item 参数-3：\textbf{pathName} : string
-				\item 参数-4：\textbf{options} : BuildAssetBundleOptions
-				\item 参数-5：\textbf{targetPlatform} : BuildTarget = BuildTarget.WebPlayer
-				\item 返回值：\textbf{bool}
+				\renewcommand\labelitemi{\makebox[0pt][l]{$\square$}\raisebox{.15ex}{\hspace{0.1em}$\checkmark$}}
+				\item 打包Android 可以选择sdk版本不用太高
+				\renewcommand\labelitemi{\makebox[0pt][l]{$\square$}\hspace{1em}}
+				\item 在StreamingAssets删除不用的东西
+				\item 打包时查看log纪录，由此判断需要减少的文件类型
+				\item 优化，压缩网格和动画，减少文件大小
+				\item 优化，压缩图片，减少图片大小
+				\item 剔除教程：\url{https://blog.csdn.net/yxriyin/article/category/2879081}
+					\begin{itemize}
+						\item 分析打包的日志文件删除无用文件
+						\item 重制图集
+						\item 压缩png
+						\item 剔除重复资源
+					\end{itemize}
 			\end{itemize}
+		
+			针对于目前这种困境，不少的服务商推出了分包技术，而传统的分包是将资源切割，分段下载，进入游戏前进行二次下载；处理游戏包体瘦身时，往往采用删除代码，精简资源甚至作资源取舍的方式；在资源加载时，玩家必须要中断游戏，并在等待中进行缓慢的资源加载。
 			
-			\paragraph{BuildAssetBundleOptions}
-				\subparagraph{CompleteAssets}
-				
-				\subparagraph{CollectDependencies}
-				
-				\subparagraph{DisableWriteTypeTree}
-				
-				\subparagraph{DeterministricAssetBundle}
-				
-				\subparagraph{UncompressedAssetBundle}
-
-			\paragraph{AssetBundle之间的依赖}	
-				如果游戏中的某个资源被多个资源引用（例如游戏中的Material），单独创建AssetBundle会使多个AssetBundle都包含被引用的资源（这里跟flash编译选项中的链接选项有些像），从而导致资源变大，这里可以通过指定AssetBundle之间的依赖关系来减少最终AssetBundle文件的大小（把AssetBundle解耦）。
-				
-				具体方法是在创建AssetBundle之前调用BuildPipeline.PushAssetDependencies和BuildPipeline.PopAssetDependencies来创建AssetBundle之间的依赖关系，它的用法就是一个栈，后压入栈中的元素依赖栈内的元素。
-			
-		\subsection{BuildStreamedSceneAssetBundle}
-			该API将一个或多个场景中的资源及其所有依赖以流加载的方式打包成AssetBundle，一般适用于\textbf{多单个或多个场景进行集中打包}
-			
-			\begin{itemize}
-				\item 名称：\textbf{BuildPipeline.BuildStreamedSceneAssetBundle}
-				\item 参数-1：\textbf{level} : string[]
-				\item 参数-2：\textbf{locationPath} : string
-				\item 参数-3：\textbf{target} : BuildTarget
-				\item 返回值：\textbf{String}
-			\end{itemize}
-
+			官方解释对我们帮助甚少。所以，我们还需要一样利器，\verb|www.LoadFromCacheOrDownload|。我把包分成三段：
+				\begin{enumerate}
+					\item \textbf{首包}(里面包含了最最必要的资源)。
+					\item \textbf{首次进入包加载}(加载游戏运行必要的资源)。
+					\item \textbf{游戏运行中资源加载}(按每个游戏不同各自定义，以场景和单位个体为主要，在画面进入时加载资源，加载结束后再运行并显示)。
+				\end{enumerate}
 			
 			
-		\subsection{BuildAssetBundleExplicitAssetNames}
-			该API功能与a相同，但创建的时候可以为每个Object指定一个自定义的名字。（一般不太常用）
+		\subsection{针对删除无用资源的方案}
+			\url{https://www.cnblogs.com/alongu3d/p/3203292.html}
 			
-			\begin{itemize}
-				\item 名称：\textbf{BuildPipeline.BuildAssetBundleExplicitAssetNames}
-				\item 参数-1：\textbf{assets} : Object[]
-				\item 参数-2：\textbf{assetNames} : string[]
-				\item 参数-3：\textbf{pathName} : string
-				\item 参数-4：\textbf{options} : BuildAssetBundleOptions
-				\item 参数-5：\textbf{targetPlatform} : BuildTarget
-				\item 返回值：\textbf{bool}
-			\end{itemize}			
-		    
-	\section{使用}
-	
-	\section{卸载}
-	
-	\section{内存模型}
-	
-	\section{其他}
-
+			\url{https://github.com/handcircus/Unity-Resource-Checker}
+			
+			
+			
+			
+			
+	\section{参考}
+		\url{https://blog.csdn.net/swj524152416/article/details/54022282}
+		
+		\url{https://blog.csdn.net/foxyfred/article/details/73995577}
+		
+		\url{https://www.jianshu.com/p/2a7c4a48aaee}
+		
+		\url{http://www.360doc.com/content/17/1130/11/50169787_708566648.shtml}
+		
+		\url{https://docs.unity3d.com/Manual/ReducingFilesize.html}
 \chapter{Editor 扩展}
 	Unity编辑器扩展是扩展Unity菜单功能，也可以说是自定义Unity菜单，以此来便利我们能够更快捷地开发游戏。
 	\section{流程}
@@ -1338,144 +1573,69 @@
 		在Inspector 中查看是否存在父类脚本\verb|[SerializedField]| 的变量，这样方便对空间进行查找，并且添加新的\textbf{控制}			
 	
 	
-	
-\chapter{GPU 相关}
-	大部分时间在\textbf{知其然不知其所以然}。该部分将\textit{从GPU讲到游戏引擎再到游戏}逐层介绍，以打通任督2脉。 
+	\section{Android 与 Unity 互相调用}
+		参考:\url{https://www.cnblogs.com/Colored-Mr/p/5677209.html}
 
-	介绍绘画流程的video：\url{https://v.youku.com/v_show/id_XNjY3MTY4NjAw.html}
+		\subsection{Unity 调用 Android 非静态方法}
+			\begin{lstlisting}
+	// Unity 代码
+	AndroidJavaClass jc = new AndroidJavaClass ("com.unity3d.player.UnityPlayer");
+	AndroidJavaObject jo = jc.GetStatic<AndroidJavaObject> ("currentActivity");
+	jo.Call ("login","");	
 	
-	本节参考：\url{https://blog.csdn.net/admintan/article/details/53861781}
-	\section{最底层——GPU/硬件原理}
+	// Android 代码
+	public void login( String str ) {      
+      // 写上自己的操作
+	}
+			\end{lstlisting}
 		
-		\subsection{硬件基础}
-			\paragraph{ALU-Arithmetic Logic Unit 算数逻辑单元}\verb|->|
+			当我自己实际测试的时候发现，Android这边的\verb|login()|不一定要写在\textit{com.unity3d.palyer}包名下的UnityPalyer类下。
 			
-				整数算术运算（加、减，有时还包括乘和除，不过成本较高）、位逻辑运算（与、或、非、异或）、移位运算（将一个字向左或向右移位或浮动特定位，而无符号延伸），移位可被认为是乘以2或除以 2。 ALU可以说是计算机处理器的核心部件之一。
-
-			\paragraph{Cache-缓存SRAM}\verb|->|
+			你只需要把\verb|login()|写在你自己定义包名下的\textit{UnityPlayerActivity.java}中就可以了。当然了，该类肯定是继承Activity的。
 			
-				SRAM叫静态内存，“静态”指的是当我们将一笔数据写入SRAM后，除非重新写入新数据或关闭电源，否则写入的数据保持不变。 
-				
-				由于CPU的速度比内存和硬盘的速度要快得多，所以在存取数据时会使CPU等待，影响计算机的速度。SRAM的存取速度比其它内存和硬盘都要快，所以它被用作电脑的高速缓存(Cache)。
-		\subsection{CPU with GPU 异同}
+			你可以把鼠标放在unity代码的Call上查看方法可以填写的参数， 你会发现方法可以填写的参数可以是\verb|params object[]|。也就是可以传递多个参数，以数组的形式传递给\verb|Android|。
 		
-			参考：\url{https://www.jianshu.com/p/fae645d70e0e}
-		
-			\begin{figure}[H]
-				\centering
-				\includegraphics[scale=0.4]{CpuWithGpu}
-				\includegraphics[scale=0.4]{CpuWithGpu2}
-				\caption{CPU with GPU}
-			\end{figure}
-		
-			\paragraph{CPU}\verb|->|
-					量小但能力强
-					\begin{itemize}
-						\item 	ALU\textbf{部分会很强大}，可以在很少的时钟周期内完成算数计算。 对于一个64bit双精度的CPU来说 浮点加法和乘法只需要1-3个时钟周期。 							
-						\item 	\textbf{大的Cache}也将延时降低很多, 结合了现在的各种高级调节技术比如超线程、多核等技术CPU对于复杂逻辑的运算能力得到了极大提升。
-					\end{itemize}
-			
-			\paragraph{GPU}\verb|->|
-					量大但能力弱
-					\begin{itemize}
-						\item ALU的\textbf{数量会非常大}、\textbf{功能会更少}、\textbf{能耗很低}、\textbf{cache就会很小}，
-						这样带来的好处就是针对大吞吐量的需要简单计算的数据来说，处理效率就高了非常多。
-						
-						如果有很多线程需要访问同一个相同的数据，\textit{缓存会合并这些访问，然后再去访问DRAM}（因为需要访问的数据保存在DRAM中而不是Cache里面），\textbf{获取数据后Cache会转发这个数据给对应的线程，这个时候是数据转发的角色}。但是由于需要访问DRAM，自然会带来延时的问题。
-						
-						\item GPU的控制单元（左边黄色区域块）\textbf{可以把多个的访问合并}成少的访问。
-						
-						\item GPU的虽然有DRAM延时，\textbf{却有非常多的ALU和非常多线程}. 为了平衡内存延时的问题，我们可以中充分利用多的ALU的特性达到一个非常大的吞吐量的效果。尽可能多的分配多的线程.通常来看GPU ALU会有非常重的pipeline就是因为这样。
-					\end{itemize}
-			
-			\paragraph{结论}\verb|->|
-			
-				我们可以先得出一个简单结论:\color{blue}\textbf{对显卡来说}\color{black}-\textbf{更适合做高并行，高数据密度，简单逻辑的运算}。
+		\subsection{Unity 调用 Android 静态方法}
+			\begin{lstlisting}
+	// Unity 代码
+	public void PKBtnClick() {
+	    this.test("test1", "test2", "test3", 1, true);
+	}
 	
-		\newpage
-		\subsection{GPU 架构}
-			\paragraph{4D向量 和 4+1}\verb|->|
-							
-				3D物件的成像過程中，VS（Vertex Shader，\textbf{顶点着色引擎}）PS（Pixel Shader，\textbf{像素著色引擎} 或片段着色器）\textbf{最主要的作用就是运算坐标（XYZW）@（RGBA）}。
-				
-				此时数据的\textbf{基本单位是scalar（标量）}，1个单位的变量操作，为1D标量简称1D。 
-				而跟标量相對的就是vector（向量），\textbf{向量是由多個标量构成}。\textit{例如每個周期可执行4個向量平行运算，就称为4D向量架构}。若GPU指令发射口只有1个，卻可執行4個数据的平行运算，这就是SIMD(单指令多数据流)架构。	
-			
-			\paragraph{运算单元计算机制}\verb|->|
-				
-				以GPU的矩阵加法为例：
-				\begin{figure}[H]
-					\centering
-					\includegraphics[scale=0.84]{comU}
-					\caption{运算单元计算机制}
-				\end{figure}
-
-			
-			\paragraph{NVIDIA}\verb|->|
-			
-				NVIDIA架构如下
-				\begin{figure}[H]
-					\centering
-					\includegraphics[scale=0.5]{NVIDIA}
-					\caption{NVIDIA架构演示}
-				\end{figure}
-				
-				标注的是\verb|Stream Processing|(流处理器)数量， 
-				NVIDIA的流处理器每个都具有完整的ALU(可以理解为数学、逻辑等运算)。NVIDIA从G80以后采用全标量设计，\textbf{所有运算全都转为标量计算。但是这么做一旦遇到4D矢量运算时，就需要4次运算才能完成}，所以NVIDIA显卡的Shader频率几乎比核心频率高一倍，就是为了弥补这个缺点。 
-				NV的流处理器都具有完整的ALU功能，所以每个流处理器消耗的晶体管数量较多，成本较高。在加上现在的CUDA功能所以晶体管数量大幅多于AMD-ATI。
-				
-			\paragraph{AMD/ATI}\verb|->|
-				
-				AMD 架构如下
-				\begin{figure}[H]
-					\centering
-					\includegraphics[scale=0.5]{AMD}
-					\caption{AMD架构演示}
-				\end{figure}			
-			
-				标注的是Stream Processing Units(统一渲染单元)数量，也可以叫流处理器单元。 
-				AMD-ATI从RV670以后，流处理器是\textbf{5个固定的统一渲染单元为一组}，4D矢量+1D标量组合。\textbf{其中4个只能进行MADD(乘加)运算，1个可以进行超运算(函数等运算)}。\textit{因为是5个固定为一组，不能拆分，所以遇到纯标量运算时就会有4个SPU处于闲置状态而无法加入其它SP组合协助运算}。但换句话说如果分配得当让每个SPU都充分工作，那么AMD显卡的效率可是非常高的。\textbf{这也是玩家公认A卡驱动提升性能比N卡要高}，但也就是这个原因导致A卡驱动设计难度非常高，游戏想要为A卡优化的难度也一样很高。 
-				
-	\section{更高层-硬件流程}
-		\subsection{数据存储转换}
-		 	资源信息和指令信息由\textbf{硬盘}经过CPU调度 传输到\textbf{内存}中转，再传输进\textbf{显存}中备用.
-		 		\begin{figure}[H]
-		 			\centering
-		 			\includegraphics[scale=1]{transfer}
-		 			\includegraphics[scale=0.9]{transfer2}
-		 			\caption{资源转移}
-		 		\end{figure}
-		
-			由图中的典型的带宽可见 \textbf{GPU和显存之间的内部带宽} 要比单纯的\textbf{系统总线带宽}要高很多。
-			所以典型情况下\textbf{渲染资源和渲染指令都被加载进显存}, 所以GPU\textit{在渲染过程中} \textbf{只需向显存调度渲染指令},\underline{避免了和系统总线频繁IO}。
-				
-		\subsection{进入渲染预备状态}
-			\begin{figure}[H]
-				\centering
-				\includegraphics[scale=0.7]{PreShader}
-				\caption{渲染预备状态}
-			\end{figure}
-			
-			此时GPU的\textbf{显存越大则依靠CPU的加载额外渲染指令的需要就越少}，显存中的信息一般包括： 
-			显存和内存一样用于存储GPU处理过后的数据，在显存中有几种不同的储存区域，用于储存不同阶段需要的数据。 
-			\begin{enumerate}
-				\item \textbf{顶点缓冲区}：用于储存从内存中传递过来的顶点数据。
-				\item \textbf{索引缓冲区}：用于储存每个顶点的索引值，我们可以根据索引来使用相应的顶点 
-				\item \textbf{纹理缓冲区}：用于储存从内存中传递过来的纹理数据 
-				\item \textbf{深度缓冲区}：用于存储每个像素的深度信息
-				\item \textbf{模板缓冲区}：用于存储像素的模板值，且模板缓冲区域深度缓冲区公用一片内存。
-				\item \textbf{颜色缓冲区}：用于储存像素的颜色数据
-			\end{enumerate}	
-			
-	\section{软件}   
-		\begin{figure}[H]
-			\centering
-			\includegraphics[scale=0.59]{ShaderPro}
-			\includegraphics[scale=0.69]{ShaderProc}
-			\includegraphics[scale=0.59]{ShaderPro2}
-			\caption{Shader 流程(1,4)}
-		\end{figure}
+	public void test( params object[] args ){
+	    AndroidJavaClass jc = new AndroidJavaClass ("com.Indra.Dark.UnityPlayerActivity");
+	    jc.CallStatic ("login", args);
+	}
 	
+	// Android 代码
+	public static  void login( String str1, String str2, String str3, int a, boolean isShow ) {
+	    if( isShow ){            
+	        Log.e("test", str1 + "==" + str2 + "==" + str3 + "==" + a );
+	　　}
+	}
+			\end{lstlisting}
+			
+			unity代码中"\verb|com.Indra.Dark.UnityPlayerActivity|"为真实的包名.类名，即com.Indra.Dark是\textbf{包名}，UnityPlayerActivity为\textbf{类名}
+				
+		\subsection{Android 调用 Unity}
+			\begin{lstlisting}
+	UnityPlayer.UnitySendMessage("btnTest", "showLog", "a#b#c");
+			\end{lstlisting}
+			
+			UnitySendMessage的第一个参数是unity控件的名字，第二个参数是方法名，第三个参数是要传递的参数。而且只能传递一个参数。不过你可以把你要传递的参数做成一个字符串传递过去，unity那边做分割字符串就行了。例如上面就是把a,b,c用\#连接起来。unity那边用\#作为分隔符去分割就OK了。
+		
+			那么问题来了，脚本挂在的unity控件名字不好找怎么办。其实还有个办法轻松搞定，那就是在脚本的Start()方法中指定name为你方法传递的控件名字就ＯＫ了。
+			
+			如我上面的方法中要找的控件是btnTest，则：
+			\begin{lstlisting}
+	void Start () {
+	    this.name = "btnTest";
+	}
+	
+	void showLog（string str）{
+	　　Debug.Log（"str:" + str );
+	}
+			\end{lstlisting}
 	
 \chapter{书籍推荐}
 	

@@ -1,4 +1,4 @@
-This is XeTeX, Version 3.14159265-2.6-0.99992 (TeX Live 2015/W32TeX) (preloaded format=xelatex 2018.7.13)  29 AUG 2018 10:23
+This is XeTeX, Version 3.14159265-2.6-0.99992 (TeX Live 2015/W32TeX) (preloaded format=xelatex 2018.7.13)  12 SEP 2018 19:30
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -2272,7 +2272,7 @@ Underfull \vbox (badness 10000) has occurred while \output is active []
 
 ]
 [15] [16]
-Overfull \hbox (2.69698pt too wide) in paragraph at lines 251--252
+Overfull \hbox (2.69698pt too wide) in paragraph at lines 253--254
 [][]\EU1/lmtt/m/n/12 yield \EU1/SimSun(0)/m/n/12 关 键 词 \EU1/SimSun(0)/bx/n/12 用
  来 声 明 序 列 中 的 下 一 个 值 或 者 是 一 个 无 意 义 的 值\EU1/SimSun(0)/m/n/12 ，|  如 果 使 用[]\E
 U1/lmtt/m/n/12 yield return x\EU1/lmr/m/n/12 (x
@@ -2284,15 +2284,18 @@ U1/lmtt/m/n/12 yield return x\EU1/lmr/m/n/12 (x
 
 ] [20]
 第三章
+File: figure/class.png Graphic file (type QTm)
+<use  "figure/class.png" > [21
 
-Overfull \hbox (14.21971pt too wide) in paragraph at lines 333--334
+]
+Overfull \hbox (14.21971pt too wide) in paragraph at lines 342--343
  []\EU1/SimSun(0)/bx/n/12 销 毁[] []\EU1/lmtt/m/n/12 Destroy(GameObject xx)- \EU1
 /FangSong(0)/m/n/12 立即销毁 \EU1/SimSun(0)/m/n/12 或 []\EU1/lmtt/m/n/12 Destroy(Gam
 eObject xx, Time time)- \EU1/FangSong(0)/m/n/12 几秒后销毁 
  []
 
 
-Overfull \hbox (200.98923pt too wide) in paragraph at lines 336--337
+Overfull \hbox (200.98923pt too wide) in paragraph at lines 345--346
  []\EU1/SimSun(0)/bx/n/12 可 见 否[] \EU1/SimSun(0)/m/n/12 通 过 设 置 该 参 数 调 整 该 实 体
  是 否 可 以 在 游 戏 中 显 示，|  具 体 设 置 方 法 为[]\EU1/lmtt/m/n/12 gameObject.SetActive(tr
 ue) \EU1/FangSong(0)/m/n/12 为可以显示，| \EU1/lmtt/m/n/12 false \EU1/FangSong(0)/m/n
@@ -2300,43 +2303,44 @@ ue) \EU1/FangSong(0)/m/n/12 为可以显示，| \EU1/lmtt/m/n/12 false \EU1/Fang
  []
 
 
-Overfull \hbox (226.94643pt too wide) in paragraph at lines 346--347
+Overfull \hbox (136.30643pt too wide) in paragraph at lines 357--358
 [][]\EU1/lmtt/m/n/12 gameObjVar1.transform.Find("ImageItemIcon/TextMonthCardLef
-tDays").\label{GetComponen\left( }t<Text>().text = "xx"; 
+tDays").GetComponent<Text>().text = "xx"; 
  []
 
-[21
-
-]
+[22]
 File: figure/Prefab-1.png Graphic file (type QTm)
- <use  "figure/Prefab-1.png" > [22]
+ <use  "figure/Prefab-1.png" >
 File: figure/Prefab-2.png Graphic file (type QTm)
  <use  "figure/Prefab-2.png" >
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+ [23]
 File: figure/Prefab-3.png Graphic file (type QTm)
 
 <use  "figure/Prefab-3.png" >
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
- [23]
-[24] [25] [26
-
-]
+ [24]
+[25] [26]
 第四章
-[27] [28]
+[27
+
+] [28]
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
  [29]
 [30]
 第五章
 
-Overfull \hbox (32.21014pt too wide) in paragraph at lines 535--537
+Overfull \hbox (32.21014pt too wide) in paragraph at lines 550--552
 [][]\EU1/lmtt/m/n/12 KeyCode.xx \EU1/SimSun(0)/m/n/12 包 括 了 键 盘 所 有 的 按 键，|  常 
 用 的 \EU1/lmr/m/n/12 AWSD \EU1/SimSun(0)/m/n/12 如 下，|  鼠 标 同 \EU1/lmr/m/n/12 (In
 put.GetMouseButtonDown(0)
  []
 
 
-Overfull \hbox (8.60123pt too wide) in paragraph at lines 547--550
+Overfull \hbox (8.60123pt too wide) in paragraph at lines 562--565
 [][]\EU1/lmtt/m/n/12 Mouse X \EU1/SimSun(0)/m/n/12 鼠 标 沿 屏 幕 \EU1/lmr/m/n/12 X 
 \EU1/SimSun(0)/m/n/12 移 动 时 触 发 []\EU1/lmtt/m/n/12 Mouse Y \EU1/SimSun(0)/m/n/1
 2 鼠 标 沿 屏 幕 \EU1/lmr/m/n/12 Y \EU1/SimSun(0)/m/n/12 移 动 时 触 发 []\EU1/lmtt/m/n/1
@@ -2366,7 +2370,7 @@ Overfull \hbox (8.60123pt too wide) in paragraph at lines 547--550
 ]
 第十章
 
-Overfull \hbox (218.66357pt too wide) in paragraph at lines 652--653
+Overfull \hbox (218.66357pt too wide) in paragraph at lines 667--668
 []\EU1/SimSun(0)/m/n/12 如 果 建 立 工 程 时 选 择 的 是 \EU1/lmr/m/n/12 3D \EU1/SimSun(0)
 /m/n/12 工 程，|  那 么 导 入 的 所 有 图 片 需 要 手 动 的 设 置 为 \EU1/lmr/m/it/12 Spirit\EU1/Si
 mSun(0)/m/it/12 。| []\EU1/lmtt/m/n/12 Inspector -> Texture Type -> Spirit(2D an
@@ -2424,7 +2428,8 @@ Underfull \vbox (badness 10000) has occurred while \output is active []
 ]
 第十二章
 LaTeX Font Info:    Font shape `EU1/lmtt/bx/n' in size <12> not available
-(Font)              Font shape `EU1/lmtt/b/n' tried instead on input line 993.
+(Font)              Font shape `EU1/lmtt/b/n' tried instead on input line 1008.
+
 [55] [56
 
 ]
@@ -2433,68 +2438,69 @@ LaTeX Font Info:    Font shape `EU1/lmtt/bx/n' in size <12> not available
 
 ]
 第十四章
-File: figure/ShaderArc.jpg Graphic file (type QTm)
-<use  "figure/ShaderArc.jpg" >
-Overfull \hbox (12.88686pt too wide) in paragraph at lines 1016--1017
- [][] 
- []
-
-File: figure/arch.png Graphic file (type QTm)
-<use  "figure/arch.png" >
+File: figure/guid.png Graphic file (type QTm)
+<use  "figure/guid.png" >
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
  [59]
-[60] [61]
-Overfull \hbox (9.63928pt too wide) in paragraph at lines 1089--1090
-[][]\EU1/lmtt/m/n/12 UNITY_MATRIX_IT_MV\EU1/SimSun(0)/m/n/12 ：|  逆 转 置 模 型 \EU1
-/lmr/m/n/12 -> \EU1/SimSun(0)/m/n/12 视 矩 阵\EU1/lmr/m/n/12 , \EU1/SimSun(0)/m/n/
-12 用 于 将 法 线 从[]\EU1/lmtt/m/n/12 ObjectSpace \EU1/SimSun(0)/m/n/12 旋 转 到[]\EU1/
-lmtt/m/n/12 WorldSpace\EU1/SimSun(0)/m/n/12 。|
- []
+File: figure/guidRef.png Graphic file (type QTm)
+
+<use  "figure/guidRef.png" >
+File: figure/localId.png Graphic file (type QTm)
+ <use  "figure/localId.png" >
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+ [60]
+Overfull \vbox (10.1123pt too high) has occurred while \output is active []
 
 
-Underfull \vbox (badness 1558) has occurred while \output is active []
+[61]
+Underfull \vbox (badness 10000) has occurred while \output is active []
 
  [62]
-File: figure/Texture.png Graphic file (type QTm)
+[63] [64] [65] [66] [67]
+File: figure/AssetBundle.png Graphic file (type QTm)
+ <use  "figure/AssetBundle.png" > [68]
 
-<use  "figure/Texture.png" >
-Overfull \hbox (8.51878pt too wide) in paragraph at lines 1109--1110
+LaTeX Font Warning: Font shape `EU1/SimSun(0)/bx/it' undefined
+(Font)              using `EU1/SimSun(0)/bx/n' instead on input line 1308.
+
+[69]
+File: figure/AssetBuild.jpg Graphic file (type QTm)
+ <use  "figure/AssetBuild.jpg" > [70] [71]
+Overfull \hbox (1.14777pt too wide) in paragraph at lines 1386--1387
+[]\EU1/SimSun(0)/bx/n/12 当 调 用 上 一 步 生 成 的 \EU1/lmr/bx/n/12 AssetBundle \EU1/Si
+mSun(0)/bx/n/12 对 象 读 取 具 体 资 源 时 |\EU1/SimSun(0)/m/n/12 （\EU1/lmr/m/it/12 Load
+Asset, LoadAssetAsync, Load-
+ []
+
+[72]
+Overfull \hbox (6.11601pt too wide) in paragraph at lines 1423--1423
+ []|\EU1/lmr/m/n/12 LoadFromCacheOrDownload 
+ []
+
+File: figure/assetBundel.png Graphic file (type QTm)
+<use  "figure/assetBundel.png" >
+Overfull \hbox (24.02344pt too wide) in paragraph at lines 1435--1436
  [][] 
  []
 
-
-Overfull \hbox (5.43163pt too wide) in paragraph at lines 1117--1118
-[]\EU1/SimSun(0)/bx/n/12 贴 图 \EU1/SimSun(0)/m/n/12 就 是 其 中 \EU1/SimSun(0)/bx/n/
-12 数 据 的 一 部 分\EU1/SimSun(0)/m/n/12 ，|  根 据 用 途 不 同，|  贴 图 也 会 被 分 成 不 同 的 类 型，
-|  比 方 说 []\EU1/lmtt/m/n/12 Diffuse Map\EU1/SimSun(0)/m/n/12 ，|
- []
-
-[63]
-File: figure/normalMap.jpg Graphic file (type QTm)
- <use  "figure/normalMap.jpg" > [64]
-File: figure/Specular.png Graphic file (type QTm)
- <use  "figure/Specular.png" > [65]
-[66]
+[73] [74] [75] [76]
 第十五章
-[67
 
-] [68] [69] [70
-
-]
-第十六章
-
-Overfull \hbox (17.06772pt too wide) in paragraph at lines 1269--1270
+Overfull \hbox (17.06772pt too wide) in paragraph at lines 1504--1505
 []\EU1/SimSun(0)/bx/n/12 写 静 态 方 法 \EU1/SimSun(0)/m/it/12 既 菜 单 的 功 能\EU1/SimSu
 n(0)/m/n/12 ，|  类 似 于[]\EU1/lmtt/m/n/12 [SerilizedFiled] \EU1/SimSun(0)/m/n/12 
 下 的 东 西\EU1/lmr/m/n/12 , \EU1/SimSun(0)/m/n/12 与[]\EU1/lmtt/m/n/12 [Menuitem("N
 etease/xx")]
  []
 
-[71] [72]
-第十七章
+[77
 
-Overfull \hbox (23.97632pt too wide) in paragraph at lines 1320--1321
+] [78]
+第十六章
+
+Overfull \hbox (23.97632pt too wide) in paragraph at lines 1555--1556
 []\EU1/SimSun(0)/m/n/12 在 \EU1/lmr/m/n/12 unity \EU1/SimSun(0)/m/n/12 中 的[]\EU1
 /lmtt/m/n/12 edit \EU1/SimSun(0)/m/n/12 选 项 下 的[]\EU1/lmtt/m/n/12 preferences\E
 U1/lmr/m/n/12 , \EU1/SimSun(0)/m/n/12 并 选 中[]\EU1/lmtt/m/n/12 External Tools \E
@@ -2503,90 +2509,48 @@ EU1/lmtt/m/n/12 Android SDK
  []
 
 
-Overfull \hbox (35.10811pt too wide) in paragraph at lines 1328--1329
+Overfull \hbox (35.10811pt too wide) in paragraph at lines 1563--1564
 [][]\EU1/lmtt/m/n/12 Other Settings -> Identification \EU1/lmr/m/n/12 : \EU1/Si
 mSun(0)/m/n/12 修 改 为[]\EU1/lmtt/m/n/12 com.netease(Or Other).TestName(Or Other)
  
  []
 
-[73
+[79
 
-] [74
+] [80
+
+]
+第十七章
+[81]
+Overfull \hbox (14.48503pt too wide) in paragraph at lines 1618--1619
+[]\EU1/lmr/m/n/12 unity \EU1/SimSun(0)/m/n/12 代 码 中\EU1/lmr/m/n/12 ”[]\EU1/lmtt
+/m/n/12 com.Indra.Dark.UnityPlayerActivity\EU1/lmr/m/n/12 ” \EU1/SimSun(0)/m/n/
+12 为 真 实 的 包 名\EU1/lmr/m/n/12 . \EU1/SimSun(0)/m/n/12 类 名，|  即 \EU1/lmr/m/n/12 
+com.Indra.Dark
+ []
+
+[82] [83] [84
 
 ]
 第十八章
-[75] [76
-
-]
-第十九章
-File: figure/CpuWithGpu.png Graphic file (type QTm)
-<use  "figure/CpuWithGpu.png" >
-File: figure/CpuWithGpu2.png Graphic file (type QTm)
- <use  "figure/CpuWithGpu2.png" > [77] [78]
-[79]
-File: figure/comU.jpg Graphic file (type QTm)
- <use  "figure/comU.jpg" >
-File: figure/NVIDIA.jpg Graphic file (type QTm)
- <use  "figure/NVIDIA.jpg" > [80]
-Overfull \hbox (9.38373pt too wide) in paragraph at lines 1423--1426
-[]\EU1/SimSun(0)/m/n/12 标 注 的 是[]\EU1/lmtt/m/n/12 Stream Processing\EU1/lmr/m/n
-/12 (\EU1/SimSun(0)/m/n/12 流 处 理 器\EU1/lmr/m/n/12 ) \EU1/SimSun(0)/m/n/12 数 量，|
- \EU1/lmr/m/n/12 NVIDIA \EU1/SimSun(0)/m/n/12 的 流 处 理 器 每 个 都 具 有 完 整 的 \EU1/lm
-r/m/n/12 ALU(\EU1/SimSun(0)/m/n/12 可
- []
-
-File: figure/AMD.jpg Graphic file (type QTm)
-<use  "figure/AMD.jpg" >
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
- [81]
-File: figure/transfer.jpg Graphic file (type QTm)
-
-<use  "figure/transfer.jpg" >
-File: figure/transfer2.jpg Graphic file (type QTm)
- <use  "figure/transfer2.jpg" >
-Overfull \hbox (51.04199pt too wide) in paragraph at lines 1444--1446
- [][] 
- []
-
-
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
- [82]
-Underfull \vbox (badness 3209) has occurred while \output is active []
-
- [83]
-File: figure/PreShader.jpg Graphic file (type QTm)
-
-<use  "figure/PreShader.jpg" >
-File: figure/ShaderPro.jpg Graphic file (type QTm)
- <use  "figure/ShaderPro.jpg" >
-File: figure/ShaderProc.png Graphic file (type QTm)
-
-<use  "figure/ShaderProc.png" >
-File: figure/ShaderPro2.jpg Graphic file (type QTm)
- <use  "figure/ShaderPro2.jpg" >
-Underfull \vbox (badness 6001) has occurred while \output is active []
-
- [84]
-[85] [86
-
-]
-第二十章
-[87]
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 1488.
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 1488.
+[85]
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 1648.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 1648.
  (./U3D.aux)
-Package atveryend Info: Empty hook `AtVeryEndDocument' on input line 1488.
-Package atveryend Info: Empty hook `AtEndAfterFileList' on input line 1488.
+Package atveryend Info: Empty hook `AtVeryEndDocument' on input line 1648.
+Package atveryend Info: Empty hook `AtEndAfterFileList' on input line 1648.
+
+
+LaTeX Font Warning: Some font shapes were not available, defaults substituted.
+
  ) 
 Here is how much of TeX's memory you used:
- 44818 strings out of 493706
- 935499 string characters out of 6148913
- 1008236 words of memory out of 5000000
- 47471 multiletter control sequences out of 15000+600000
- 11662 words of font info for 84 fonts, out of 8000000 for 9000
+ 45021 strings out of 493706
+ 939893 string characters out of 6148913
+ 1023236 words of memory out of 5000000
+ 47677 multiletter control sequences out of 15000+600000
+ 12323 words of font info for 89 fonts, out of 8000000 for 9000
  1328 hyphenation exceptions out of 8191
  63i,12n,75p,10411b,1789s stack positions out of 5000i,500n,10000p,200000b,80000s
 
-Output written on U3D.pdf (87 pages).
+Output written on U3D.pdf (85 pages).
