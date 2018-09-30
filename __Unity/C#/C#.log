@@ -1,9 +1,9 @@
-This is XeTeX, Version 3.14159265-2.6-0.99992 (TeX Live 2015/W32TeX) (preloaded format=xelatex 2018.7.13)  28 SEP 2018 14:40
+This is XeTeX, Version 3.14159265-2.6-0.99992 (TeX Live 2015/W32TeX) (preloaded format=xelatex 2018.7.13)  19 SEP 2018 15:02
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
-**./GraphicsTheory.tex
-(./GraphicsTheory.tex
+**./C#.tex
+(./C#.tex
 LaTeX2e <2015/01/01>
 Babel <3.9l> and hyphenation patterns for 79 languages loaded.
 (c:/texlive/2015/texmf-dist/tex/latex/ctex/ctexbook.cls
@@ -1713,28 +1713,222 @@ tly
 )
 \Hy@SectionHShift=\skip67
 )
+(c:/texlive/2015/texmf-dist/tex/latex/pgf/frontendlayer/tikz.sty
+(c:/texlive/2015/texmf-dist/tex/latex/pgf/utilities/pgffor.sty
+(c:/texlive/2015/texmf-dist/tex/latex/pgf/utilities/pgfkeys.sty
+(c:/texlive/2015/texmf-dist/tex/generic/pgf/utilities/pgfkeys.code.tex))
+(c:/texlive/2015/texmf-dist/tex/latex/pgf/math/pgfmath.sty
+(c:/texlive/2015/texmf-dist/tex/generic/pgf/math/pgfmath.code.tex))
+(c:/texlive/2015/texmf-dist/tex/generic/pgf/utilities/pgffor.code.tex
+Package: pgffor 2013/12/13 v3.0.0 (rcs-revision 1.25)
+
+(c:/texlive/2015/texmf-dist/tex/generic/pgf/math/pgfmath.code.tex)
+\pgffor@iter=\dimen278
+\pgffor@skip=\dimen279
+\pgffor@stack=\toks44
+\pgffor@toks=\toks45
+))
+(c:/texlive/2015/texmf-dist/tex/generic/pgf/frontendlayer/tikz/tikz.code.tex
+Package: tikz 2013/12/13 v3.0.0 (rcs-revision 1.142)
+
+(c:/texlive/2015/texmf-dist/tex/generic/pgf/libraries/pgflibraryplothandlers.co
+de.tex
+File: pgflibraryplothandlers.code.tex 2013/08/31 v3.0.0 (rcs-revision 1.20)
+\pgf@plot@mark@count=\count195
+\pgfplotmarksize=\dimen280
+)
+\tikz@lastx=\dimen281
+\tikz@lasty=\dimen282
+\tikz@lastxsaved=\dimen283
+\tikz@lastysaved=\dimen284
+\tikzleveldistance=\dimen285
+\tikzsiblingdistance=\dimen286
+\tikz@figbox=\box76
+\tikz@figbox@bg=\box77
+\tikz@tempbox=\box78
+\tikz@tempbox@bg=\box79
+\tikztreelevel=\count196
+\tikznumberofchildren=\count197
+\tikznumberofcurrentchild=\count198
+\tikz@fig@count=\count199
+
+(c:/texlive/2015/texmf-dist/tex/generic/pgf/modules/pgfmodulematrix.code.tex
+File: pgfmodulematrix.code.tex 2013/09/17  (rcs-revision 1.8)
+\pgfmatrixcurrentrow=\count200
+\pgfmatrixcurrentcolumn=\count201
+\pgf@matrix@numberofcolumns=\count202
+)
+\tikz@expandcount=\count203
+
+(c:/texlive/2015/texmf-dist/tex/generic/pgf/frontendlayer/tikz/libraries/tikzli
+brarytopaths.code.tex
+File: tikzlibrarytopaths.code.tex 2008/06/17 v3.0.0 (rcs-revision 1.2)
+)))
 (c:/texlive/2015/texmf-dist/tex/generic/dirtree/dirtree.sty
 Package: dirtree 2012/12/11 v0.32 package wrapper for dirtree
 
 (c:/texlive/2015/texmf-dist/tex/generic/dirtree/dirtree.tex
 `dirtree' v0.32, 2012/12/11 (jcc)
-\DT@offset=\dimen278
-\DT@width=\dimen279
-\DT@sep=\dimen280
-\DT@all=\dimen281
-\DT@rulewidth=\dimen282
-\DT@dotwidth=\dimen283
-\DTbaselineskip=\dimen284
-\DT@counti=\count195
-\DT@countii=\count196
-\DT@countiii=\count197
-\DT@countiv=\count198
-\DT@indent=\dimen285
-\DT@parskip=\dimen286
-\DT@baselineskip=\dimen287
+\DT@offset=\dimen287
+\DT@width=\dimen288
+\DT@sep=\dimen289
+\DT@all=\dimen290
+\DT@rulewidth=\dimen291
+\DT@dotwidth=\dimen292
+\DTbaselineskip=\dimen293
+\DT@counti=\count204
+\DT@countii=\count205
+\DT@countiii=\count206
+\DT@countiv=\count207
+\DT@indent=\dimen294
+\DT@parskip=\dimen295
+\DT@baselineskip=\dimen296
 )
 File: dirtree.tex 2012/12/11 v0.32 `dirtree' (jcc)
 )
+(c:/texlive/2015/texmf-dist/tex/generic/pgf/frontendlayer/tikz/libraries/tikzli
+braryintersections.code.tex
+(c:/texlive/2015/texmf-dist/tex/generic/pgf/libraries/pgflibraryintersections.c
+ode.tex
+\pgf@intersect@solutions=\count208
+))
+(c:/texlive/2015/texmf-dist/tex/generic/pgf/frontendlayer/tikz/libraries/tikzli
+brarypositioning.code.tex
+File: tikzlibrarypositioning.code.tex 2008/10/06 v3.0.0 (rcs-revision 1.7)
+)
+(c:/texlive/2015/texmf-dist/tex/generic/pgf/frontendlayer/tikz/libraries/tikzli
+brarypetri.code.tex
+File: tikzlibrarypetri.code.tex 2013/07/17 v3.0.0 (rcs-revision 1.3)
+)
+(c:/texlive/2015/texmf-dist/tex/generic/pgf/frontendlayer/tikz/libraries/tikzli
+brarybackgrounds.code.tex
+File: tikzlibrarybackgrounds.code.tex 2013/07/18 v3.0.0 (rcs-revision 1.3)
+\pgf@layerbox@background=\box80
+\pgf@layerboxsaved@background=\box81
+)
+(c:/texlive/2015/texmf-dist/tex/generic/pgf/frontendlayer/tikz/libraries/tikzli
+braryfit.code.tex
+File: tikzlibraryfit.code.tex 2013/07/12 v3.0.0 (rcs-revision 1.5)
+)
+(c:/texlive/2015/texmf-dist/tex/generic/pgf/frontendlayer/tikz/libraries/tikzli
+brarydecorations.pathmorphing.code.tex
+(c:/texlive/2015/texmf-dist/tex/generic/pgf/frontendlayer/tikz/libraries/tikzli
+brarydecorations.code.tex
+(c:/texlive/2015/texmf-dist/tex/generic/pgf/modules/pgfmoduledecorations.code.t
+ex
+\pgfdecoratedcompleteddistance=\dimen297
+\pgfdecoratedremainingdistance=\dimen298
+\pgfdecoratedinputsegmentcompleteddistance=\dimen299
+\pgfdecoratedinputsegmentremainingdistance=\dimen300
+\pgf@decorate@distancetomove=\dimen301
+\pgf@decorate@repeatstate=\count209
+\pgfdecorationsegmentamplitude=\dimen302
+\pgfdecorationsegmentlength=\dimen303
+)
+\tikz@lib@dec@box=\box82
+)
+(c:/texlive/2015/texmf-dist/tex/generic/pgf/libraries/decorations/pgflibrarydec
+orations.pathmorphing.code.tex))
+(c:/texlive/2015/texmf-dist/tex/generic/pgf/frontendlayer/tikz/libraries/tikzli
+braryarrows.code.tex
+File: tikzlibraryarrows.code.tex 2008/01/09 v3.0.0 (rcs-revision 1.1)
+
+(c:/texlive/2015/texmf-dist/tex/generic/pgf/libraries/pgflibraryarrows.code.tex
+File: pgflibraryarrows.code.tex 2013/09/23 v3.0.0 (rcs-revision 1.16)
+\arrowsize=\dimen304
+))
+(c:/texlive/2015/texmf-dist/tex/generic/pgf/libraries/pgflibraryarrows.meta.cod
+e.tex
+File: pgflibraryarrows.meta.code.tex 2013/12/13 v3.0.0 (rcs-revision 1.12)
+\pgfarrowinset=\dimen305
+\pgfarrowlength=\dimen306
+\pgfarrowwidth=\dimen307
+\pgfarrowlinewidth=\dimen308
+)
+(c:/texlive/2015/texmf-dist/tex/generic/pgf/frontendlayer/tikz/libraries/tikzli
+brarybending.code.tex
+File: tikzlibrarybending.code.tex 2013/09/17 v3.0.0 (rcs-revision 1.2)
+
+(c:/texlive/2015/texmf-dist/tex/generic/pgf/modules/pgfmodulebending.code.tex
+File: pgfmodulebending.code.tex 2013/09/30 v3.0.0 (rcs-revision 1.18)
+
+(c:/texlive/2015/texmf-dist/tex/generic/pgf/modules/pgfmodulenonlineartransform
+ations.code.tex
+File: pgfmodulenonlineartransformations.code.tex 2013/10/09 v3.0.0 (rcs-revisio
+n 1.4)
+\pgftransformnonlinearflatness=\dimen309
+)
+(c:/texlive/2015/texmf-dist/tex/generic/pgf/libraries/pgflibrarycurvilinear.cod
+e.tex
+File: pgflibrarycurvilinear.code.tex 2013/10/07 v3.0.0 (rcs-revision 1.3)
+\pgf@curvilinear@time@a=\dimen310
+\pgf@curvilinear@length@a=\dimen311
+\pgf@curvilinear@length@b=\dimen312
+\pgf@curvilinear@length@c=\dimen313
+\pgf@curvilinear@length@d=\dimen314
+)
+\pgf@arrows@the@rigidity=\dimen315
+))
+(c:/texlive/2015/texmf-dist/tex/generic/pgf/frontendlayer/tikz/libraries/tikzli
+brarycalc.code.tex
+File: tikzlibrarycalc.code.tex 2013/07/15 v3.0.0 (rcs-revision 1.9)
+)
+(c:/texlive/2015/texmf-dist/tex/generic/pgf/frontendlayer/tikz/libraries/tikzli
+brarythrough.code.tex
+File: tikzlibrarythrough.code.tex 2008/02/03 v3.0.0 (rcs-revision 1.1)
+)
+(c:/texlive/2015/texmf-dist/tex/generic/pgf/frontendlayer/tikz/libraries/tikzli
+braryshapes.geometric.code.tex
+File: tikzlibraryshapes.geometric.code.tex 2008/01/09 v3.0.0 (rcs-revision 1.1)
+
+
+(c:/texlive/2015/texmf-dist/tex/generic/pgf/libraries/shapes/pgflibraryshapes.g
+eometric.code.tex
+File: pgflibraryshapes.geometric.code.tex 2008/06/26 v3.0.0 (rcs-revision 1.1)
+))
+(c:/texlive/2015/texmf-dist/tex/generic/pgf/frontendlayer/tikz/libraries/tikzli
+braryquotes.code.tex
+File: tikzlibraryquotes.code.tex 2013/08/28 v3.0.0 (rcs-revision 1.3)
+)
+(c:/texlive/2015/texmf-dist/tex/generic/pgf/frontendlayer/tikz/libraries/tikzli
+brarymatrix.code.tex
+File: tikzlibrarymatrix.code.tex 2013/07/12 v3.0.0 (rcs-revision 1.4)
+)
+(c:/texlive/2015/texmf-dist/tex/generic/pgf/frontendlayer/tikz/libraries/tikzli
+brarytrees.code.tex
+File: tikzlibrarytrees.code.tex 2008/02/24 v3.0.0 (rcs-revision 1.2)
+)
+(c:/texlive/2015/texmf-dist/tex/generic/pgf/frontendlayer/tikz/libraries/tikzli
+braryshapes.symbols.code.tex
+File: tikzlibraryshapes.symbols.code.tex 2008/01/09 v3.0.0 (rcs-revision 1.1)
+
+(c:/texlive/2015/texmf-dist/tex/generic/pgf/libraries/shapes/pgflibraryshapes.s
+ymbols.code.tex
+File: pgflibraryshapes.symbols.code.tex 2013/09/11 v3.0.0 (rcs-revision 1.6)
+))
+(c:/texlive/2015/texmf-dist/tex/generic/pgf/frontendlayer/tikz/libraries/graphs
+/tikzlibrarygraphs.code.tex
+File: tikzlibrarygraphs.code.tex 2013/10/10 v3.0.0 (rcs-revision 1.43)
+\tikz@qnode@count=\count210
+)
+(c:/texlive/2015/texmf-dist/tex/generic/pgf/frontendlayer/tikz/libraries/tikzli
+brarymath.code.tex
+\tikz@math@for@depth=\count211
+\tikz@math@dimen=\dimen316
+\tikz@math@toks=\toks46
+)
+(c:/texlive/2015/texmf-dist/tex/generic/pgf/frontendlayer/tikz/libraries/tikzli
+brarypatterns.code.tex
+File: tikzlibrarypatterns.code.tex 2008/01/15 v3.0.0 (rcs-revision 1.2)
+
+(c:/texlive/2015/texmf-dist/tex/generic/pgf/libraries/pgflibrarypatterns.code.t
+ex
+File: pgflibrarypatterns.code.tex 2008/03/03 v3.0.0 (rcs-revision 1.13)
+))
+(c:/texlive/2015/texmf-dist/tex/latex/pgf/frontendlayer/libraries/tikzlibraryex
+ternal.code.tex
+(c:/texlive/2015/texmf-dist/tex/generic/pgf/frontendlayer/tikz/libraries/tikzex
+ternalshared.code.tex))
 *************************************************
 * ctex warning: "deprecated-command"
 * 
@@ -1752,41 +1946,41 @@ File: lstmisc.sty 2014/09/06 1.5e (Carsten Heinz)
 )
 (c:/texlive/2015/texmf-dist/tex/xelatex/xecjk/xeCJK-listings.sty
 Package: xeCJK-listings 2015/05/15 v3.3.2 xeCJK patch file for listings
-\l__xeCJK_listings_max_char_int=\count199
-\l__xeCJK_listings_flag_int=\count200
-)
-(./GraphicsTheory.aux)
-\openout1 = `GraphicsTheory.aux'.
+\l__xeCJK_listings_max_char_int=\count212
+\l__xeCJK_listings_flag_int=\count213
+) (./C#.aux)
+\openout1 = `C#.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 90.
-LaTeX Font Info:    ... okay on input line 90.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 90.
-LaTeX Font Info:    ... okay on input line 90.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 90.
-LaTeX Font Info:    ... okay on input line 90.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 90.
-LaTeX Font Info:    ... okay on input line 90.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 90.
-LaTeX Font Info:    ... okay on input line 90.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 90.
-LaTeX Font Info:    ... okay on input line 90.
-LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 90.
-LaTeX Font Info:    ... okay on input line 90.
-LaTeX Font Info:    Checking defaults for EU1/lmr/m/n on input line 90.
-LaTeX Font Info:    ... okay on input line 90.
-LaTeX Font Info:    Checking defaults for T3/cmr/m/n on input line 90.
-LaTeX Font Info:    Try loading font information for T3+cmr on input line 90.
- (c:/texlive/2015/texmf-dist/tex/latex/tipa/t3cmr.fd
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 108.
+LaTeX Font Info:    ... okay on input line 108.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 108.
+LaTeX Font Info:    ... okay on input line 108.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 108.
+LaTeX Font Info:    ... okay on input line 108.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 108.
+LaTeX Font Info:    ... okay on input line 108.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 108.
+LaTeX Font Info:    ... okay on input line 108.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 108.
+LaTeX Font Info:    ... okay on input line 108.
+LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 108.
+LaTeX Font Info:    ... okay on input line 108.
+LaTeX Font Info:    Checking defaults for EU1/lmr/m/n on input line 108.
+LaTeX Font Info:    ... okay on input line 108.
+LaTeX Font Info:    Checking defaults for T3/cmr/m/n on input line 108.
+LaTeX Font Info:    Try loading font information for T3+cmr on input line 108.
+
+(c:/texlive/2015/texmf-dist/tex/latex/tipa/t3cmr.fd
 File: t3cmr.fd 2001/12/31 TIPA font definitions
 )
-LaTeX Font Info:    ... okay on input line 90.
-LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 90.
-LaTeX Font Info:    ... okay on input line 90.
-LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 90.
-LaTeX Font Info:    ... okay on input line 90.
+LaTeX Font Info:    ... okay on input line 108.
+LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 108.
+LaTeX Font Info:    ... okay on input line 108.
+LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 108.
+LaTeX Font Info:    ... okay on input line 108.
 
 ABD: EverySelectfont initializing macros
-LaTeX Info: Redefining \selectfont on input line 90.
+LaTeX Info: Redefining \selectfont on input line 108.
 .................................................
 . fontspec info: "setup-math"
 . 
@@ -1794,56 +1988,57 @@ LaTeX Info: Redefining \selectfont on input line 90.
 .................................................
 \symlegacymaths=\mathgroup6
 LaTeX Font Info:    Overwriting symbol font `legacymaths' in version `bold'
-(Font)                  OT1/cmr/m/n --> OT1/cmr/bx/n on input line 90.
-LaTeX Font Info:    Redeclaring math accent \acute on input line 90.
-LaTeX Font Info:    Redeclaring math accent \grave on input line 90.
-LaTeX Font Info:    Redeclaring math accent \ddot on input line 90.
-LaTeX Font Info:    Redeclaring math accent \tilde on input line 90.
-LaTeX Font Info:    Redeclaring math accent \bar on input line 90.
-LaTeX Font Info:    Redeclaring math accent \breve on input line 90.
-LaTeX Font Info:    Redeclaring math accent \check on input line 90.
-LaTeX Font Info:    Redeclaring math accent \hat on input line 90.
-LaTeX Font Info:    Redeclaring math accent \dot on input line 90.
-LaTeX Font Info:    Redeclaring math accent \mathring on input line 90.
-LaTeX Font Info:    Redeclaring math symbol \Gamma on input line 90.
-LaTeX Font Info:    Redeclaring math symbol \Delta on input line 90.
-LaTeX Font Info:    Redeclaring math symbol \Theta on input line 90.
-LaTeX Font Info:    Redeclaring math symbol \Lambda on input line 90.
-LaTeX Font Info:    Redeclaring math symbol \Xi on input line 90.
-LaTeX Font Info:    Redeclaring math symbol \Pi on input line 90.
-LaTeX Font Info:    Redeclaring math symbol \Sigma on input line 90.
-LaTeX Font Info:    Redeclaring math symbol \Upsilon on input line 90.
-LaTeX Font Info:    Redeclaring math symbol \Phi on input line 90.
-LaTeX Font Info:    Redeclaring math symbol \Psi on input line 90.
-LaTeX Font Info:    Redeclaring math symbol \Omega on input line 90.
-LaTeX Font Info:    Redeclaring math symbol \mathdollar on input line 90.
-LaTeX Font Info:    Redeclaring symbol font `operators' on input line 90.
+(Font)                  OT1/cmr/m/n --> OT1/cmr/bx/n on input line 108.
+LaTeX Font Info:    Redeclaring math accent \acute on input line 108.
+LaTeX Font Info:    Redeclaring math accent \grave on input line 108.
+LaTeX Font Info:    Redeclaring math accent \ddot on input line 108.
+LaTeX Font Info:    Redeclaring math accent \tilde on input line 108.
+LaTeX Font Info:    Redeclaring math accent \bar on input line 108.
+LaTeX Font Info:    Redeclaring math accent \breve on input line 108.
+LaTeX Font Info:    Redeclaring math accent \check on input line 108.
+LaTeX Font Info:    Redeclaring math accent \hat on input line 108.
+LaTeX Font Info:    Redeclaring math accent \dot on input line 108.
+LaTeX Font Info:    Redeclaring math accent \mathring on input line 108.
+LaTeX Font Info:    Redeclaring math symbol \Gamma on input line 108.
+LaTeX Font Info:    Redeclaring math symbol \Delta on input line 108.
+LaTeX Font Info:    Redeclaring math symbol \Theta on input line 108.
+LaTeX Font Info:    Redeclaring math symbol \Lambda on input line 108.
+LaTeX Font Info:    Redeclaring math symbol \Xi on input line 108.
+LaTeX Font Info:    Redeclaring math symbol \Pi on input line 108.
+LaTeX Font Info:    Redeclaring math symbol \Sigma on input line 108.
+LaTeX Font Info:    Redeclaring math symbol \Upsilon on input line 108.
+LaTeX Font Info:    Redeclaring math symbol \Phi on input line 108.
+LaTeX Font Info:    Redeclaring math symbol \Psi on input line 108.
+LaTeX Font Info:    Redeclaring math symbol \Omega on input line 108.
+LaTeX Font Info:    Redeclaring math symbol \mathdollar on input line 108.
+LaTeX Font Info:    Redeclaring symbol font `operators' on input line 108.
 LaTeX Font Info:    Encoding `OT1' has changed to `EU1' for symbol font
-(Font)              `operators' in the math version `normal' on input line 90.
+(Font)              `operators' in the math version `normal' on input line 108.
+
 LaTeX Font Info:    Overwriting symbol font `operators' in version `normal'
-(Font)                  OT1/cmr/m/n --> EU1/lmr/m/n on input line 90.
+(Font)                  OT1/cmr/m/n --> EU1/lmr/m/n on input line 108.
 LaTeX Font Info:    Encoding `OT1' has changed to `EU1' for symbol font
-(Font)              `operators' in the math version `bold' on input line 90.
+(Font)              `operators' in the math version `bold' on input line 108.
 LaTeX Font Info:    Overwriting symbol font `operators' in version `bold'
-(Font)                  OT1/cmr/bx/n --> EU1/lmr/m/n on input line 90.
+(Font)                  OT1/cmr/bx/n --> EU1/lmr/m/n on input line 108.
 LaTeX Font Info:    Overwriting symbol font `operators' in version `normal'
-(Font)                  EU1/lmr/m/n --> EU1/lmr/m/n on input line 90.
+(Font)                  EU1/lmr/m/n --> EU1/lmr/m/n on input line 108.
 LaTeX Font Info:    Overwriting math alphabet `\mathit' in version `normal'
-(Font)                  OT1/cmr/m/it --> EU1/lmr/m/it on input line 90.
+(Font)                  OT1/cmr/m/it --> EU1/lmr/m/it on input line 108.
 LaTeX Font Info:    Overwriting math alphabet `\mathbf' in version `normal'
-(Font)                  OT1/cmr/bx/n --> EU1/lmr/bx/n on input line 90.
+(Font)                  OT1/cmr/bx/n --> EU1/lmr/bx/n on input line 108.
 LaTeX Font Info:    Overwriting math alphabet `\mathsf' in version `normal'
-(Font)                  OT1/cmss/m/n --> EU1/lmss/m/n on input line 90.
+(Font)                  OT1/cmss/m/n --> EU1/lmss/m/n on input line 108.
 LaTeX Font Info:    Overwriting math alphabet `\mathtt' in version `normal'
-(Font)                  OT1/cmtt/m/n --> EU1/lmtt/m/n on input line 90.
+(Font)                  OT1/cmtt/m/n --> EU1/lmtt/m/n on input line 108.
 LaTeX Font Info:    Overwriting symbol font `operators' in version `bold'
-(Font)                  EU1/lmr/m/n --> EU1/lmr/bx/n on input line 90.
+(Font)                  EU1/lmr/m/n --> EU1/lmr/bx/n on input line 108.
 LaTeX Font Info:    Overwriting math alphabet `\mathit' in version `bold'
-(Font)                  OT1/cmr/bx/it --> EU1/lmr/bx/it on input line 90.
+(Font)                  OT1/cmr/bx/it --> EU1/lmr/bx/it on input line 108.
 LaTeX Font Info:    Overwriting math alphabet `\mathsf' in version `bold'
-(Font)                  OT1/cmss/bx/n --> EU1/lmss/bx/n on input line 90.
+(Font)                  OT1/cmss/bx/n --> EU1/lmss/bx/n on input line 108.
 LaTeX Font Info:    Overwriting math alphabet `\mathtt' in version `bold'
-(Font)                  OT1/cmtt/m/n --> EU1/lmtt/bx/n on input line 90.
+(Font)                  OT1/cmtt/m/n --> EU1/lmtt/bx/n on input line 108.
 
 *geometry* driver: auto-detecting
 *geometry* detected driver: xetex
@@ -1879,10 +2074,10 @@ LaTeX Font Info:    Overwriting math alphabet `\mathtt' in version `bold'
 * \@reversemarginfalse
 * (1in=72.27pt=25.4mm, 1cm=28.453pt)
 
-\c@lstlisting=\count201
+\c@lstlisting=\count214
 ABD: EveryShipout initializing macros
-\AtBeginShipoutBox=\box76
-Package hyperref Info: Link coloring ON on input line 90.
+\AtBeginShipoutBox=\box83
+Package hyperref Info: Link coloring ON on input line 108.
 
 (c:/texlive/2015/texmf-dist/tex/latex/hyperref/nameref.sty
 Package: nameref 2012/10/27 v2.43 Cross-referencing by name of section
@@ -1890,17 +2085,16 @@ Package: nameref 2012/10/27 v2.43 Cross-referencing by name of section
 (c:/texlive/2015/texmf-dist/tex/generic/oberdiek/gettitlestring.sty
 Package: gettitlestring 2010/12/03 v1.4 Cleanup title references (HO)
 )
-\c@section@level=\count202
+\c@section@level=\count215
 )
-LaTeX Info: Redefining \ref on input line 90.
-LaTeX Info: Redefining \pageref on input line 90.
-LaTeX Info: Redefining \nameref on input line 90.
-
-(./GraphicsTheory.out) (./GraphicsTheory.out)
+LaTeX Info: Redefining \ref on input line 108.
+LaTeX Info: Redefining \pageref on input line 108.
+LaTeX Info: Redefining \nameref on input line 108.
+ (./C#.out) (./C#.out)
 \@outlinefile=\write6
-\openout6 = `GraphicsTheory.out'.
+\openout6 = `C#.out'.
 
-\g__fontspec_family_SimHei_int=\count203
+\g__fontspec_family_SimHei_int=\count216
 .................................................
 . fontspec info: "no-font-shape"
 . 
@@ -1940,17 +2134,16 @@ LaTeX Info: Redefining \nameref on input line 90.
 . and font adjustment code:
 . 
 .................................................
-LaTeX Font Info:    Try loading font information for U+msa on input line 92.
-
-(c:/texlive/2015/texmf-dist/tex/latex/amsfonts/umsa.fd
+LaTeX Font Info:    Try loading font information for U+msa on input line 110.
+ (c:/texlive/2015/texmf-dist/tex/latex/amsfonts/umsa.fd
 File: umsa.fd 2013/01/14 v3.01 AMS symbols A
 )
-LaTeX Font Info:    Try loading font information for U+msb on input line 92.
+LaTeX Font Info:    Try loading font information for U+msb on input line 110.
 
 (c:/texlive/2015/texmf-dist/tex/latex/amsfonts/umsb.fd
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 )
-\g__fontspec_family_KaiTi_int=\count204
+\g__fontspec_family_KaiTi_int=\count217
 .................................................
 . fontspec info: "no-font-shape"
 . 
@@ -1996,23 +2189,12 @@ File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 ] [2
 
 ]
-(./GraphicsTheory.toc
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
- [3]
-Underfull \vbox (badness 3396) has occurred while \output is active []
-
- [4]
-[5])
-\tf@toc=\write7
-\openout7 = `GraphicsTheory.toc'.
-
- [6]
 第一章
-[7
+[3] [4
 
-] [8]
-\g__fontspec_family_FangSong_int=\count205
+]
+第二章
+\g__fontspec_family_FangSong_int=\count218
 .................................................
 . fontspec info: "no-font-shape"
 . 
@@ -2028,9 +2210,9 @@ Underfull \vbox (badness 3396) has occurred while \output is active []
 . 
 . Could not resolve font FangSong/I (it probably doesn't exist).
 .................................................
-LaTeX Font Info:    Try loading font information for EU1+lmtt on input line 181
+LaTeX Font Info:    Try loading font information for EU1+lmtt on input line 133
 .
- (c:/texlive/2015/texmf-dist/tex/latex/euenc/eu1lmtt.fd
+(c:/texlive/2015/texmf-dist/tex/latex/euenc/eu1lmtt.fd
 File: eu1lmtt.fd 2009/10/30 v1.6 Font defs for Latin Modern
 )
 .................................................
@@ -2057,151 +2239,36 @@ File: eu1lmtt.fd 2009/10/30 v1.6 Font defs for Latin Modern
 . and font adjustment code:
 . 
 .................................................
-LaTeX Font Info:    Font shape `EU1/lmtt/bx/n' in size <12> not available
-(Font)              Font shape `EU1/lmtt/b/n' tried instead on input line 181.
- [9] [10
 
-]
-第二章
-File: figure/Outline.jpg Graphic file (type QTm)
-<use  "figure/Outline.jpg" >
-Overfull \hbox (12.64865pt too wide) in paragraph at lines 189--190
- [][] 
+Underfull \vbox (badness 3849) has occurred while \output is active []
+
+ [5]
+[6] [7]
+Overfull \hbox (14.87175pt too wide) in paragraph at lines 213--215
+ []\EU1/lmr/bx/n/12 +=[] [] \EU1/SimSun(0)/m/n/12 或 者 [] 
  []
 
-File: figure/Outline2.jpg Graphic file (type QTm)
-<use  "figure/Outline2.jpg" >
-Overfull \hbox (5.1183pt too wide) in paragraph at lines 197--198
- [][] 
- []
-
-
+[8] [9] [10]
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
  [11]
-File: figure/Geometry.jpg Graphic file (type QTm)
-
-<use  "figure/Geometry.jpg" >
-Overfull \hbox (5.1183pt too wide) in paragraph at lines 217--218
- [][] 
- []
-
-[12]
-File: figure/ModelViewTransform.jpg Graphic file (type QTm)
- <use  "figure/ModelViewTransform.jpg" > [13]
-File: figure/project.jpg Graphic file (type QTm)
- <use  "figure/project.jpg" >
-[14]
-File: figure/clip.jpg Graphic file (type QTm)
- <use  "figure/clip.jpg" > [15]
-Missing character: There is no ≦ in font [lmroman12-regular]:mapping=tex-text!
-Missing character: There is no ≦ in font [lmroman12-regular]:mapping=tex-text!
-File: figure/scMap.jpg Graphic file (type QTm)
- <use  "figure/scMap.jpg" >
-File: figure/Rasterization.jpg Graphic file (type QTm)
-
-<use  "figure/Rasterization.jpg" >
-Overfull \hbox (5.1183pt too wide) in paragraph at lines 318--319
- [][] 
- []
-
-[16]
-File: figure/PixShader.jpg Graphic file (type QTm)
- <use  "figure/PixShader.jpg" >
-Underfull \vbox (badness 7238) has occurred while \output is active []
-
- [17]
-[18]
-File: figure/ProgramAble.jpg Graphic file (type QTm)
- <use  "figure/ProgramAble.jpg" >
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
- [19]
-[20]
-第三章
-[21
-
-] [22
-
-]
-第四章
-
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
- [23]
-Underfull \vbox (badness 1910) has occurred while \output is active []
-
- [24]
-[25] [26
-
-]
-第五章
-File: figure/TexturePipeline.jpg Graphic file (type QTm)
-<use  "figure/TexturePipeline.jpg" > [27]
-File: figure/TexturePipeline2.jpg Graphic file (type QTm)
-
-<use  "figure/TexturePipeline2.jpg" > [28]
-File: figure/Mapping.jpg Graphic file (type QTm)
- <use  "figure/Mapping.jpg" >
-[29]
-File: figure/cubeMap.jpg Graphic file (type QTm)
- <use  "figure/cubeMap.jpg" >
-File: figure/cubeMap1.jpg Graphic file (type QTm)
- <use  "figure/cubeMap1.jpg" >
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
- [30]
-Missing character: There is no ≈ in font [lmroman12-regular]:mapping=tex-text!
-
-Underfull \vbox (badness 2213) has occurred while \output is active []
-
- [31]
-File: figure/normMap.jpg Graphic file (type QTm)
-
-<use  "figure/normMap.jpg" >
-Overfull \hbox (31.21672pt too wide) in paragraph at lines 535--536
- [][] 
- []
-
-
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
- [32]
-File: figure/norMap.jpg Graphic file (type QTm)
-
-<use  "figure/norMap.jpg" >
-Underfull \vbox (badness 7814) has occurred while \output is active []
-
- [33]
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
- [34]
-[35] [36
-
-]
-第六章
-[37] [38
-
-]
-第七章
-[39] [40
-
-]
-第八章
-[41]
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 595.
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 595.
- (./GraphicsTheory.aux)
-Package atveryend Info: Empty hook `AtVeryEndDocument' on input line 595.
-Package atveryend Info: Empty hook `AtEndAfterFileList' on input line 595.
+ [12]
+[13]
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 437.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 437.
+ (./C#.aux)
+Package atveryend Info: Empty hook `AtVeryEndDocument' on input line 437.
+Package atveryend Info: Empty hook `AtEndAfterFileList' on input line 437.
  ) 
 Here is how much of TeX's memory you used:
- 37959 strings out of 493706
- 752485 string characters out of 6148913
- 784454 words of memory out of 5000000
- 40769 multiletter control sequences out of 15000+600000
+ 44542 strings out of 493706
+ 927750 string characters out of 6148913
+ 1048232 words of memory out of 5000000
+ 47246 multiletter control sequences out of 15000+600000
  11646 words of font info for 82 fonts, out of 8000000 for 9000
  1328 hyphenation exceptions out of 8191
- 63i,8n,75p,10422b,489s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 63i,7n,75p,10410b,1769s stack positions out of 5000i,500n,10000p,200000b,80000s
 
-Output written on GraphicsTheory.pdf (41 pages).
+Output written on C#.pdf (13 pages).

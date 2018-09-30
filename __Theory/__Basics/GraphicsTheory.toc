@@ -32,6 +32,10 @@
 \contentsline {subsection}{\numberline {2.3.4}融合 - Merging}{18}{subsection.2.3.4}
 \contentsline {subparagraph}{总结}{19}{section*.13}
 \contentsline {section}{\numberline {2.4}可编程部分演示}{20}{section.2.4}
+\contentsline {section}{\numberline {2.5}三大测试}{20}{section.2.5}
+\contentsline {section}{\numberline {2.6}混合}{20}{section.2.6}
+\contentsline {section}{\numberline {2.7}背面剔除}{20}{section.2.7}
+\contentsline {section}{\numberline {2.8}渲染队列}{20}{section.2.8}
 \contentsline {chapter}{\numberline {第三章\hspace {0.3em}}变换}{21}{chapter.3}
 \contentsline {chapter}{\numberline {第四章\hspace {0.3em}}视觉外观}{23}{chapter.4}
 \contentsline {section}{\numberline {4.1}光照与材质}{23}{section.4.1}
@@ -79,3 +83,7 @@
 \contentsline {section}{\numberline {5.10}参考}{35}{section.5.10}
 \contentsline {chapter}{\numberline {第六章\hspace {0.3em}}光照}{37}{chapter.6}
 \contentsline {chapter}{\numberline {第七章\hspace {0.3em}}基于图像的效果}{39}{chapter.7}
+\contentsline {chapter}{\numberline {第八章\hspace {0.3em}}数学基础}{41}{chapter.8}
+\contentsline {section}{\numberline {8.1}向量}{41}{section.8.1}
+\contentsline {section}{\numberline {8.2}矩阵}{41}{section.8.2}
+\contentsline {section}{\numberline {8.3}GLM库}{41}{section.8.3}

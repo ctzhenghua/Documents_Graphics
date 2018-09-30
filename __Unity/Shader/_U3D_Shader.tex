@@ -418,12 +418,25 @@
 				
 	\section{OpenGL 渲染流程}
 			
+	\section{渲染队列}
+		首先看一下Unity中的几种内置的渲染队列，按照渲染顺序，\textbf{从先到后进行排序，队列数越小的，越先渲染，队列数越大的，越后渲染}。
 		
+			\begin{itemize}
+				\item \textbf{Background}（1000） 最早被渲染的物体的队列。
+				\item \textbf{Geometry} （2000） \textbf{不透明物体的渲染队列}。大多数物体都应该使用该队列进行渲染，也是Unity Shader中默认的渲染队列。
+				\item \textbf{AlphaTest} （2450） \textbf{有透明通道}，需要进行Alpha Test的物体的队列，比在Geomerty中更有效。
+				\item \textbf{Transparent}（3000） \textbf{半透物体的渲染队列}。一般是不写深度的物体，Alpha Blend等的在该队列渲染。
+				\item \textbf{Overlay} （4000） 最后被渲染的物体的队列，一般是覆盖效果，比如镜头光晕，屏幕贴片之类的。
+			\end{itemize}
+		
+		Unity中设置渲染队列也很简单，我们不需要手动创建，也不需要写任何脚本，只需要在shader中增加一个Tag就可以了，当然，如果不加，那么就是默认的渲染队列Geometry。比如我们需要我们的物体在Transparent这个渲染队列中进行渲染的话，就可以这样写：
+		\verb|Tags { "Queue" = "Transparent"}|
+	
 \chapter{CPU与GPU}
 	
 
 
-\chapter{Unity -Shader 着色器}
+\chapter{Shader 着色器}
 	\section{基础概念}
 		\paragraph{CPU} 将FBX、OBJ 等文件信息(UV，顶点位置，法线，切线等)读入\verb|MeshRender|.
 		
@@ -806,18 +819,18 @@
 	\section{片段着色器-2.0 }
 	
 	\section{动态纹理}
-	 \paragraph{河流}
-		\subparagraph{核心}
-			平移纹理坐标
-			\verb|i.uv*Time.xy|
-
-	 \paragraph{动态加载}
-		\begin{itemize}
-			\item UV 旋转
-			\item 在GPU中使用旋转矩阵进行旋转。
-			\item Notice: 旋转矩阵是以原点为基准的。
-		\end{itemize}
-		\subparagraph{旋转矩阵}以原点的为旋转中心点，计算公式如下
+		 \paragraph{河流}
+			\subparagraph{核心}
+				平移纹理坐标
+				\verb|i.uv*Time.xy|
+	
+		 \paragraph{动态加载}
+			\begin{itemize}
+				\item UV 旋转
+				\item 在GPU中使用旋转矩阵进行旋转。
+				\item Notice: 旋转矩阵是以原点为基准的。
+			\end{itemize}
+			\subparagraph{旋转矩阵}以原点的为旋转中心点，计算公式如下
 
 			以Z 轴为旋转轴的旋转矩阵
 				$$
@@ -933,15 +946,67 @@
 			
 			
 		\subsection{模板测试}
-			符合条件的通过，不符合条件的像素丢弃掉
+			模板缓冲一般为8位的，存贮整数，最大值为255。在使用的过程中步骤一般时，开启模板缓冲，绘制一个物体作为我们的模板，这个过程实际上就是写入模板缓冲的过程；接着我们利用模板缓冲中的值决定是丢弃还是保留后续绘图中的片元。下面我们建立一个举行模板，通过矩形模板选择性地将上一节绘制的场景显示出来，这个过程示意如下图所示
+				\begin{figure}[H]
+					\centering
+					\includegraphics[scale=0.7]{Stencil-Test}
+					\caption{模版测试原理图}
+				\end{figure}
 			
+			如图中所示，\textbf{模板缓冲中为1的地方我们选择保留图形，而其他部分则丢弃}，形成最终的效果。
 			
+			使用模板缓冲需要三个要素：
+				\begin{itemize}
+					\item 正确的时间开启和关闭深度缓冲
+					\item 模板测试函数
+					\item 模板测试函数失败或者成功后的执行的动作	
+				\end{itemize}
+			
+			一般地绘制模板以及利用模板选择性地绘制物体时则开启模板缓冲，绘制其他物体时关闭模板缓冲。使用模板缓存的步骤一般如下：
+				\begin{enumerate}
+					\item 开启模板测试
+					\item 绘制模板，写入模板缓冲(不写入color buffer和depth buffer)
+					\item 关闭模板缓冲写入
+					\item 利用模板缓冲中的值，绘制后续场景
+				\end{enumerate}	
 		\subsection{深度测试}
+			在绘制3D场景的时候，我们需要决定哪些部分对观察者是可见的，或者说哪些部分对观察者不可见，\textbf{对于不可见的部分，我们应该及早的丢弃}，例如在一个不透明的墙壁后的物体就不应该渲染。这种问题称之为\textbf{隐藏面消除}(Hidden surface elimination)
 		
+			解决这一问题比较简单的做法是画家算法(painter’s algorithm)。画家算法的基本思路是，先绘制场景中离观察者较远的物体，再绘制较近的物体。例如绘制下面图中的物体，先绘制红色部分，再绘制黄色，最后绘制灰色部分，即可解决隐藏面消除问题。
+				\begin{figure}[H]
+					\centering
+					\includegraphics[scale=0.7]{Z-Test}
+					\caption{画家算法效果}
+				\end{figure}
+			
+			使用画家算法时，只要将场景中物体按照离观察者的距离远近排序，由远及近的绘制即可。画家算法很简单，但另一方面也存在缺陷，例如下面的图中，三个三角形互相重叠的情况，画家算法将无法处理：
+				\begin{figure}[H]
+					\centering
+					\includegraphics[scale=1.2]{Z-Test2}
+					\caption{交叉问题}
+				\end{figure}
+				
+			结合OpenGL，我们使用的是Z-buffer方法，也叫深度缓冲区Depth-buffer。
+			
+			\textbf{深度缓冲区}(\verb|Detph buffer|)同\textbf{颜色缓冲区}(\verb|color buffer|)是对应的，\textbf{颜色缓冲区}存储的像素的颜色信息，而\textbf{深度缓冲区}存储像素的深度信息。\textbf{在决定是否绘制一个物体的表面时}，\textit{首先将表面对应像素的深度值与当前深度缓冲区中的值进行比较}，\textbf{如果大于等于深度缓冲区中值，则丢弃这部分};\textbf{否则利用这个像素对应的深度值和颜色值，分别更新深度缓冲区和颜色缓冲区}。\textit{这一过程称之为}\textbf{深度测试}(\verb|Depth Testing|)。
+
 	\section{混合-Blend}
+			就是将当前要绘制的物体的颜色和颜色缓冲区中已经绘制了的物体的颜色进行混合，最终决定了当前物体的颜色。例如下面的图中，狙击枪的瞄准器本身是带有蓝色的，将它和后面的任务混合在一起，形成了我们看到的最终效果，这个效果里既有瞄准器的蓝色成分，也有后面人物的像素，主要是后面人物的像素。
+					\begin{figure}[H]
+						\centering
+						\includegraphics[scale=0.64]{blend}
+						\caption{混合示例}
+					\end{figure}
+			
+			
+	\section{背面剔除}
+	
+	
+	\section{帧缓冲对象}
 	
 	
 	\section{渲染队列-RenderQueue}
+	
 	
 			
 \chapter{光照}
