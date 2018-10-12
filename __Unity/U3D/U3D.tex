@@ -183,7 +183,14 @@
 				\item \verb|OnDisable |:
 				\item \verb|OnDestroy |:在当前脚本销毁时调用该函数。
 			\end{enumerate}
-		
+			
+		\paragraph{如何让已经存在的GameObject在LoadScene()后不被卸载掉}
+			\begin{lstlisting}
+	void Awake()
+	{
+	    DontDestroyOnLoad(transform.gameObject);
+	}
+			\end{lstlisting}
 	\section{Unity 委托}
 		
 		\paragraph{定义}\verb|public delegate void MyDelegate(int num);|
@@ -248,6 +255,8 @@
 				\color{blue}相当于：\textbf{return; + 暂停}\color{black}
 				
 		\subsection{执行原理}
+			Unity的协程实在\textbf{每帧结束之后}去\verb|检测yield的条件|是否满足.
+		
 			协程函数的返回值是\verb|IEnumerator|,它是一个迭代器，\textbf{可以把它当成执行一个序列的某个节点的指针}，它提供了两个重要的接口，分别是\verb|Current|(返回当前指向的元素)和\verb|MoveNext()|(将指针向后移动一个单位，\textit{如果移动成功，则返回true})
 			
 			\verb|yield|关键词\textbf{用来声明序列中的下一个值或者是一个无意义的值}，如果使用\verb|yield return x|(x是指一个具体的对象或者数值)的话，那么\verb|MoveNext|返回为\verb|true|并且\verb|Current|被赋值为\verb|x|,如果使用\verb|yield break|使得\verb|MoveNext()|返回为\verb|false|
@@ -459,19 +468,36 @@
 	\section{Transform 类}
 		\url{https://blog.csdn.net/yangmeng13930719363/article/details/51460841}
 		\subsection{位置}
-				transform.position = new Vector3(1, 0, 0);
+			\begin{itemize}
+				\item \verb|transform.localPosition|：是\textbf{相对于父对象的位置}，是相对坐标，既父级窗体为原点坐标
+				\item \verb|transform.Position|：是\textbf{世界坐标中}的位置，可以理解为绝对坐标
+			\end{itemize}
 		\subsection{旋转}	
-				transform.Rotate(x, y, z);
-				
-				transform.eulerAngles = new Vector3(x, y, z);	
+			\begin{itemize}
+				\item transform.localEulerAngles 以自身坐标系为参考，而不是世界坐标系
+					\begin{lstlisting}[xleftmargin = .02\textwidth]
+	transform.localEulerAngles = new Vector3(x, y,z);
+					\end{lstlisting}
+				\item transform.rotation 以自身坐标系为参考，而不是世界坐标系
+					\begin{lstlisting}[xleftmargin = .02\textwidth]
+	Quaternion rotation= Quaternion.Euler(new Vector3(x, y,z));
+	Transform.rotation=rotation;	
+					\end{lstlisting}
+				\item transform.Rotate(x,y,z)
+					\begin{lstlisting}[xleftmargin = .02\textwidth]
+	// 以自身坐标系为参考，而不是世界坐标系，分别以x度y度z度绕X轴、Y轴、Z轴匀速旋转
+	transform.Rotate(x,y,z);
+	// 以自身坐标系为参考
+	transform.Rotate(轴，Space.Self);
+	// 以世界坐标系为参考
+	transform.Rotate(轴，Space.World);
+					\end{lstlisting}
+			\end{itemize}
+
 		\subsection{缩放}
 				transform.localScale(x, y, z); // 基准为1、1、1， 数为缩放因子。	
 		\subsection{平移}
 				transform.Translate(x, y, z); 
-		\subsection{Transform.localPosition}
-			\verb|position|是世界坐标中的位置，可以理解为绝对坐标 
-			
-			\verb|localPosition|是\textbf{相对于父对象的位置}，是相对坐标，既父级窗体为原点坐标
 		\subsection{注意}
 			在变化的过程中需要乘以 Time.deltaTime ,否则会出现大幅不连贯的画面。
 	
@@ -521,6 +547,11 @@
 		\subsection{HDR -高动态光照渲染}
 			高动态光照渲染。用于启用摄像机的高动态范围渲染功能。
 	
+		\subsection{提高性问题}
+			\begin{itemize}
+				\item 移动摄像机的动作放在哪个系统函数中,为什么 (LateUpdate)
+			\end{itemize}
+
 	\section{3D模型}
 		\subsection{Mesh}
 		
@@ -586,6 +617,8 @@
 	_rigidBody.position += desPos;
 		 	\end{lstlisting}
 		\textbf{返回值}是一个数，正负代表方向
+		
+		\paragraph{三、继承IPointerDrag等}
 			
 \chapter{时间}
  	\section{Time 类}
@@ -725,7 +758,7 @@
 			\begin{table}[H]
 				\centering
 				\caption{渲染模式使用场景说明}
-				\begin{tabular}{p{4cm}<{\centering}|c|c|c|p{3cm}<{\centering}}
+				\begin{tabular}{p{5cm}<{\centering}|c|c|c|p{4cm}<{\centering}}
 					\toprule
 						渲染模式 & 画布匹配屏幕？& 摄像机？ & 像素对应 & 适应\\
 					\midrule
@@ -737,8 +770,64 @@
 			\end{table}
 		
 		\subsection{Canvas Scalar}
-			\url{https://blog.csdn.net/qq168213001/article/details/49744899}
-		
+			\textbf{“The Canvas Scaler component is used for controlling the overall scale and pixel density of UI elements in the Canvas. This scaling affects everything under the Canvas, including font sizes and image borders.”}
+
+			用于画布上UI元素的整体缩放比例和像素密度。该缩放比例会影响画布中的所有东西，包括字体大小和图像边界。
+			
+			为了适应不同的分辨率，我们可能会\textbf{允许适当的UI整体性的缩放，外加一些尽可能少的布局微调}。这样就能达到一个比较理想的效果。Unity中 Canvas Scale就是负责该功能的组件。
+			 
+			Canvas Scaler的ui scale mode有三种值（constan pixel size、scale with screen size和constant physical size）
+			
+			\begin{table}[H]
+				\centering
+				\caption{简介}
+				\begin{tabular}{p{4.5cm}<{\centering}|p{11.5cm}<{\centering}}
+					\hline
+						UI缩放模式 &  决定画布中的UI元素如何缩放\\
+					\hline
+						Constant Pixel Size & 不管屏幕尺寸如何变化，UI元素保持相同的像素大小\\
+						Scale With Screen Size & 屏幕越大，UI元素也越大\\
+						Constant Physical Size & 不论屏幕大小和分辨率如何变化，UI元素保持相同的物理尺寸\\
+					\hline
+				\end{tabular}
+			\end{table}
+			
+			\begin{itemize}
+				\item \textbf{Constant Pixel Size}这个模式一般用于需要整体缩放画布的对象（通过Scale Factor）
+					\begin{enumerate}
+						\item Scale Factor: 画布的缩放比例。默认况下为1，表示正常大小。
+						\item Reference Pixels Per Unit: 每单位代表的像素量
+					\end{enumerate}
+				\item \textbf{Constant Physical Size} 和前面这个类似也可以缩放(通过RectTransform)
+					
+				\item \textbf{Scale With Screen Size} 这个模式比较常用是我们开发自适应一般用的模式
+					\begin{enumerate}
+						\item Reference Resolution(参考分辨率) ：参照这个UI布局所依据的分辨率，如果屏幕分辨率更大，那么UI会变大，如果屏幕分辨率更小，那么UI会变小。
+						\item Screen Match Mode(屏幕匹配模式) ：Match Width or Height、Expand、Shrink
+						\item Reference Pixels Per Unit 每单位的参考像素
+					\end{enumerate}
+			\end{itemize}
+
+			\url{https://blog.csdn.net/gz_huangzl/article/details/52484611}
+			
+			
+			\begin{table}[H]
+				\centering
+				\caption{Scale With Screen Size}
+				\begin{tabular}{p{4.5cm}<{\centering}|p{11.5cm}<{\centering}}
+					\hline
+						属性 &  功能\\
+					\hline
+						参考分辨率 &  再设计UI布局时设置的分辨率，如果屏幕分辨率更大，UI元素也会放大，反之亦然   \\
+						屏幕匹配模式 &   当前分辨率下的宽高比不适合参考分辨率时使用的一种用于缩放画布的模式 \\
+						匹配宽度或高度 &  用宽度或者高度又或者两者之间做参考来缩放画布 \\
+						扩展 & 水平或垂直扩展画布，所以画布的尺寸不会比参考分辨率小\\
+						收缩 & 水平或垂直裁剪画布，所以画布的尺寸不会比参考分辨率大\\
+						匹配 & 决定缩放时，使用宽度/高度/两者之间用作参考\\
+						参考的每单位像素 & 如果一个sprite 有“每单位像素数” 这个设置，那么spirit 中的一个像素会覆盖UI中的一个单元\\						 
+					\hline
+				\end{tabular}
+			\end{table}
 		\subsection{Layer}
 		
 		
@@ -972,43 +1061,169 @@
 		
 		\subsection{vertical layout group}
 
-\chapter{物理}
-	\section{流程}
+	\section{提高性问题}
 		\begin{itemize}
-			\item \verb|RigidBody |:创建，以完成受力接收。
-			\item \verb|Physical Material|：创建，以完成多种力的添加。
-			\item \verb|Material |：拖入材质球。
+			\item 为什么UI摄像机和场景摄像机能协同工作
+			\item 怎么防止UI控件被点穿（如何过滤掉点击事件）
+			\item UI功能模块之间相互通信有什么好看法。（或者问成Broadcast和sendMes的看法）
+			\item 屏幕适配有什么好主意
 		\end{itemize}
+		
+		
+		
+\chapter{物理}
+	\section{具体相关类}
+		\subsection{Rigidbody}
+			刚体，套上这个组件的\textbf{物体会受到物理作用里的影响}(包括重力，推力，作用力等一切物理力)，\textit{如果没有这个组件物体也会静止不动}.
+			
+			\textbf{但必须有碰撞检测组件才能保证物体不被穿过}。值得注意的一点是，Is Kinematic被勾选上表示物体不接受物理力的作用，只能通过transform的设置改变位置。
+		
+		\subsection{Collider}
+			碰撞检测器，就是\textbf{检测一切范围内的触碰事件}，注意也就是说rigidbody的物理碰撞需要collider来检测才能发生，也就是物体的运动。
+		
+			在\textbf{所有Collider上}有一个\verb|Is Trigger| 的\verb|bool|型参数。当发生碰撞反应的时候，\textbf{会先检查此属性}。
+				
+			\verb|Is Trigger| 好比是一个物理功能的开关， \textbf{是要}“物理功能”\textbf{还是要}“OnTrigger脚本”。
+			\begin{itemize}
+				\item 碰撞器有碰撞的效果，\verb|IsTrigger=false|，可以调用\verb|OnCollisionEnter/Stay/Exit|函数
+				\item 触发器没有碰撞效果，\verb|IsTrigger=true|，可以调用\verb|OnTriggerEnter/Stay/Exit|函数
+			\end{itemize}
 	
-	\section{刚体}
+	\section{碰撞器、触发器}
+		在Unity中参与碰撞的物体分2大块：1.发起碰撞的物体。2.接收碰撞的物体。
+		
+		\paragraph{发起碰撞的物体}
+			Rigodbody , CharacterController(其中的RigidBody) 
+		
+		\paragraph{接收碰撞的物体}
+			所有的Collider
+			
+		工作的原理为：发生碰撞的物体中必须要有“\textbf{发起碰撞}”的物体。否则，碰撞不响应。
+		
+		判断碰撞就是需要计算力，无论是阻力也好，动力也好，\textbf{如果此时物体有刚体组件，那么物体就会在力的作用下运动}。\textit{如果这个物体没有刚体，那么碰撞产生的力就没有任何意义了}，那计算碰撞也就没有任何意义了。
+		
+		\textbf{所以，如果两个碰撞体都没有刚体组件，那么这两个物体即使相互发生了碰撞，那么也不会有碰撞事件的}。
+
+		\paragraph{物体发生碰撞的必要条件}
+			两个物体\textbf{都必须}带有\verb|碰撞器(Collider)|，\textbf{其中一个}\textbf{还必须}带有\verb|Rigidbody|。
+		
+		\paragraph{CharacterController和Rigidbody的区别}
+			\begin{itemize}
+				\item CharacterController自带胶囊碰撞器，里面包含有刚体的属性
+				\item Rigidbody就是刚体，使物体带有刚体的特征
+			\end{itemize}
 	
-	
-	\section{碰撞器}
-	
-	
+		\paragraph{碰撞过程}
+			\begin{enumerate}
+				\item OnCollisionEnter
+				\item OnCollisionStay
+				\item OnCollisionExit
+			\end{enumerate}
+		
+		\paragraph{施加力的方式}都在rigidbody 系列函数中。
+			\begin{itemize}
+				\item rigidbody.AddForce()
+				\item rigidbody.AddForceAtPosition()
+			\end{itemize}	
+			
 	\section{物理材质}
 	
-	
-	\section{触发器}
-	
-	
 	\section{射线}
-	
+		\paragraph{射线 Ray}
+			\verb|Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);|
+			
+			可以从摄像机发出一条射线到MousePosition。
+			
+			
+		\paragraph{射线检测 Physics.Raycast()}
+			\begin{itemize}[itemindent = 1em]
+				\item \fbox{static bool Raycast(Ray ray, RaycastHit hitInfo, float distance, int layerMask);}
+				\item \fbox{Raycast(Ray ray, float distance, int layerMask);}
+				\item \fbox{Raycast(Vector3 origin, Vector3 direction, float distance, int layerMask);}
+				\item \fbox{Raycast(Vector3 origin, Vector3 direction, RaycastHit , float distance ，int layerMask );}
+			\end{itemize}
+			
+			\verb|Ray ray|是射线；\verb|RaycastHit hitInfo|是碰撞信息；\verb|float distance|是碰撞距离；\verb|int layerMask|是碰撞的层.
+			
+			\textbf{RaycastHit} 是输出参数，所以需要先声明一个作为参数提供。其具体包括如下信息：
+			\begin{itemize}[itemindent = 1em]
+				\item \verb|point| 射线碰到碰撞器的碰撞点，在世界空间中
+				\item \verb|normal| 射线所碰到的表面的法线
+				\item \verb|distance| 从光线的原点到碰撞点的距离
+				\item \verb|collider| 碰撞到的碰撞器
+				\item \verb|transform| 碰到的物体的位置信息
+			\end{itemize}
+			
+			\verb|Physics.Raycast(ray, out hit, 100f, targetMask)|
+			
+			一条\textbf{射线}，\textbf{射线的范围}是100米，只和\textbf{target层}发生碰撞，碰撞后得到碰撞体的信息，并返回一个布尔值。
 	
 	\section{关节}
 		
 \chapter{动画}
-	\section{流程}
+	\section{游戏动画有哪几种，以及其原理}
+		\subsection{关节动画}
+			把角色分成若干独立部分，一个部分对应一个网格模型，部分的动画连接成一个整体的动画，角色比较灵活，Quake2中使用这种动画。 
+			
+		\subsection{单一网格模型动画}
+			由一个完整的网格模型构成，在动画序列的关键帧里记录各个顶点的原位置及其改变量，然后插值运算实现动画效果，角色动画较真实。   
+			
+		\subsection{骨骼动画}
+			广泛应用的动画方式，集成了以上两个方式的优点，骨骼按角色特点组成一定的层次结构，有关节相连，可做相对运动，皮肤作为单一网格蒙在骨骼之外，决定角色的外观，皮肤网格每一个顶点都会受到骨骼的影响，从而实现完美的动画。
+	
+	\section{Avatar}
+		\dirtree{%
+			.1 创建Avatar .
+			.2 配置Avatar . 
+			.3 肌肉设定 .
+			.4 动画重定位 .
+			.5 反向动力学 .
+		}	
+	
+		\url{https://www.cnblogs.com/rainmj/p/5451847.html}
+		
+	\section{Animation}
 		\dirtree{%
 			.1 .
-			.2 在要动态显示的物体的父节点上创建\textbf{Animation} .
+			.2 在要动态显示的物体的父节点上创建\textbf{Animation}-(在Animation 窗口创建、在Parameter 下添加需要改变状态的组件，在关键帧修改其状态) .
 			.3 编辑Animation .
 			.4 在脚本中获取该父亲节点上的Animator 组件 .
 			.5 播放动画 .
 		}
 		
-		
 	
+			
+	\section{Animator}
+
+		\paragraph{打开动画状态机界面}	
+				\begin{enumerate}
+					\item 右键点击“Assets”栏空白处，同样可以打开菜单栏进行创建：Create->Animater Controller
+					\item 打开“Animator”视窗的方法是：点击菜单“Window->Animator”或者双击任意“Animator Controller”资源文件
+					\item 点击“Animator”视窗左上角的“Parameters”视窗右上角的“+”按钮，可以创建参数。
+				\end{enumerate}
+	
+		\paragraph{属性编辑}
+			\begin{enumerate}
+				\item 右键点击其他状态，选择“Set As Default”改变默认状态（橙色）
+				\item “Speed”表示动画的播放熟读倍率（1为正常倍率）
+				\item “Motion”指定状态引用的动画剪辑
+				\item “Foot IK”勾选后会减少或消除动画中的脚滑现象
+				\item “Mirror”可以将动画左右对调
+				\item “Transition”
+					\begin{itemize}
+						\item Transactions，默认是空的，我们创建一个Transaction，可以让我们从一个动画平滑至另一个动画
+						\item 创建“Transaction”的方法是右键点击起始状态选择“\verb|Make Transaction|”。然后会有一个箭头附着在你的指针位置，点击另一个状态，完成创建
+						\item 然后选中“Transition”线段，在“Inspection”中进行编辑
+						\item 每个“Transition”都有“Solo”和“Mute”选项，适用于特定区域状态机的调试工具，发布游戏时，不要勾选任意一个
+						\item \textbf{触发条件添加“Condition”}
+							\begin{itemize}
+								\item 在\textbf{左侧Parameters} 中添加条件(int、float、bool、Trigger)，比如bool Run
+								\item 然后在 \textbf{Transition} 的 condition 下添加该变量
+								\item 最后在游戏脚本中通过 animtor.SetBool("Run", false); 来修改condition 结果。
+							\end{itemize}
+					\end{itemize}
+			\end{enumerate}
+
 	\section{iTween 动画用法}
 		
 
@@ -1567,6 +1782,16 @@ using(WWW www =
 	\section{Apk 安装常见错误}
 		\url{http://mumu.163.com/2017/03/30/25905_680657.html}
 
+
+\chapter{GC-Garbage Collection}
+	介绍性：\url{https://blog.csdn.net/znybn1/article/details/76464896}
+	优化减少GC：\url{https://blog.csdn.net/chenxuezhi123/article/details/45249935}
+	\section{}
+	
+	\section{}
+	
+	\section{}
+		
 
 \chapter{调试技巧}
 	\section{以父类为基点}
