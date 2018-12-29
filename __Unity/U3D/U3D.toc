@@ -216,9 +216,9 @@
 \contentsline {subsection}{\numberline {14.4.7}使用}{79}{subsection.14.4.7}
 \contentsline {subsection}{\numberline {14.4.8}卸载}{80}{subsection.14.4.8}
 \contentsline {subsection}{\numberline {14.4.9}内存模型}{80}{subsection.14.4.9}
-\contentsline {section}{\numberline {14.5}资源打包}{80}{section.14.5}
+\contentsline {section}{\numberline {14.5}资源打包}{81}{section.14.5}
 \contentsline {subsection}{\numberline {14.5.1}降低包体准则}{81}{subsection.14.5.1}
-\contentsline {subsection}{\numberline {14.5.2}针对删除无用资源的方案}{81}{subsection.14.5.2}
+\contentsline {subsection}{\numberline {14.5.2}针对删除无用资源的方案}{82}{subsection.14.5.2}
 \contentsline {section}{\numberline {14.6}参考}{82}{section.14.6}
 \contentsline {chapter}{\numberline {第十五章\hspace {0.3em}}Editor 扩展}{83}{chapter.15}
 \contentsline {section}{\numberline {15.1}流程}{83}{section.15.1}
@@ -232,14 +232,19 @@
 \contentsline {chapter}{\numberline {第十六章\hspace {0.3em}}跨平台发布apk}{85}{chapter.16}
 \contentsline {section}{\numberline {16.1}流程}{85}{section.16.1}
 \contentsline {section}{\numberline {16.2}Apk 安装常见错误}{85}{section.16.2}
-\contentsline {chapter}{\numberline {第十七章\hspace {0.3em}}GC-Garbage Collection}{87}{chapter.17}
-\contentsline {section}{\numberline {17.1}}{87}{section.17.1}
-\contentsline {section}{\numberline {17.2}}{87}{section.17.2}
-\contentsline {section}{\numberline {17.3}}{87}{section.17.3}
-\contentsline {chapter}{\numberline {第十八章\hspace {0.3em}}调试技巧}{89}{chapter.18}
-\contentsline {section}{\numberline {18.1}以父类为基点}{89}{section.18.1}
-\contentsline {section}{\numberline {18.2}Android 与 Unity 互相调用}{89}{section.18.2}
-\contentsline {subsection}{\numberline {18.2.1}Unity 调用 Android 非静态方法}{89}{subsection.18.2.1}
-\contentsline {subsection}{\numberline {18.2.2}Unity 调用 Android 静态方法}{90}{subsection.18.2.2}
-\contentsline {subsection}{\numberline {18.2.3}Android 调用 Unity}{90}{subsection.18.2.3}
-\contentsline {chapter}{\numberline {第十九章\hspace {0.3em}}书籍推荐}{93}{chapter.19}
+\contentsline {chapter}{\numberline {第十七章\hspace {0.3em}}Unity 优化经验@实况}{87}{chapter.17}
+\contentsline {section}{\numberline {17.1}加载时间}{87}{section.17.1}
+\contentsline {section}{\numberline {17.2}内存分类}{87}{section.17.2}
+\contentsline {subsection}{\numberline {17.2.1}内存问题}{87}{subsection.17.2.1}
+\contentsline {subsection}{\numberline {17.2.2}内存工具}{88}{subsection.17.2.2}
+\contentsline {chapter}{\numberline {第十八章\hspace {0.3em}}GC-Garbage Collection}{89}{chapter.18}
+\contentsline {section}{\numberline {18.1}}{89}{section.18.1}
+\contentsline {section}{\numberline {18.2}}{89}{section.18.2}
+\contentsline {section}{\numberline {18.3}}{89}{section.18.3}
+\contentsline {chapter}{\numberline {第十九章\hspace {0.3em}}调试技巧}{91}{chapter.19}
+\contentsline {section}{\numberline {19.1}以父类为基点}{91}{section.19.1}
+\contentsline {section}{\numberline {19.2}Android 与 Unity 互相调用}{91}{section.19.2}
+\contentsline {subsection}{\numberline {19.2.1}Unity 调用 Android 非静态方法}{91}{subsection.19.2.1}
+\contentsline {subsection}{\numberline {19.2.2}Unity 调用 Android 静态方法}{92}{subsection.19.2.2}
+\contentsline {subsection}{\numberline {19.2.3}Android 调用 Unity}{92}{subsection.19.2.3}
+\contentsline {chapter}{\numberline {第二十章\hspace {0.3em}}书籍推荐}{95}{chapter.20}

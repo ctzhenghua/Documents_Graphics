@@ -1578,9 +1578,19 @@ using(WWW www =
 			\end{itemize}	
 			
 			\subsection{LZMA 与 LZ4压缩对比}
+				假如你是一个Prefab,妹纸是一个资源,妹纸在一个闺蜜圈.你想约妹纸出来吃饭
 			
+				LZ4:直接约妹纸出来就可以了,\textbf{块读取}
+			
+				LZMA:首先要通知整个闺蜜圈,然后再看圈内人跟其他圈子会有什么关系,把相关人也一起通知(闺蜜丈夫等)然后闺蜜丈夫再找相关关系人,直到全部都批准了,才能和妹纸吃饭.(\textbf{依赖读取})，Android.manifest包含了AB资源的信息(名称,依赖等)，可以使用AssetDatabase.GetDependencies(path)，找出资源引用关系
+				
+
+				LZMA会比LZ4读取成本高不少,特别是在Assetbundle包引用混乱的情况下
+				
+				
 			\subsection{选择策略}
-			
+				
+				
 		\subsection{加载方式}   
 			根据AssetBundle文件所在的位置(本地、远端)，AssetBundle有不同的加载方式，一般可以分为以下4种。
 			\begin{itemize}
@@ -1783,6 +1793,46 @@ using(WWW www =
 		\url{http://mumu.163.com/2017/03/30/25905_680657.html}
 
 
+
+
+\chapter{Unity 优化经验@实况}
+	\section{加载时间}
+		\begin{itemize}
+			\item IO
+			\item 网络请求
+			\item GC
+			\item 加密解密
+			\item 协程等待
+			\item 网格重建
+			\item Mono 初始化
+		\end{itemize}
+	
+	\section{内存分类}
+		\begin{itemize}
+			\item 资源内存：Texture、Sound、Material
+			\item 引擎模块：Web Stream(WWW)、SerializedFile(AB)
+			\item 托管堆：Class Array Container
+		\end{itemize}
+		
+		\subsection{内存问题}
+			\begin{itemize}
+				\item 内存泄漏
+				\item 纹理格式错误
+				\item Unload
+				\item 字符串操作
+				\item Instantiate
+				\item Linq
+				\item 堆内存碎片化
+			\end{itemize}
+		
+		\subsection{内存工具}
+			\begin{itemize}
+				\item Unity Profile
+				\item Memory Profile
+				\item IOS Instruments
+			\end{itemize}	
+			
+		
 \chapter{GC-Garbage Collection}
 	介绍性：\url{https://blog.csdn.net/znybn1/article/details/76464896}
 	优化减少GC：\url{https://blog.csdn.net/chenxuezhi123/article/details/45249935}
