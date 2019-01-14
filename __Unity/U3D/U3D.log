@@ -1,4 +1,4 @@
-This is XeTeX, Version 3.14159265-2.6-0.99992 (TeX Live 2015/W32TeX) (preloaded format=xelatex 2018.7.13)  28 DEC 2018 10:39
+This is XeTeX, Version 3.14159265-2.6-0.99992 (TeX Live 2015/W32TeX) (preloaded format=xelatex 2018.7.13)  3 JAN 2019 16:26
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -2200,7 +2200,7 @@ Underfull \vbox (badness 2680) has occurred while \output is active []
 Underfull \vbox (badness 2680) has occurred while \output is active []
 
  [8]
-Underfull \vbox (badness 3919) has occurred while \output is active []
+Underfull \vbox (badness 10000) has occurred while \output is active []
 
  [9])
 \tf@toc=\write7
@@ -2482,54 +2482,80 @@ Underfull \vbox (badness 10000) has occurred while \output is active []
  [68]
 [69] [70] [71] [72] [73]
 File: figure/AssetBundle.png Graphic file (type QTm)
- <use  "figure/AssetBundle.png" > [74]
+ <use  "figure/AssetBundle.png" > [74] [75]
+
+LaTeX Font Warning: Font shape `EU1/FangSong(0)/m/it' undefined
+(Font)              using `EU1/FangSong(0)/m/n' instead on input line 1552.
+
+File: figure/AbUpdate.png Graphic file (type QTm)
+<use  "figure/AbUpdate.png" >
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+ [76]
+File: figure/AbUpdateProcess.png Graphic file (type QTm)
+
+<use  "figure/AbUpdateProcess.png" > [77]
+File: figure/AbRelative.png Graphic file (type QTm)
+ <use  "figure/AbRelative.png" >
+[78]
 
 LaTeX Font Warning: Font shape `EU1/SimSun(0)/bx/it' undefined
-(Font)              using `EU1/SimSun(0)/bx/n' instead on input line 1523.
+(Font)              using `EU1/SimSun(0)/bx/n' instead on input line 1605.
 
-[75]
 File: figure/AssetBuild.jpg Graphic file (type QTm)
- <use  "figure/AssetBuild.jpg" > [76] [77]
-Overfull \hbox (1.14777pt too wide) in paragraph at lines 1608--1609
+<use  "figure/AssetBuild.jpg" >
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+ [79]
+File: figure/AbDownload.png Graphic file (type QTm)
+
+<use  "figure/AbDownload.png" > [80]
+Overfull \hbox (66.48384pt too wide) in paragraph at lines 1642--1643
+\EU1/SimSun(0)/bx/n/12 取\EU1/lmr/m/n/12 )\EU1/SimSun(0)/m/n/12 ，| \EU1/lmr/m/n/
+12 Android.manifest \EU1/SimSun(0)/m/n/12 包 含 了 \EU1/lmr/m/n/12 AB \EU1/SimSun(
+0)/m/n/12 资 源 的 信 息 \EU1/lmr/m/n/12 (\EU1/SimSun(0)/m/n/12 名 称\EU1/lmr/m/n/12 ,
+ \EU1/SimSun(0)/m/n/12 依 赖 等\EU1/lmr/m/n/12 )\EU1/SimSun(0)/m/n/12 ，|  可 以 使 用 
+\EU1/lmr/m/n/12 AssetDatabase.GetDependencies(path)\EU1/SimSun(0)/m/n/12 ，|
+ []
+
+[81]
+Overfull \hbox (1.14777pt too wide) in paragraph at lines 1668--1669
 []\EU1/SimSun(0)/bx/n/12 当 调 用 上 一 步 生 成 的 \EU1/lmr/bx/n/12 AssetBundle \EU1/Si
 mSun(0)/bx/n/12 对 象 读 取 具 体 资 源 时 |\EU1/SimSun(0)/m/n/12 （\EU1/lmr/m/it/12 Load
 Asset, LoadAssetAsync, Load-
  []
 
-[78]
-Overfull \hbox (6.11601pt too wide) in paragraph at lines 1645--1645
+[82]
+Overfull \hbox (6.11601pt too wide) in paragraph at lines 1722--1722
  []|\EU1/lmr/m/n/12 LoadFromCacheOrDownload 
  []
 
 File: figure/assetBundel.png Graphic file (type QTm)
 <use  "figure/assetBundel.png" >
-Overfull \hbox (24.02344pt too wide) in paragraph at lines 1657--1658
+Overfull \hbox (24.02344pt too wide) in paragraph at lines 1742--1743
  [][] 
  []
 
+[83] [84]
+Underfull \vbox (badness 6284) has occurred while \output is active []
 
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
- [79]
-Underfull \vbox (badness 2460) has occurred while \output is active []
-
- [80]
-[81] [82]
+ [85]
+[86]
 第十五章
 
-Overfull \hbox (17.06772pt too wide) in paragraph at lines 1726--1727
+Overfull \hbox (17.06772pt too wide) in paragraph at lines 1811--1812
 []\EU1/SimSun(0)/bx/n/12 写 静 态 方 法 \EU1/SimSun(0)/m/it/12 既 菜 单 的 功 能\EU1/SimSu
 n(0)/m/n/12 ，|  类 似 于[]\EU1/lmtt/m/n/12 [SerilizedFiled] \EU1/SimSun(0)/m/n/12 
 下 的 东 西\EU1/lmr/m/n/12 , \EU1/SimSun(0)/m/n/12 与[]\EU1/lmtt/m/n/12 [Menuitem("N
 etease/xx")]
  []
 
-[83
+[87
 
-] [84]
+] [88]
 第十六章
 
-Overfull \hbox (23.97632pt too wide) in paragraph at lines 1777--1778
+Overfull \hbox (23.97632pt too wide) in paragraph at lines 1862--1863
 []\EU1/SimSun(0)/m/n/12 在 \EU1/lmr/m/n/12 unity \EU1/SimSun(0)/m/n/12 中 的[]\EU1
 /lmtt/m/n/12 edit \EU1/SimSun(0)/m/n/12 选 项 下 的[]\EU1/lmtt/m/n/12 preferences\E
 U1/lmr/m/n/12 , \EU1/SimSun(0)/m/n/12 并 选 中[]\EU1/lmtt/m/n/12 External Tools \E
@@ -2538,25 +2564,10 @@ EU1/lmtt/m/n/12 Android SDK
  []
 
 
-Overfull \hbox (35.10811pt too wide) in paragraph at lines 1785--1786
+Overfull \hbox (35.10811pt too wide) in paragraph at lines 1870--1871
 [][]\EU1/lmtt/m/n/12 Other Settings -> Identification \EU1/lmr/m/n/12 : \EU1/Si
 mSun(0)/m/n/12 修 改 为[]\EU1/lmtt/m/n/12 com.netease(Or Other).TestName(Or Other)
  
- []
-
-[85
-
-] [86
-
-]
-第十七章
-[87] [88]
-第十八章
-
-Overfull \hbox (4.1868pt too wide) in paragraph at lines 1834--1836
-[]\EU1/SimSun(0)/m/n/12 介 绍 性：| [][]$[][][][][] [] [] [] [][][][] [] [][][][] [
-] [][][] [] [][][][][][] [] [][][][][][][] [] [][][][][][][] [] [][][][][][][][
-]$[][] 优 化 减 少 \EU1/lmr/m/n/12 GC\EU1/SimSun(0)/m/n/12 ：| [][]$[][][][][] []
  []
 
 [89
@@ -2564,37 +2575,52 @@ Overfull \hbox (4.1868pt too wide) in paragraph at lines 1834--1836
 ] [90
 
 ]
+第十七章
+[91] [92]
+第十八章
+
+Overfull \hbox (4.1868pt too wide) in paragraph at lines 1919--1921
+[]\EU1/SimSun(0)/m/n/12 介 绍 性：| [][]$[][][][][] [] [] [] [][][][] [] [][][][] [
+] [][][] [] [][][][][][] [] [][][][][][][] [] [][][][][][][] [] [][][][][][][][
+]$[][] 优 化 减 少 \EU1/lmr/m/n/12 GC\EU1/SimSun(0)/m/n/12 ：| [][]$[][][][][] []
+ []
+
+[93
+
+] [94
+
+]
 第十九章
-[91]
-Overfull \hbox (14.48503pt too wide) in paragraph at lines 1890--1891
+[95]
+Overfull \hbox (14.48503pt too wide) in paragraph at lines 1975--1976
 []\EU1/lmr/m/n/12 unity \EU1/SimSun(0)/m/n/12 代 码 中\EU1/lmr/m/n/12 ”[]\EU1/lmtt
 /m/n/12 com.Indra.Dark.UnityPlayerActivity\EU1/lmr/m/n/12 ” \EU1/SimSun(0)/m/n/
 12 为 真 实 的 包 名\EU1/lmr/m/n/12 . \EU1/SimSun(0)/m/n/12 类 名，|  即 \EU1/lmr/m/n/12 
 com.Indra.Dark
  []
 
-[92] [93] [94
+[96] [97] [98
 
 ]
 第二十章
-[95]
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 1920.
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 1920.
+[99]
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 2012.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 2012.
  (./U3D.aux)
-Package atveryend Info: Empty hook `AtVeryEndDocument' on input line 1920.
-Package atveryend Info: Empty hook `AtEndAfterFileList' on input line 1920.
+Package atveryend Info: Empty hook `AtVeryEndDocument' on input line 2012.
+Package atveryend Info: Empty hook `AtEndAfterFileList' on input line 2012.
 
 
 LaTeX Font Warning: Some font shapes were not available, defaults substituted.
 
  ) 
 Here is how much of TeX's memory you used:
- 45068 strings out of 493706
- 941117 string characters out of 6148913
+ 45102 strings out of 493706
+ 942006 string characters out of 6148913
  1023236 words of memory out of 5000000
- 47724 multiletter control sequences out of 15000+600000
- 12323 words of font info for 89 fonts, out of 8000000 for 9000
+ 47752 multiletter control sequences out of 15000+600000
+ 12331 words of font info for 90 fonts, out of 8000000 for 9000
  1328 hyphenation exceptions out of 8191
  63i,12n,75p,10411b,1789s stack positions out of 5000i,500n,10000p,200000b,80000s
 
-Output written on U3D.pdf (95 pages).
+Output written on U3D.pdf (99 pages).

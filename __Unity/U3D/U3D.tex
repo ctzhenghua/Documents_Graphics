@@ -1504,21 +1504,103 @@ using(WWW www =
 					\includegraphics[scale=0.7]{AssetBundle}
 					\caption{AssetBundle 组织形式}
 				\end{figure}
+		
+		\subsection{关键路径说明}
+			\paragraph{Resources -只读}
+				\begin{itemize}
+					\item Resources文件夹下的资源无论使用与否都会被打包
+					\item 资源会被压缩，转化成二进制
+					\item 打包后文件夹下的资源只读
+					\item 无法动态更改，无法做热更新
+					\item 使用\verb|Resources.Load|加载
+				\end{itemize}
+				
+			\paragraph{StreamingAssets -只读}
+				\begin{itemize}
+					\item 流数据的缓存目录
+					\item 文件夹下的资源无论使用与否都会被打包
+					\item 资源不会被压缩和加密
+					\item 打包后文件夹下的资源只读，主要存放二进制文件
+					\item 无法做热更新
+					\item WWW类加载（一般用CreateFromFile ，若资源是AssetBundle，依据其打包方式看是否是压缩的来决定）
+					\item 相对路径，具体路径依赖于实际平台
+				\end{itemize}
+				
+			\paragraph{Application.dataPath -只读}
+				\begin{itemize}
+					\item 游戏的数据文件夹的路径（例如在Editor中的Assets）
+					\item 无法做热更新
+					\item 很少用到
+				\end{itemize}
+			
+			\paragraph{Application.persistentDataPath -读写}
+				\begin{itemize}
+					\item 持久化数据存储目录的路径（ 沙盒目录，打包之前不存在 ）
+					\item 文件夹下的资源无论使用与否都会被打包
+					\item 运行时有效，可读写
+					\item 无内容限制，从StreamingAsset中读取二进制文件或从AssetBundle读取文件来写入PersistentDataPath中
+					\item 适合热更新
+				\end{itemize}
+		
+		\subsection{热更新原理}
+			\dirtree{%
+				.1 .
+				.2 将\textbf{StreamingAsset目录}下的文件，\textbf{全部复制}到目标平台（ios/Android）的\textbf{数据目录}中（第一次运行游戏时） .
+				.3 启动游戏前刷新所有文件夹,\textit{客户端文件}与\textit{服务上的文件}\textbf{对比MD5}，\textbf{记录不同的文件，下载对应的文件替换} .
+				.4 从数据目录加载AB（使用协程不使用线程） .
+				.5 实例化后卸载内存中的AB .
+			}
+				
+		
+			\url{https://www.cnblogs.com/fuyunzzy/p/6527120.html}
+		
+			\begin{figure}[H]
+				\centering
+				\includegraphics[scale=0.45]{AbUpdate}
+				\caption{热更目录关系}
+			\end{figure}
+			
+			\begin{figure}[H]
+				\centering
+				\includegraphics[scale=0.5]{AbUpdateProcess}
+				\caption{热更流程}
+			\end{figure}			
+			
+			
+			\paragraph{Notice}加载（和下载）AB的思路
+				\begin{itemize}
+					\item 建立一个队列，队列中有加载AB的请求时，去加载，加载完成后移出队列，加载下一个直到完成
+					\item Unity5.0之后的AB资源是分开的，加载时难以判断依赖关系，而且AB资源在内存中只能有一个，所以\textbf{使用单线程加载}
+				\end{itemize}
+		\subsection{AB包之间的关系}
+			\begin{figure}[H]
+				\centering
+				\includegraphics[scale=0.64]{AbRelative}
+				\caption{AB 包依赖关系说明}
+			\end{figure}
+			
+			画红圈的就是有依赖关系的，在Unity中，如何知道有哪些资源有依赖关系呐。	
+			
+			一般，我们每次Build后会\textbf{自动生成AndroidManifest.xml}，这里面就详细叙述了资源之间的依赖关系。
+			
+			\subsubsection{AssetBundle之间的依赖}	
+			
+				如果游戏中的某个资源被多个资源引用（例如游戏中的Material），单独创建AssetBundle会使多个AssetBundle都包含被引用的资源（这里跟flash编译选项中的链接选项有些像），从而导致资源变大，这里可以通过指定AssetBundle之间的依赖关系来减少最终AssetBundle文件的大小（把AssetBundle解耦）。
+								
+				具体方法是在创建AssetBundle之前调用BuildPipeline.PushAssetDependencies和BuildPipeline.PopAssetDependencies来创建AssetBundle之间的依赖关系，它的用法就是一个栈，后压入栈中的元素依赖栈内的元素。
+		
+			\subsubsection{加载依赖关系}
+				\begin{lstlisting}
+	 AssetBundle _manAB = AssetBundle.LoadFromFile(_manpath);
+     //固定格式
+     AssetBundleManifest manifest = _manAB.LoadAsset<AssetBundleManifest>("AssetBundleManifest");
+     string[] dependencies = manifest.GetAllDependencies(ABName);
+				\end{lstlisting}
 				
 		\subsection{创建}
 			通过编译管线BuildPipeline来创建AssetBundle文件，总共有三种方法,具体如下所示。
 			\subsubsection{BuildAssetBundle}
 				该API将编辑器中的任意类型的Assets打包成一个AssetBundle，适用于\textbf{对单个大规模场景的细分}。
-				
-				\begin{itemize}
-					\item 名称：\textbf{BuildPipeline.BuildAssetBundle}
-					\item 参数-1：\textbf{mainAsset} : Object
-					\item 参数-2：\textbf{assets} : Object[]
-					\item 参数-3：\textbf{pathName} : string
-					\item 参数-4：\textbf{options} : BuildAssetBundleOptions
-					\item 参数-5：\textbf{targetPlatform} : BuildTarget = BuildTarget.WebPlayer
-					\item 返回值：\textbf{bool}
-				\end{itemize}
 				
 				\textit{每一次调用BuildPipleLine.BuildAssetBundles时}，\textbf{将会生成一批AssetBundle文件}，具体数量根据传递AssetBundleBuild数组决定，\textbf{每一个AssetBundleBuild对象将对应\textit{一个AssetBundle}及\textit{一个同名+.manifest后缀文件}}。其中AssetBundle文件的后缀用户自行设置，比如".unity3d"，".ab"等等；而\verb|.manifest|文件是给人看的，\textbf{里面有这个AssetBundle的基本信息以及非常关键的资源列表}。
 				
@@ -1529,46 +1611,21 @@ using(WWW www =
 						\includegraphics[scale=0.54]{AssetBuild}
 						\caption{BuildAssetBundles示例}
 					\end{figure}
-					
-				\paragraph{BuildAssetBundleOptions}
-					\begin{itemize}
-						\item CompleteAssets
-						\item CollectDependencies
-						\item DisableWriteTypeTree
-						\item DeterministricAssetBundle
-						\item UncompressedAssetBundle
-					\end{itemize}
-	
-				\paragraph{AssetBundle之间的依赖}	
-					如果游戏中的某个资源被多个资源引用（例如游戏中的Material），单独创建AssetBundle会使多个AssetBundle都包含被引用的资源（这里跟flash编译选项中的链接选项有些像），从而导致资源变大，这里可以通过指定AssetBundle之间的依赖关系来减少最终AssetBundle文件的大小（把AssetBundle解耦）。
-					
-					具体方法是在创建AssetBundle之前调用BuildPipeline.PushAssetDependencies和BuildPipeline.PopAssetDependencies来创建AssetBundle之间的依赖关系，它的用法就是一个栈，后压入栈中的元素依赖栈内的元素。
 				
 			\subsubsection{BuildStreamedSceneAssetBundle}
 				该API将一个或多个场景中的资源及其所有依赖以流加载的方式打包成AssetBundle，一般适用于\textbf{多单个或多个场景进行集中打包}
-				
-				\begin{itemize}
-					\item 名称：\textbf{BuildPipeline.BuildStreamedSceneAssetBundle}
-					\item 参数-1：\textbf{level} : string[]
-					\item 参数-2：\textbf{locationPath} : string
-					\item 参数-3：\textbf{target} : BuildTarget
-					\item 返回值：\textbf{String}
-				\end{itemize}
-	
 				
 				
 			\subsubsection{BuildAssetBundleExplicitAssetNames}
 				该API功能与a相同，但创建的时候可以为每个Object指定一个自定义的名字。（一般不太常用）
 				
-				\begin{itemize}
-					\item 名称：\textbf{BuildPipeline.BuildAssetBundleExplicitAssetNames}
-					\item 参数-1：\textbf{assets} : Object[]
-					\item 参数-2：\textbf{assetNames} : string[]
-					\item 参数-3：\textbf{pathName} : string
-					\item 参数-4：\textbf{options} : BuildAssetBundleOptions
-					\item 参数-5：\textbf{targetPlatform} : BuildTarget
-					\item 返回值：\textbf{bool}
-				\end{itemize}			
+		\subsection{下载方式}
+			通过对比persistencePath 下的AB下的version 文件，决定需要下载什么。
+			\begin{figure}[H]
+				\centering
+				\includegraphics[scale=0.45]{AbDownload}
+				\caption{AbDownload 方式}
+			\end{figure}
 		
 		\subsection{AssetBundle压缩类型}
 			\begin{itemize}
@@ -1634,6 +1691,23 @@ using(WWW www =
 		}
 	}
 				\end{lstlisting}
+				
+				
+				
+				
+		\subsection{加载优先级}		
+			\textbf{首先}加载的是 \textbf{常驻公共资源}，
+			
+			\textbf{再}加载经常\textbf{反复资源},
+			
+			当然如果进入战斗（某个\textbf{特定模块}），就加载\textbf{非常驻公共资源}。
+			
+			\textbf{其他资源是当使用时加载}。	
+
+		
+		\subsection{缓存}
+			一般常驻资源，最好\underline{缓存}\textbf{把AB存为需要的GameObject}，例如子弹之类。
+
 		\subsection{使用}
 			当\verb|AssetBundle|被成功加载后，调用该\verb|Assebbundle|对象的\verb|LoadAsset|、\verb|LoadAllAssets|或对应的异步版本即可加载资源，也就是实例化对象。\textbf{如果这个对象已经被加载过，Unity并不会重复加载}，还记得之前所说的映射表么，被加载过的资源就好比挂上了数字牌的钥匙，直接对地址解引用即可。
 			
@@ -1652,7 +1726,15 @@ using(WWW www =
 					\bottomrule
 				\end{tabular}
 			\end{table}
-		\subsection{卸载}
+		\subsection{释放资源-卸载}
+			常驻资源肯定是不能unload(false)的，这边释放资源，释放的是其他资源。
+			
+			对于unload(false),还是unload(true). unload(false)适合反复使用资源，一次Load之后，再也不需要Load，\textbf{且与其他资源没有"被依赖关系"}。
+			
+			\begin{itemize}
+				\item \verb|unload(false)|,释放的是自身。
+				\item \verb|unload(true)|,释放的是自身以及自身所有的子节点。因此，unload（true），慎用。
+			\end{itemize}
 		
 		\subsection{内存模型}
 			\begin{figure}[H]
@@ -1920,5 +2002,12 @@ using(WWW www =
 	
 	Uniyt Shader 入门精要
 	
+	\section{Unity AB包 入门参考}
+		\begin{itemize}
+			\item 各目录关系\url{https://www.cnblogs.com/u3ddjw/p/6691932.html}
+			\item AB加载 \url{https://www.cnblogs.com/u3ddjw/p/9120430.html}
+			\item AB资源关系 \url{https://www.cnblogs.com/u3ddjw/p/9120430.html}
+		\end{itemize}
+		
 \end{document} 
  		    

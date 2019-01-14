@@ -274,63 +274,79 @@
 \@writefile{toc}{\contentsline {subsection}{\numberline {14.4.1}工作流程}{74}{subsection.14.4.1}}
 \@writefile{toc}{\contentsline {paragraph}{图例}{74}{section*.78}}
 \@writefile{lof}{\contentsline {figure}{\numberline {14.4}{\ignorespaces AssetBundle 组织形式}}{75}{figure.14.4}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {14.4.2}创建}{75}{subsection.14.4.2}}
-\@writefile{toc}{\contentsline {subsubsection}{BuildAssetBundle}{75}{section*.79}}
-\@writefile{lof}{\contentsline {figure}{\numberline {14.5}{\ignorespaces BuildAssetBundles示例}}{76}{figure.14.5}}
-\@writefile{toc}{\contentsline {paragraph}{BuildAssetBundleOptions}{76}{section*.80}}
-\@writefile{toc}{\contentsline {paragraph}{AssetBundle之间的依赖}{76}{section*.81}}
-\@writefile{toc}{\contentsline {subsubsection}{BuildStreamedSceneAssetBundle}{77}{section*.82}}
-\@writefile{toc}{\contentsline {subsubsection}{BuildAssetBundleExplicitAssetNames}{77}{section*.83}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {14.4.3}AssetBundle压缩类型}{77}{subsection.14.4.3}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {14.4.4}LZMA 与 LZ4压缩对比}{78}{subsection.14.4.4}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {14.4.5}选择策略}{78}{subsection.14.4.5}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {14.4.6}加载方式}{78}{subsection.14.4.6}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {14.4.7}使用}{79}{subsection.14.4.7}}
-\@writefile{lot}{\contentsline {table}{\numberline {14.1}{\ignorespaces AssetBundle 加载方式对比}}{80}{table.14.1}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {14.4.8}卸载}{80}{subsection.14.4.8}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {14.4.9}内存模型}{80}{subsection.14.4.9}}
-\@writefile{lof}{\contentsline {figure}{\numberline {14.6}{\ignorespaces AssetBundle 内存模型}}{80}{figure.14.6}}
-\@writefile{toc}{\contentsline {section}{\numberline {14.5}资源打包}{81}{section.14.5}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {14.5.1}降低包体准则}{81}{subsection.14.5.1}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {14.5.2}针对删除无用资源的方案}{82}{subsection.14.5.2}}
-\@writefile{toc}{\contentsline {section}{\numberline {14.6}参考}{82}{section.14.6}}
-\@writefile{toc}{\contentsline {chapter}{\numberline {第十五章\hspace  {0.3em}}Editor 扩展}{83}{chapter.15}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {14.4.2}关键路径说明}{75}{subsection.14.4.2}}
+\@writefile{toc}{\contentsline {paragraph}{Resources -只读}{75}{section*.79}}
+\@writefile{toc}{\contentsline {paragraph}{StreamingAssets -只读}{75}{section*.80}}
+\@writefile{toc}{\contentsline {paragraph}{Application.dataPath -只读}{76}{section*.81}}
+\@writefile{toc}{\contentsline {paragraph}{Application.persistentDataPath -读写}{76}{section*.82}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {14.4.3}热更新原理}{76}{subsection.14.4.3}}
+\@writefile{lof}{\contentsline {figure}{\numberline {14.5}{\ignorespaces 热更目录关系}}{77}{figure.14.5}}
+\@writefile{lof}{\contentsline {figure}{\numberline {14.6}{\ignorespaces 热更流程}}{77}{figure.14.6}}
+\@writefile{toc}{\contentsline {paragraph}{Notice}{78}{section*.83}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {14.4.4}AB包之间的关系}{78}{subsection.14.4.4}}
+\@writefile{lof}{\contentsline {figure}{\numberline {14.7}{\ignorespaces AB 包依赖关系说明}}{78}{figure.14.7}}
+\@writefile{toc}{\contentsline {subsubsection}{AssetBundle之间的依赖}{78}{section*.84}}
+\@writefile{toc}{\contentsline {subsubsection}{加载依赖关系}{79}{section*.85}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {14.4.5}创建}{79}{subsection.14.4.5}}
+\@writefile{toc}{\contentsline {subsubsection}{BuildAssetBundle}{79}{section*.86}}
+\@writefile{lof}{\contentsline {figure}{\numberline {14.8}{\ignorespaces BuildAssetBundles示例}}{80}{figure.14.8}}
+\@writefile{toc}{\contentsline {subsubsection}{BuildStreamedSceneAssetBundle}{80}{section*.87}}
+\@writefile{toc}{\contentsline {subsubsection}{BuildAssetBundleExplicitAssetNames}{80}{section*.88}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {14.4.6}下载方式}{80}{subsection.14.4.6}}
+\@writefile{lof}{\contentsline {figure}{\numberline {14.9}{\ignorespaces AbDownload 方式}}{80}{figure.14.9}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {14.4.7}AssetBundle压缩类型}{81}{subsection.14.4.7}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {14.4.8}LZMA 与 LZ4压缩对比}{81}{subsection.14.4.8}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {14.4.9}选择策略}{81}{subsection.14.4.9}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {14.4.10}加载方式}{81}{subsection.14.4.10}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {14.4.11}加载优先级}{82}{subsection.14.4.11}}
+\@writefile{lot}{\contentsline {table}{\numberline {14.1}{\ignorespaces AssetBundle 加载方式对比}}{83}{table.14.1}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {14.4.12}缓存}{83}{subsection.14.4.12}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {14.4.13}使用}{83}{subsection.14.4.13}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {14.4.14}释放资源-卸载}{83}{subsection.14.4.14}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {14.4.15}内存模型}{84}{subsection.14.4.15}}
+\@writefile{lof}{\contentsline {figure}{\numberline {14.10}{\ignorespaces AssetBundle 内存模型}}{84}{figure.14.10}}
+\@writefile{toc}{\contentsline {section}{\numberline {14.5}资源打包}{84}{section.14.5}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {14.5.1}降低包体准则}{85}{subsection.14.5.1}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {14.5.2}针对删除无用资源的方案}{85}{subsection.14.5.2}}
+\@writefile{toc}{\contentsline {section}{\numberline {14.6}参考}{86}{section.14.6}}
+\@writefile{toc}{\contentsline {chapter}{\numberline {第十五章\hspace  {0.3em}}Editor 扩展}{87}{chapter.15}}
 \@writefile{lof}{\addvspace {10\p@ }}
 \@writefile{lot}{\addvspace {10\p@ }}
-\@writefile{toc}{\contentsline {section}{\numberline {15.1}流程}{83}{section.15.1}}
-\@writefile{toc}{\contentsline {section}{\numberline {15.2}在编辑器上增加一个MenuItem}{83}{section.15.2}}
-\@writefile{toc}{\contentsline {section}{\numberline {15.3}创建一个对话框}{83}{section.15.3}}
-\@writefile{toc}{\contentsline {section}{\numberline {15.4}扩展Inspector面板}{83}{section.15.4}}
-\@writefile{toc}{\contentsline {section}{\numberline {15.5}编辑器插件常用函数}{83}{section.15.5}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {15.5.1}资源导入回调函数}{83}{subsection.15.5.1}}
-\@writefile{toc}{\contentsline {section}{\numberline {15.6}一些常用的Inspector属性设置}{84}{section.15.6}}
-\@writefile{toc}{\contentsline {section}{\numberline {15.7}参考}{84}{section.15.7}}
-\@writefile{toc}{\contentsline {chapter}{\numberline {第十六章\hspace  {0.3em}}跨平台发布apk}{85}{chapter.16}}
+\@writefile{toc}{\contentsline {section}{\numberline {15.1}流程}{87}{section.15.1}}
+\@writefile{toc}{\contentsline {section}{\numberline {15.2}在编辑器上增加一个MenuItem}{87}{section.15.2}}
+\@writefile{toc}{\contentsline {section}{\numberline {15.3}创建一个对话框}{87}{section.15.3}}
+\@writefile{toc}{\contentsline {section}{\numberline {15.4}扩展Inspector面板}{87}{section.15.4}}
+\@writefile{toc}{\contentsline {section}{\numberline {15.5}编辑器插件常用函数}{87}{section.15.5}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {15.5.1}资源导入回调函数}{87}{subsection.15.5.1}}
+\@writefile{toc}{\contentsline {section}{\numberline {15.6}一些常用的Inspector属性设置}{88}{section.15.6}}
+\@writefile{toc}{\contentsline {section}{\numberline {15.7}参考}{88}{section.15.7}}
+\@writefile{toc}{\contentsline {chapter}{\numberline {第十六章\hspace  {0.3em}}跨平台发布apk}{89}{chapter.16}}
 \@writefile{lof}{\addvspace {10\p@ }}
 \@writefile{lot}{\addvspace {10\p@ }}
-\@writefile{toc}{\contentsline {section}{\numberline {16.1}流程}{85}{section.16.1}}
-\@writefile{toc}{\contentsline {section}{\numberline {16.2}Apk 安装常见错误}{85}{section.16.2}}
-\@writefile{toc}{\contentsline {chapter}{\numberline {第十七章\hspace  {0.3em}}Unity 优化经验@实况}{87}{chapter.17}}
+\@writefile{toc}{\contentsline {section}{\numberline {16.1}流程}{89}{section.16.1}}
+\@writefile{toc}{\contentsline {section}{\numberline {16.2}Apk 安装常见错误}{89}{section.16.2}}
+\@writefile{toc}{\contentsline {chapter}{\numberline {第十七章\hspace  {0.3em}}Unity 优化经验@实况}{91}{chapter.17}}
 \@writefile{lof}{\addvspace {10\p@ }}
 \@writefile{lot}{\addvspace {10\p@ }}
-\@writefile{toc}{\contentsline {section}{\numberline {17.1}加载时间}{87}{section.17.1}}
-\@writefile{toc}{\contentsline {section}{\numberline {17.2}内存分类}{87}{section.17.2}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {17.2.1}内存问题}{87}{subsection.17.2.1}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {17.2.2}内存工具}{88}{subsection.17.2.2}}
-\@writefile{toc}{\contentsline {chapter}{\numberline {第十八章\hspace  {0.3em}}GC-Garbage Collection}{89}{chapter.18}}
+\@writefile{toc}{\contentsline {section}{\numberline {17.1}加载时间}{91}{section.17.1}}
+\@writefile{toc}{\contentsline {section}{\numberline {17.2}内存分类}{91}{section.17.2}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {17.2.1}内存问题}{91}{subsection.17.2.1}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {17.2.2}内存工具}{92}{subsection.17.2.2}}
+\@writefile{toc}{\contentsline {chapter}{\numberline {第十八章\hspace  {0.3em}}GC-Garbage Collection}{93}{chapter.18}}
 \@writefile{lof}{\addvspace {10\p@ }}
 \@writefile{lot}{\addvspace {10\p@ }}
-\@writefile{toc}{\contentsline {section}{\numberline {18.1}}{89}{section.18.1}}
-\@writefile{toc}{\contentsline {section}{\numberline {18.2}}{89}{section.18.2}}
-\@writefile{toc}{\contentsline {section}{\numberline {18.3}}{89}{section.18.3}}
-\@writefile{toc}{\contentsline {chapter}{\numberline {第十九章\hspace  {0.3em}}调试技巧}{91}{chapter.19}}
+\@writefile{toc}{\contentsline {section}{\numberline {18.1}}{93}{section.18.1}}
+\@writefile{toc}{\contentsline {section}{\numberline {18.2}}{93}{section.18.2}}
+\@writefile{toc}{\contentsline {section}{\numberline {18.3}}{93}{section.18.3}}
+\@writefile{toc}{\contentsline {chapter}{\numberline {第十九章\hspace  {0.3em}}调试技巧}{95}{chapter.19}}
 \@writefile{lof}{\addvspace {10\p@ }}
 \@writefile{lot}{\addvspace {10\p@ }}
-\@writefile{toc}{\contentsline {section}{\numberline {19.1}以父类为基点}{91}{section.19.1}}
-\@writefile{toc}{\contentsline {section}{\numberline {19.2}Android 与 Unity 互相调用}{91}{section.19.2}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {19.2.1}Unity 调用 Android 非静态方法}{91}{subsection.19.2.1}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {19.2.2}Unity 调用 Android 静态方法}{92}{subsection.19.2.2}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {19.2.3}Android 调用 Unity}{92}{subsection.19.2.3}}
-\@writefile{toc}{\contentsline {chapter}{\numberline {第二十章\hspace  {0.3em}}书籍推荐}{95}{chapter.20}}
+\@writefile{toc}{\contentsline {section}{\numberline {19.1}以父类为基点}{95}{section.19.1}}
+\@writefile{toc}{\contentsline {section}{\numberline {19.2}Android 与 Unity 互相调用}{95}{section.19.2}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {19.2.1}Unity 调用 Android 非静态方法}{95}{subsection.19.2.1}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {19.2.2}Unity 调用 Android 静态方法}{96}{subsection.19.2.2}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {19.2.3}Android 调用 Unity}{96}{subsection.19.2.3}}
+\@writefile{toc}{\contentsline {chapter}{\numberline {第二十章\hspace  {0.3em}}书籍推荐}{99}{chapter.20}}
 \@writefile{lof}{\addvspace {10\p@ }}
 \@writefile{lot}{\addvspace {10\p@ }}
+\@writefile{toc}{\contentsline {section}{\numberline {20.1}Unity AB包 入门参考}{99}{section.20.1}}
