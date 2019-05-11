@@ -210,6 +210,7 @@
 		
 		
 	\section{Unity 协程}
+		\url{https://blog.csdn.net/coffeecato/article/details/52153485}
 		\subsection{开启方式}
 			协程：协同程序，在主程序运行的同时，开启另外一段逻辑处理，来协同当前程序的执行。
 			
@@ -255,14 +256,26 @@
 				\color{blue}相当于：\textbf{return; + 暂停}\color{black}
 				
 		\subsection{执行原理}
-			Unity的协程实在\textbf{每帧结束之后}去\verb|检测yield的条件|是否满足.
+			Unity的协程实在\textbf{每帧结束之后}，处理\verb|gameObject| 中的协程，去\verb|检测yield的条件|是否满足.
 		
-			协程函数的返回值是\verb|IEnumerator|,它是一个迭代器，\textbf{可以把它当成执行一个序列的某个节点的指针}，它提供了两个重要的接口，分别是\verb|Current|(返回当前指向的元素)和\verb|MoveNext()|(将指针向后移动一个单位，\textit{如果移动成功，则返回true})
+			当一个协程启动时，本质创建迭代器对象，调用\verb|MoveNext()|方法，执行到yield 暂时挂起退出，待满足条件后再次调用\verb|MoveNext()|执行后续代码，直至遇到下一个yield 为止，如此循环至函数结束。
+			
+			\textbf{那么yield return 可以这样理解}：\verb|yield return|是“\textit{停止执行方法，并且在下一帧从这里重新开始}”
+			
+			协程函数的返回值是\verb|IEnumerator|,它是一个迭代器，\textbf{可以把它当成执行一个序列的某个节点的指针}，它提供了两个重要的接口，分别是\verb|Current|(返回当前指向的元素)和\verb|MoveNext()|(将指针向后移动一个\textbf{单位}，\textit{如果移动成功，则返回true})
 			
 			\verb|yield|关键词\textbf{用来声明序列中的下一个值或者是一个无意义的值}，如果使用\verb|yield return x|(x是指一个具体的对象或者数值)的话，那么\verb|MoveNext|返回为\verb|true|并且\verb|Current|被赋值为\verb|x|,如果使用\verb|yield break|使得\verb|MoveNext()|返回为\verb|false|
 			
 			如果\verb|MoveNext|函数返回为\verb|true|\textbf{意味着协程的执行条件被满足，则能够从当前的位置继续往下执行}。否则不能从当前位置继续往下执行。	
+			
+			
 
+			\subparagraph{总结}
+				Unity的协程实在\textbf{每帧结束之后}，处理\verb|gameObject| 中的协程, 这个时候执行MoveNext() 判断是否能够从当前的位置继续往下执行。
+				
+				其实，这个\verb|MoveNext()| 的作用就是判断\verb|epoll| 中的等待事件有没有完成，可不可以执行下面的代码，如果可以执行，则执行到下一个需要等待的地方。
+			
+			
 	\paragraph{委托+协程}
 		\url{https://blog.csdn.net/qq992817263/article/details/51514449}
 		
