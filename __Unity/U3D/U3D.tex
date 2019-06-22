@@ -211,6 +211,14 @@
 		
 	\section{Unity 协程}
 		\url{https://blog.csdn.net/coffeecato/article/details/52153485}
+		
+		原理剖析：\url{https://blog.csdn.net/qiudesuo/article/details/84551180}
+		
+		\url{https://blog.csdn.net/tom_221x/article/details/78546037}
+		
+		
+		之前一定得理解 IEnumerable, IEnumerator. 参考原理剖析第一部分。
+		
 		\subsection{开启方式}
 			协程：协同程序，在主程序运行的同时，开启另外一段逻辑处理，来协同当前程序的执行。
 			
@@ -275,6 +283,26 @@
 				
 				其实，这个\verb|MoveNext()| 的作用就是判断\verb|epoll| 中的等待事件有没有完成，可不可以执行下面的代码，如果可以执行，则执行到下一个需要等待的地方。
 			
+				函数内有多少个 \verb|yield return |在对应的 \verb|MoveNext()| 就会返回多少次 true （不包含嵌套）。另外非常重要的一点的是：同一个函数内的其他代码（不是 \verb|yield return |语句）会被移到 \verb|MoveNext| 中去，也就是说，每次 \verb|MoveNext| 都会顺带执行同一个函数中 yield return 之前的代码。
+				
+			    对于Unity 引擎的 YieldInstruction 实现，其实就可以看着一个 函数体，这个函数体每帧会实现去 check MoveNext 是否返回 false 。
+			    
+			    \begin{lstlisting}
+yield retrun new WaitForSeconds(2f);
+
+//上面这行代码的伪代码实现:
+
+private float elapsedTime;
+private float time;
+private void MoveNext()
+{
+        elapesedTime += Time.deltaTime;
+        
+        if(time <= elapsedTime)
+                return false;
+        else return true;
+}			    
+			    \end{lstlisting}	
 			
 	\paragraph{委托+协程}
 		\url{https://blog.csdn.net/qq992817263/article/details/51514449}
