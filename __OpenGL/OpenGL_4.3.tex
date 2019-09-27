@@ -1,31 +1,59 @@
-\documentclass[UTF8,a4paper,8pt]{ctexbook} 
+\documentclass[UTF8,a4paper,12pt]{ctexbook} 
 
- \usepackage{graphicx}%学习插入图
- \usepackage{verbatim}%学习注释多行
- \usepackage{booktabs}%表格
- \usepackage{geometry}%图片
- \usepackage{amsmath} 
- \usepackage{amssymb}
- \usepackage{listings}%代码
- \usepackage{xcolor}  %颜色
- \usepackage{enumitem}%列表格式
- \usepackage{hyperref}
- \CTEXsetup[format+={\flushleft}]{section}
+\usepackage{graphicx}%学习插入图
+\usepackage{verbatim}%学习注释多行
+\usepackage{booktabs}%表格
+\usepackage{geometry}%图片
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{listings}%代码
+\usepackage{xcolor}  %颜色
+\usepackage{enumitem}%列表格式
+\setenumerate[1]{itemsep=0pt,partopsep=0pt,parsep=\parskip,topsep=5pt}
+\setitemize[1]{itemsep=0pt,partopsep=0pt,parsep=\parskip,topsep=5pt}
+\setdescription{itemsep=0pt,partopsep=0pt,parsep=\parskip,topsep=5pt}
+\usepackage{tcolorbox}
+\usepackage{algorithm}  %format of the algorithm
+\usepackage{algorithmic}%format of the algorithm
+\usepackage{multirow}   %multirow for format of table
+\usepackage{tabularx} 	%表格排版格式控制
+\usepackage{array}	%表格排版格式控制
+\usepackage{hyperref} %超链接 \url{URL}
+\usepackage{tikz}
+\usepackage{dirtree}
 
+\CTEXsetup[format+={\flushleft}]{section}
 
-\geometry{left=1.6cm,right=1.8cm,top=2cm,bottom=1.7cm} %设置文章宽度
+%%%% 设置图片目录
 \graphicspath{{figure/}}
 
+%%%% 段落首行缩进两个字 %%%%
+\makeatletter
+\let\@afterindentfalse\@afterindenttrue
+\@afterindenttrue
+\makeatother
+\setlength{\parindent}{2em}  %中文缩进两个汉字位
+
+%%%% 下面的命令重定义页面边距，使其符合中文刊物习惯 %%%%
+\addtolength{\topmargin}{-54pt}
+\setlength{\oddsidemargin}{0.63cm}  % 3.17cm - 1 inch
+\setlength{\evensidemargin}{\oddsidemargin}
+\setlength{\textwidth}{14.66cm}
+\setlength{\textheight}{24.00cm}    % 24.62
+
+%%%% 下面的命令设置行间距与段落间距 %%%%
+\linespread{1.0}
+\setlength{\parskip}{0.5\baselineskip}
+\geometry{left=1.6cm,right=1.8cm,top=2cm,bottom=1.7cm} %设置文章宽度
 \pagestyle{plain} 		  %设置页面布局
-\author{\kaishu 郑华}
-\title{\heiti OpenGL4.3  学习笔记}
+
 %代码效果定义
 \definecolor{mygreen}{rgb}{0,0.6,0}
 \definecolor{mygray}{rgb}{0.5,0.5,0.5}
 \definecolor{mymauve}{rgb}{0.58,0,0.82}
 \lstset{ %
 	backgroundcolor=\color{white},   % choose the background color
-	basicstyle=\footnotesize\ttfamily,        % size of fonts used for the code
+	basicstyle=\footnotesize\ttfamily,      % size of fonts used for the code
 	%stringstyle=\color{codepurple},
 	%basicstyle=\footnotesize,
 	%breakatwhitespace=false,         
@@ -37,7 +65,7 @@
 	%showspaces=false,                
 	%showstringspaces=false,
 	%showtabs=false,        
-	columns=fullflexible,
+	columns=fixed,
 	breaklines=true,                 % automatic line breaking only at whitespace
 	captionpos=b,                    % sets the caption-position to bottom
 	tabsize=4,
@@ -45,13 +73,14 @@
 	escapeinside={\%*}{*)},          % if you want to add LaTeX within your code
 	keywordstyle=\color{blue},       % keyword style
 	stringstyle=\color{mymauve}\ttfamily,     % string literal style
-	frame=single,					%tb top and bottom; L left double line
-	xleftmargin=.06\textwidth, 
-	%xrightmargin=.1\textwidth,
+	frame=L,
+	xleftmargin = .04\textwidth,
 	rulesepcolor=\color{red!20!green!20!blue!20},
 	% identifierstyle=\color{red},
 	language=c++,
 }
+ \author{\kaishu 郑华}
+ \title{\heiti OpenGL 学习笔记}
 
 \begin{document}          %正文排版开始
  	\maketitle
@@ -85,158 +114,269 @@
 		    \end{figure}
     \section{参考文献} 
     \url{http://johnhany.net/2015/03/environment-for-opengl-4-with-vs2012/}    
+    
+    win10+nugPackage:\url{https://www.cnblogs.com/flylinmu/p/7823019.html}
+    
+
 
 \newpage
 \chapter{入门绘图}
-	\section{第一个三角形}
-		这篇教程中我们依然使用那个单位化的盒子模型。可见的点必须在这个盒子内，这样他们将可以通过视窗的变换映射到窗口中可见的坐标上。当俯视Z坐标轴的负方向时这个单位化盒子看上去如下图：
-			\begin{figure}[htbp]
-				\begin{center}
-					\includegraphics[scale = 0.5]{unitPic.png}
-					\caption{单位示例}
-				\end{center}
-			\end{figure}
-			
-		点(-1.0, -1.0)映射到盒子的左下角，（-1.0，1.0）映射到左上角等等。如果将三角形的顶点往盒子外扩展移到盒子外，这个三角形将会被裁剪，只能看到三角形的一部分。
-    
-    
-	   \subparagraph{核心代码}\verb|-|
-	   
-		  \verb|顶点数据->|  
-		  \begin{lstlisting}
-	Vector3f Vertices[3]; 
-	Vertices[0] = Vector3f(-1.0f, -1.0f, 0.0f); 
-	Vertices[1] = Vector3f(1.0f, -1.0f, 0.0f); 
-	Vertices[2] = Vector3f(0.0f, 1.0f, 0.0f); 
-		  \end{lstlisting} 
-		  
-		  \verb|绘图方式|
-		  \begin{lstlisting}
-	glDrawArrays(GL_TRIANGLES, 0, 3); 
-		  \end{lstlisting}
-		  
-		  
-		  \verb|示例代码|
-		  \begin{lstlisting}
-	#include <stdio.h>
-	#include <GL/glew.h>        // GLEW扩展库
-	#include <GLUT/freeglut.h>  // freeGLUT图形库
-	#include "ogldev_math_3d.h" // 用于OpenGL的3d数学库
-	
-	GLuint VBO;
-	
-	/**
-	* 渲染回调函数
-	*/
-	static void RenderScenceCB(){
-		// 清空颜色缓存
-		glClear(GL_COLOR_BUFFER_BIT);
-		
-		// 开启顶点属性
-		glEnableVertexAttribArray(0);
-		// 绑定GL_ARRAY_BUFFER缓冲器
-		glBindBuffer(GL_ARRAY_BUFFER, VBO);
-		// 告诉管线怎样解析bufer中的数据
-		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
-		
-		// 开始绘制几何图形(绘制一个三角形，三个顶点)
-		glDrawArrays(GL_TRIANGLES, 0, 3);
-		
-		//  禁用顶点数据
-		glDisableVertexAttribArray(0);
-		
-		// 交换前后缓存
-		glutSwapBuffers();
-		
-		glFlush();
-	}
-	
-	/**
-	* 创建顶点缓冲器
-	*/
-	static void CreateVertexBuffer()
-	{
-		// 创建含有3个顶点的顶点数组
-		Vector3f Vertices[3];
-		// 三角形的三个顶点位置
-		Vertices[0] = Vector3f(-1.0f, -1.0f, 0.0f);
-		Vertices[1] = Vector3f(1.0f, -1.0f, 0.0f);
-		Vertices[2] = Vector3f(0.0f, 1.0f, 0.0f);
-		
-		// 创建缓冲器
-		glGenBuffers(1, &VBO);
-		// 绑定GL_ARRAY_BUFFER缓冲器
-		glBindBuffer(GL_ARRAY_BUFFER, VBO);
-		// 绑定顶点数据
-		glBufferData(GL_ARRAY_BUFFER, sizeof(Vertices), Vertices, GL_STATIC_DRAW);
-	}
-	
-	/**
-	* 主函数
-	*/
-	int main(int argc, char ** argv) {
-		
-		// 初始化GLUT
-		glutInit(&argc, argv);
-		
-		// 显示模式：双缓冲、RGBA
-		glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA);
-		
-		// 窗口设置
-		glutInitWindowSize(480, 320);      // 窗口尺寸
-		glutInitWindowPosition(100, 100);  // 窗口位置
-		glutCreateWindow("Tutorial 03");   // 窗口标题
-		
-		// 开始渲染
-		glutDisplayFunc(RenderScenceCB);
-		
-		// 缓存清空后的颜色值
-		glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
-		
-		// 检查GLEW是否就绪，必须要在GLUT初始化之后！
-		GLenum res = glewInit();
-		if (res != GLEW_OK) {
-			fprintf(stderr, "Error: '%s'\n", glewGetErrorString(res));
-			return 1;
-		}
-		
-		// 创建顶点缓冲器
-		CreateVertexBuffer();
-		
-		// 通知开始GLUT的内部循环
-		glutMainLoop();
-		
-		return 0;
-	}
-		  \end{lstlisting}
-	
-	\section{渲染管线}
-		\subparagraph{参考}\url{http://blog.csdn.net/cjneo/article/details/50538033}
-		\begin{figure}[h]
+	完全指南：\url{https://www.jianshu.com/p/6bda18e953f6}
+
+	\section{OpenGL 框架结构}
+		\begin{figure}[H]
 			\centering
-			\includegraphics[scale = 0.4]{OpenGLPipeline.png}
-			\includegraphics[scale = 0.8]{OpenGLPipeline1.png}
-			\caption{OpenGL 渲染管线}
+			\includegraphics[width=.91\linewidth]{openGlArch}
+			\caption{基本渲染框架}
 		\end{figure}
-	
-		\begin{enumerate}
-			\item \textbf{Vertex Processor数据}：顶点数据、索引数据\verb|->|负责执行处理经过管线的每一个顶点的vertex shader顶点着色代码
-			
-				\verb|--|这里顶点着色器还不知道渲染的图元的topology拓扑结构是怎样的，另外不可以在顶点着色处理器阶段删除丢弃顶点，每个顶点有且只有一次经过顶点处理器，要经过变换后继续进入管线的下一步。
-				
-			\item \textbf{Geometry Processor顶点渲染}：链接成具体的图形拓扑结构，如点、线、面
-			
-			\item \textbf{Clipper}：它将所有图元裁剪到那个单位化的盒子模型内，它另外还会将图元裁剪在Z轴的远近平面范围内（也就是说太远或太近都不显示）。同时也提供用户自定义的裁剪平面进行自定义的裁剪。经过裁剪后保留下来的顶点现在会被映射到屏幕空间坐标系上，光栅器将会根据他们的拓扑结构把他们渲染到屏幕上。
-			
-				\verb|--|这一步更像是视图变换，选取出可以显示的部分。
-				
-			\item \textbf{Fragment Shader}：顶点颜色、输出带色图形[默认白色]
-		\end{enumerate}
-	
-		上面这三个可编程阶段（vertex processor顶点处理、geometry processor几何处理、fragment processor像素处理）\textbf{都是可选的而不是必须}的。
 		
-		\textbf{如果不在这几个处理器上绑定自己的shaer着色器}，那么就会执行一些默认的函数功能，也就是备胎着色器。
-		  
+	
+	\section{第一个三角形}
+	
+		\subsection{流程}
+			任何事物都在3D空间中，而屏幕和窗口却是2D像素数组，这导致OpenGL的大部分工作都是关于把3D坐标转变为适应你屏幕的2D像素。
+			
+			3D坐标转为2D坐标的处理过程是由OpenGL的图形\textbf{渲染管线}（Graphics Pipeline,指的是\textbf{一堆原始图形数据}途经一个输送管道，期间\textbf{经过各种变化处理}最终\textit{出现在屏幕的过程}）管理的。图形渲染管线可以被划分为两个主要部分：
+				\begin{itemize}[itemindent = 1em]
+					\item 第一部分把你的3D坐标转换为2D坐标
+					\item 第二部分是把2D坐标转变为实际的有颜色的像素
+				\end{itemize}
+			
+			\begin{figure}[H]
+				\centering
+				\includegraphics[width=.93\linewidth]{PipelineBase}
+				\caption{Graphics Pipeline}
+			\end{figure}
+
+			
+			因而对应的，在第一部分需要输入\textbf{顶点数据}。而第二部分则需要\textbf{第一部分转换坐标后的点}+\textbf{颜色处理程序}。
+			
+		
+		\subsection{顶点数据-输入-GPU显存}
+			
+			\paragraph{概述}
+				首先，我们以数组的形式传递3个3D坐标作为图形渲染管线的输入，用来表示一个三角形，这个数组叫做顶点数据(Vertex Data)；顶点数据是一系列顶点的集合。
+				\textbf{顶点数据buffer}。
+				
+				一个顶点(Vertex)是一个3D坐标的数据的集合。顶点数据是用顶点属性(Vertex Attribute)表示的，它可以包含任何我们想用的数据。
+				
+				任何一个绘制指令的调用都需要将\textbf{图元信息}传递给OpenGL。这是其中的几个：\verb|GL_POINTS|、\verb|GL_TRIANGLES|、\verb|GL_LINE_STRIP|。
+				
+			\paragraph{API 示例}
+			
+				\subparagraph{准备顶点数据}
+					首先需要定义顶点数据，\textit{OpenGL仅当3D坐标在3个轴（x、y和z）上都为-1.0到1.0的范围内时才处理它}。所有在所谓的\textbf{标准化设备坐标}(Normalized Device Coordinates)范围内的坐标才会最终呈现在屏幕上（在这个范围以外的坐标都不会显示）。
+					
+					\begin{lstlisting}
+float vertices[] = {
+    -0.5f, -0.5f, 0.0f,
+     0.5f, -0.5f, 0.0f,
+     0.0f,  0.5f, 0.0f
+};				
+					\end{lstlisting}
+					
+					以后，需要把它\textit{作为输入}\textbf{发送给}图形渲染管线的第一个处理阶段：顶点着色器，它会在\textbf{GPU}上创建内存用于储存我们的顶点数据。
+					
+					我们通过\textbf{顶点缓冲对象(Vertex Buffer Objects, VBO)}管理这个内存，它会在GPU内存（通常被称为显存）中储存大量顶点。使用这些缓冲对象的好处是我们可以一次性的发送一大批数据到显卡上，而不是每个顶点发送一次。
+					
+					OpenGL中的对象，都有一个独一无二的ID。所以对于顶点缓冲对象，同样具有一个对象ID，可以使用glGenBuffers函数生成一个VBO \textit{空}对象(\textit{未初始化、未绑定数据})，并获取其对象ID：
+					
+					\begin{lstlisting}
+unsigned int VBO;
+glGenBuffers(1, &VBO);				
+					\end{lstlisting}
+					
+					OpenGL中有很多缓存对象，虽然它给了我们一个ID，但不知道这个ID是用来表示什么缓存对象的。所以需要手动明确告诉它，初始化它的类型字段(用途)，这是一个顶点缓存对象。顶点缓冲对象的缓冲类型是\verb|GL_ARRAY_BUFFER|。OpenGL\textit{允许同时绑定多个缓冲}，\textbf{只要}它们是不同的缓冲类型。使用\textbf{glBindBuffer()函数}把新创建的\textit{缓冲对象}绑定到\verb|GL_ARRAY_BUFFER|目标上.
+					
+					\begin{lstlisting}
+glBindBuffer(GL_ARRAY_BUFFER, VBO);
+					\end{lstlisting}
+					
+					\underline{从这一刻起}，我们\textbf{使用的任何}（在\verb|GL_ARRAY_BUFFER|\textit{目标上的}）\textbf{缓冲调用}\underline{都会}\textit{用来配置当前绑定的缓冲}(VBO)。然后我们可以调用\textbf{glBufferData()函数}，它会把之前定义的顶点数据复制到缓冲的显存中。
+					
+					\begin{lstlisting}
+glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);					
+					\end{lstlisting}
+								
+							
+				\subparagraph{设置如何解释顶点数据}
+					\textit{顶点着色器}\underline{允许}我们指定\textit{任何形式}的\textit{顶点属性}为\textbf{输入}。这使其具有很强的灵活性的同时，它还的确意味着我们必须手动指定输入数据的哪一个部分对应顶点着色器的哪一个顶点属性。所以，我们\textbf{必须在渲染前(绘画前)}\underline{确定或设置好}OpenGL解释顶点数据的\textbf{模版}。	
+						
+					这个工作由\textbf{glVertexAttribPointer()函数}完成。	
+					
+					\begin{lstlisting}
+glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+					\end{lstlisting}
+					
+					\begin{itemize}
+						\item 第一个参数指定顶点属性位置，与顶点着色器中layout(location=0)对应。
+						\item 第二个参数指定顶点属性大小。顶点属性是一个vec3，它由3个值组成，所以大小是3。
+						\item 第三个参数指定数据类型。
+						\item 第四个参数定义是否希望数据被标准化。
+						\item 第五个参数是步长（Stride），指定在连续的顶点属性之间的间隔，\textit{单位字节}。
+						\item 第六个参数表示我们的位置数据在缓冲区起始位置的偏移量。
+					\end{itemize}
+					
+					顶点属性\verb|glVertexAttribPointer|默认是关闭的，使用时要以顶点属性位置值为参数调用\verb|glEnableVertexAttribArray()|开启。
+					
+				
+				\subparagraph{VAO-属性保存}	
+					VBO保存了\underline{一个模型}的\textit{顶点属性信息}，每次绘制模型之前需要绑定顶点的所有信息，当数据量很大时，重复这样的动作变得非常麻烦。
+					
+					VAO可以把这些所有的配置都存储在一个对象中，\textbf{每次绘制模型时，只需要绑定这个VAO对象就可以了}。
+					
+					OpenGL的核心模式\textbf{要求我们使用VAO}，所以它知道该如何处理我们的顶点输入。\textbf{如果我们绑定VAO失败，OpenGL会拒绝绘制任何东西}。
+					
+					VAO是一个保存了 顶点数据的格式 以及 顶点数据所需的VBO对象的引用，简言之，一个顶点数组对象会储存以下这些内容：
+					\begin{enumerate}
+						\item \verb|glEnableVertexAttribArray|和\verb|glDisableVertexAttribArray|的调用
+						\item 通过\verb|glVertexAttribPointer()|设置的 \textbf{顶点属性格式配置}。
+						\item 与顶点属性 关联的 \textbf{顶点缓冲对象(VBO)}
+					\end{enumerate}
+					
+					
+					\begin{figure}[H]
+						\centering
+						\includegraphics[width=\linewidth]{VBO_Attr}
+						\caption{VAO 数据模型示例}
+					\end{figure}
+					
+							
+		\subsection{GPU-顶点处理}
+			\paragraph{概述}		
+				图形渲染管线的第一个部分是\textbf{顶点着色器(Vertex Shader)}，它把一个单独的\textbf{顶点作为输入}。顶点着色器主要的目的是\textbf{把3D坐标转为另一种3D坐标}（后面会解释），\textit{同时}顶点着色器允许我们\textbf{对顶点属性进行一些基本处理}。
+			
+			\paragraph{API 示例}
+				第一件事是用着色器语言GLSL(OpenGL Shading Language)\textbf{编写顶点着色器}，然后\textbf{编译这个着色器}，最后\textbf{在程序中使用}它。
+				
+				\subparagraph{编写顶点着色器}\verb|->|
+				
+					\begin{lstlisting}
+#version 330 core
+layout (location = 0) in vec3 aPos;
+
+void main()
+{
+    gl_Position = vec4(aPos.x, aPos.y, aPos.z, 1.0);
+}				
+					\end{lstlisting}
+					
+					使用\textbf{in关键字}，在顶点着色器中\textit{声明所有的输入顶点属性}(\textit{Input Vertex Attribute})。现在我们只关心位置(Position)数据，所以只需要一个顶点属性。GLSL有一个\textbf{向量数据类型}，它包含\textit{1到4个float分量}，包含的数量可以\textit{从它的后缀数字看出来}。由于每个顶点都有一个3D坐标，就创建一个vec3输入变量aPos。同样也通过layout (location = 0)设定了输入变量的位置值(Location)
+					
+					为了设置顶点着色器的\textbf{输出}，必须\textbf{把位置数据赋值给预定义的gl\_Position变量}，它在幕后是vec4类型的。\textbf{在main函数的最后，将}\verb|gl_Position|\textbf{设置的值会成为该顶点着色器的\underline{输出}}。由于我们的输入是一个3分量的向量，我们必须把它转换为4分量的。我们可以把vec3的数据作为vec4构造器的参数，同时把w分量设置为1.0f
+				
+				
+				\subparagraph{编译着色器}\verb|->|
+				
+					\begin{lstlisting}
+unsigned int vertexShader;
+vertexShader = glCreateShader(GL_VERTEX_SHADER);
+glShaderSource(vertexShader, 1, &vertexShaderSource, NULL);
+glCompileShader(vertexShader);	
+
+int  success;
+char infoLog[512];
+glGetShaderiv(vertexShader, GL_COMPILE_STATUS, &success);	
+if(!success)
+{
+    glGetShaderInfoLog(vertexShader, 512, NULL, infoLog);
+    std::cout << "ERROR::SHADER::VERTEX::COMPILATION_FAILED\n" << infoLog << std::endl;
+}				
+					\end{lstlisting}
+				
+				
+				
+		\subsection{GPU-图元装配}
+			\paragraph{概述}		
+				\textbf{图元装配(Primitive Assembly)阶段}\textit{将顶点着色器输出的所有顶点作为输入}（如果是\verb|GL_POINTS|，那么就是一个顶点），\textbf{将所有的点装配成指定图元的形状}；本节例子中是一个三角形。
+			
+				图元装配阶段的输出会传递给\textbf{几何着色器(Geometry Shader)}。几何着色器把图元形式的\textbf{一系列顶点的集合}作为输入，它可以通过\textit{产生新顶点构造出新的（或是其它的）图元来生成其他形状}。
+			
+			\paragraph{API 示例}
+				这个一般在最后绘画的时候将该参数传递进去。
+				
+				\begin{lstlisting}
+glDrawArrays(GL_TRIANGLES, 0, 3);				
+				\end{lstlisting}
+				
+		
+		\subsection{GPU-将图元像素化}
+			\paragraph{概述}		
+				几何着色器的输出会被传入\textbf{光栅化阶段(Rasterization Stage)}，这里它会把图元映射为最终屏幕上相应的\textbf{像素}，生成供\textbf{片段着色器(Fragment Shader)}使用的片段(Fragment)。在片段着色器运行\textbf{之前}会执行\textbf{裁切(Clipping)}。裁切会\textit{丢弃超出你的视图以外的所有像素}，用来提升执行效率。
+				
+				\verb|Notice-->|\textbf{一个片段}是OpenGL\textbf{渲染一个像素}所需的所有数据。
+			
+			
+		\subsection{GPU-顶点颜色处理}
+			\paragraph{概述}		
+				片段着色器的主要目的是计算一个像素的最终颜色，这也是所有OpenGL高级效果产生的地方。通常，片段着色器包含3D场景的数据（比如光照、阴影、光的颜色等等），这些数据可以被用来计算最终像素的颜色。
+				
+				在所有对应\textbf{颜色值确定以后}，最终的对象将会被传到最后一个阶段，叫做\textbf{Alpha测试}和\textbf{混合(Blending)阶段}。这个阶段\textbf{检测}\underline{片段}的对应的\textbf{深度}（和\textbf{模板}(Stencil)）值，用它们来\textit{判断这个像素是其它物体的前面还是后面，决定是否应该丢弃}。这个阶段\textbf{也会检查alpha值}（alpha值定义了一个物体的透明度）并对物体进行混合(Blend)。所以，即使在片段着色器中计算出来了一个像素输出的颜色，在渲染多个三角形的时候最后的像素颜色也可能完全不同。
+				
+			\paragraph{API 示例}
+				片段着色器(Fragment Shader)是第二个也是最后一个创建的用于渲染三角形的着色器。片段着色器所做的是计算像素最后的颜色输出。为了让事情更简单，示例片段着色器将会一直输出橘黄色。
+				
+				在计算机图形中\textbf{颜色}被表示为有\textbf{4个元素的数组}：\textit{红色、绿色、蓝色和alpha(透明度)分量}，通常缩写为\textbf{RGBA}。当在OpenGL或GLSL中定义一个颜色的时候，我们把颜色每个分量的强度设置在0.0到1.0之间。比如说我们设置红为1.0f，绿为1.0f，我们会得到两个颜色的混合色，即黄色。
+				
+				\subparagraph{编写片元着色器}\verb|->|
+					\begin{lstlisting}
+#version 330 core
+out vec4 FragColor;
+
+void main()
+{
+    FragColor = vec4(1.0f, 0.5f, 0.2f, 1.0f);
+} 					
+					\end{lstlisting}
+				
+					\underline{片段着色器}\textbf{只需要一个输出变量}，这个变量是一个\textit{4分量向量}，\textbf{它表示的是最终的输出颜色}，我们应该自己将其计算出来。我们可以用\verb| out关键字 |声明输出变量，这里命名为FragColor。下面，将一个alpha值为1.0(1.0代表完全不透明)的\textit{橘黄色的vec4}\underline{赋值给}\textbf{颜色输出}。					
+					
+					
+				\subparagraph{编译片元着色器}
+					编译片段着色器的过程与顶点着色器类似，只不过我们使用\verb|GL_FRAGMENT_SHADER|常量作为\textbf{着色器类型}.
+					
+					\begin{lstlisting}
+unsigned int fragmentShader;
+fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
+glShaderSource(fragmentShader, 1, &fragmentShaderSource, NULL);
+glCompileShader(fragmentShader);					
+					\end{lstlisting}
+				
+				
+				\subparagraph{程序使用shader代码}
+					\textit{着色器程序对象(Shader Program Object)}\textit{是多个着色器合并之后并最终链接完成的版本}。\textbf{如果要使用刚才编译的着色器我们必须把它们链接(Link)为一个着色器程序对象，然后在渲染对象的时候激活这个着色器程序}。已激活着色器程序的着色器将在我们发送渲染调用的时候被使用,可以调用\verb|glUseProgram()函数|，用刚创建的程序对象作为它的参数，以激活这个程序对象.
+					
+					在\verb|glUseProgram()函数|调用之后，每个着色器调用和渲染调用都会使用这个程序对象（也就是之前写的着色器)了。
+					
+					\begin{lstlisting}
+unsigned int shaderProgram;
+shaderProgram = glCreateProgram();
+glAttachShader(shaderProgram, vertexShader);
+glAttachShader(shaderProgram, fragmentShader);
+glLinkProgram(shaderProgram);	
+
+glGetProgramiv(shaderProgram, GL_LINK_STATUS, &success);
+if(!success) {
+    glGetProgramInfoLog(shaderProgram, 512, NULL, infoLog);
+    ...
+}			
+
+glUseProgram(shaderProgram);	
+glDeleteShader(vertexShader);
+glDeleteShader(fragmentShader);
+					\end{lstlisting}
+				
+				
+		\subsection{总结}
+			最终渲染管线的效果会具体如下所示：
+			\begin{figure}[h]
+				\centering
+				\includegraphics[width=.9\linewidth]{OpenGLPipeline1.png}
+				\caption{OpenGL 渲染管线}
+			\end{figure}		
+		
+		
+
 	\section{着色器}
 		参考文献：\url{http://blog.csdn.net/column/details/13062.html}
 		

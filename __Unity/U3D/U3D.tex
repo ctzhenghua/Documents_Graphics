@@ -542,7 +542,7 @@ private void MoveNext()
 		\subsection{注意}
 			在变化的过程中需要乘以 Time.deltaTime ,否则会出现大幅不连贯的画面。
 	
-	\section{摄像机 -Camera}
+	\section{Camera}
 		\subsection{Clear Flags}
 			清除标记。决定屏幕的哪部分将被清除。一般用户使用对台摄像机来描绘不同游戏对象的情况，有3中模式选择：
 			\begin{itemize}
@@ -781,6 +781,8 @@ private void MoveNext()
 					\item \verb|Sorting Layer|: Sorting Layer是UGUI专用的设置，\textbf{用来指示画布的深度}。可以通过点击该栏的选项，在下拉菜单中点击“Add Sorting Layer”按钮进入标签和层的设置界面，或者点击导航菜单->edit->Project Settings->Tags and Layers进入该页面。
 					\item \verb|Order in Layer|:\textbf{在相同的Sort Layer下的画布显示先后顺序。}数字越高，显示的优先级也就越高。
 				\end{enumerate}
+				
+				depth 参考世界空间相关一章，camera Depth.
 			
 		\subsection{World Space -世界空间模式}
 			World Space即世界空间模式。在此模式下，\textbf{画布被视为与场景中其他普通游戏对象性质相同的类似于一张面片（Plane）的游戏物体}。
