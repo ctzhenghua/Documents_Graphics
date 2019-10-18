@@ -112,6 +112,98 @@
 		    	\caption{解决方法}
 		    	\label{Glut_fix}
 		    \end{figure}
+		    
+		\subsection{使用glut 与 glew 不兼容报0x0000005}
+			
+			改用glfw 调用窗口即可。
+		
+			\begin{lstlisting}
+#include <iostream>
+#include <Windows.h>  
+#include <GL/glew.h>    
+#include <GLFW/glfw3.h>   
+
+GLuint WIDTH = 720, HEIGHT = 720;
+unsigned int VBO, VAO, EBO, UBO, FBO;
+
+const char *vertexShaderSource = "#version 330 core\n"
+"layout (location = 0) in vec3 aPos;\n"
+"void main()\n"
+"{\n"
+"   gl_Position = vec4(aPos.x, aPos.y, aPos.z, 1.0);\n"
+"}\0";
+const char *fragmentShaderSource = "#version 330 core\n"
+"out vec4 FragColor;\n"
+"void main()\n"
+"{\n"
+"   FragColor = vec4(1.0f, 0.5f, 0.2f, 1.0f);\n"
+"}\n\0";
+
+
+float vertexData[] = {
+	-0.5f, 0, 0,
+	0.5f,  0, 0,
+	0,  0.5f, 0,
+};
+
+
+void initVAOetc()
+{
+	glGenVertexArrays(1, &VAO);	// 顶点缓冲+顶点读取方式 统一索引
+	glGenBuffers(1, &VBO);	// 顶点缓冲
+	glBindVertexArray(VAO);
+	glBindBuffer(GL_ARRAY_BUFFER, VBO);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(vertexData), vertexData, GL_STATIC_DRAW);	// 顶点数据
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);	// 顶点读取方式
+	glEnableVertexAttribArray(0);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	glBindVertexArray(0);
+}
+
+
+int main()
+{
+	glfwInit();
+
+	GLFWwindow* window = glfwCreateWindow(WIDTH, HEIGHT, "OpenGL", nullptr, nullptr);
+	if (window == nullptr)
+	{
+		std::cout << "Failed to create GLFW window" << std::endl;
+		glfwTerminate();
+		return -1;
+	}
+
+	glfwMakeContextCurrent(window);
+
+	if (glewInit() != GLEW_OK)
+	{
+		std::cout << "Failed to initialize GLEW" << std::endl;
+		return -1;
+	}
+
+	glViewport(0, 0, WIDTH, HEIGHT);
+	initVAOetc();
+
+	// 渲染loop   
+	while (!glfwWindowShouldClose(window))
+	{
+		glfwPollEvents();//通知处理窗口事件，注释掉的话，窗口可能会卡住
+		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);//指定一种颜色清屏
+		glClear(GL_COLOR_BUFFER_BIT);//清屏
+		
+		glBindVertexArray(VAO);
+		glDrawArrays(GL_TRIANGLES, 0, 3);
+		glBindVertexArray(0);
+
+		glfwSwapBuffers(window);//是opengl绘制的图形显示在窗口上
+	}
+
+
+	glfwTerminate();//窗口结束
+	return 0;
+}				
+			\end{lstlisting}  
+		    
     \section{参考文献} 
     \url{http://johnhany.net/2015/03/environment-for-opengl-4-with-vs2012/}    
     
@@ -120,18 +212,20 @@
 
 
 \newpage
-\chapter{入门绘图}
+\chapter{图形学基础}
 	完全指南：\url{https://www.jianshu.com/p/6bda18e953f6}
-
+	
+	API：\url{https://www.khronos.org/opengl/wiki/Category:Core_API_Reference}
+	
 	\section{OpenGL 框架结构}
 		\begin{figure}[H]
 			\centering
 			\includegraphics[width=.91\linewidth]{openGlArch}
 			\caption{基本渲染框架}
 		\end{figure}
-		
-	
-	\section{第一个三角形}
+			
+				
+	\section{绘制三角形}
 	
 		\subsection{流程}
 			任何事物都在3D空间中，而屏幕和窗口却是2D像素数组，这导致OpenGL的大部分工作都是关于把3D坐标转变为适应你屏幕的2D像素。
@@ -165,7 +259,7 @@
 			\paragraph{API 示例}
 			
 				\subparagraph{准备顶点数据}
-					首先需要定义顶点数据，\textit{OpenGL仅当3D坐标在3个轴（x、y和z）上都为-1.0到1.0的范围内时才处理它}。所有在所谓的\textbf{标准化设备坐标}(Normalized Device Coordinates)范围内的坐标才会最终呈现在屏幕上（在这个范围以外的坐标都不会显示）。
+					首先需要定义顶点数据，\textit{OpenGL仅当3D坐标在3个轴（x、y和z）上都为-1.0到1.0的范围内时才处理它}。所有在所谓的\textbf{标准化设备坐标}(Normalized Device Coordinates)范围内(\verb|-1~1|)的坐标才会最终呈现在屏幕上（在这个范围以外的坐标都不会显示）。
 					
 					\begin{lstlisting}
 float vertices[] = {
@@ -199,7 +293,7 @@ glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 					\end{lstlisting}
 								
 							
-				\subparagraph{设置如何解释顶点数据}
+				\subparagraph{设置顶点数据解释格式}
 					\textit{顶点着色器}\underline{允许}我们指定\textit{任何形式}的\textit{顶点属性}为\textbf{输入}。这使其具有很强的灵活性的同时，它还的确意味着我们必须手动指定输入数据的哪一个部分对应顶点着色器的哪一个顶点属性。所以，我们\textbf{必须在渲染前(绘画前)}\underline{确定或设置好}OpenGL解释顶点数据的\textbf{模版}。	
 						
 					这个工作由\textbf{glVertexAttribPointer()函数}完成。	
@@ -209,23 +303,81 @@ glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
 					\end{lstlisting}
 					
 					\begin{itemize}
-						\item 第一个参数指定顶点属性位置，与顶点着色器中layout(location=0)对应。
+						\item 第一个参数指定顶点属性位置，与顶点着色器中layout(location=0)对应,注意，这里的顶点属性是一个数组，存储多种属性，如位置0存放位置、位置1存放颜色、位置2存放纹理坐标等。
 						\item 第二个参数指定顶点属性大小。顶点属性是一个vec3，它由3个值组成，所以大小是3。
 						\item 第三个参数指定数据类型。
 						\item 第四个参数定义是否希望数据被标准化。
 						\item 第五个参数是步长（Stride），指定在连续的顶点属性之间的间隔，\textit{单位字节}。
-						\item 第六个参数表示我们的位置数据在缓冲区起始位置的偏移量。
+						\item 第六个参数表示我们的位置数据在缓冲区起始位置的偏移量。决定怎么取不同属性的核心参数，与第2个参数呼应。
 					\end{itemize}
 					
 					顶点属性\verb|glVertexAttribPointer|默认是关闭的，使用时要以顶点属性位置值为参数调用\verb|glEnableVertexAttribArray()|开启。
 					
-				
+					
+					使用示例：
+					\begin{lstlisting}
+float vertices[] = {
+    // positions          // colors           // texture coords
+     0.5f,  0.5f, 0.0f,   1.0f, 0.0f, 0.0f,   1.0f, 1.0f, // top right
+     0.5f, -0.5f, 0.0f,   0.0f, 1.0f, 0.0f,   1.0f, 0.0f, // bottom right
+    -0.5f, -0.5f, 0.0f,   0.0f, 0.0f, 1.0f,   0.0f, 0.0f, // bottom left
+    -0.5f,  0.5f, 0.0f,   1.0f, 1.0f, 0.0f,   0.0f, 1.0f  // top left 
+};
+ 
+// position attribute
+glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
+glEnableVertexAttribArray(0);
+// color attribute
+glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
+glEnableVertexAttribArray(1);
+// texture coord attribute
+glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
+glEnableVertexAttribArray(2);   	
+					\end{lstlisting}
+					
+					
+					对应的顶点着色器如下：
+					\begin{lstlisting}
+#version 330 core
+layout (location = 0) in vec3 aPos;
+layout (location = 1) in vec3 aColor;
+layout (location = 2) in vec2 aTexCoord;
+
+out vec3 ourColor;
+out vec2 TexCoord;
+
+void main()
+{
+    gl_Position = vec4(aPos, 1.0);
+    ourColor = aColor;
+    TexCoord = aTexCoord;
+}					
+					\end{lstlisting}
+					
+					对应的内存布局如下(\textit{少了纹理的属性2})：
+					
+					\begin{figure}[H]
+						\centering
+						\includegraphics[width=.9\linewidth]{vertexAttribute}
+					\end{figure}
+					
+					
+					
+					
+					
+					
+					
 				\subparagraph{VAO-属性保存}	
 					VBO保存了\underline{一个模型}的\textit{顶点属性信息}，每次绘制模型之前需要绑定顶点的所有信息，当数据量很大时，重复这样的动作变得非常麻烦。
 					
 					VAO可以把这些所有的配置都存储在一个对象中，\textbf{每次绘制模型时，只需要绑定这个VAO对象就可以了}。
 					
 					OpenGL的核心模式\textbf{要求我们使用VAO}，所以它知道该如何处理我们的顶点输入。\textbf{如果我们绑定VAO失败，OpenGL会拒绝绘制任何东西}。
+					
+					\begin{lstlisting}
+glGenVertexArrays(1, &VAO);			
+glBindVertexArray(VAO);		
+					\end{lstlisting}
 					
 					VAO是一个保存了 顶点数据的格式 以及 顶点数据所需的VBO对象的引用，简言之，一个顶点数组对象会储存以下这些内容：
 					\begin{enumerate}
@@ -241,6 +393,22 @@ glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
 						\caption{VAO 数据模型示例}
 					\end{figure}
 					
+				\subparagraph{VAO-设置与初始化}		
+					具体就是绑定VBO与顶点属性，如下：
+					\begin{lstlisting}
+void initVAOetc()
+{
+	glGenVertexArrays(1, &VAO);	// 顶点缓冲+顶点读取方式 统一索引
+	glGenBuffers(1, &VBO);	// 顶点缓冲
+	glBindVertexArray(VAO);
+	glBindBuffer(GL_ARRAY_BUFFER, VBO);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(vertexData), vertexData, GL_STATIC_DRAW);	// 顶点数据
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);	// 顶点读取方式
+	glEnableVertexAttribArray(0);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	glBindVertexArray(0);
+}					
+					\end{lstlisting}
 							
 		\subsection{GPU-顶点处理}
 			\paragraph{概述}		
@@ -367,325 +535,119 @@ glDeleteShader(fragmentShader);
 					\end{lstlisting}
 				
 				
+				\subparagraph{shader 整体代码使用示例}
+					\verb|->|
+					
+					\begin{lstlisting}
+void initShaderProgram()
+{
+	// build and compile our shader program
+	// ------------------------------------
+	// vertex shader
+	vertexShader = glCreateShader(GL_VERTEX_SHADER);
+	glShaderSource(vertexShader, 1, &vertexShaderSource, NULL);
+	glCompileShader(vertexShader);
+	// check for shader compile errors
+	int success;
+	char infoLog[512];
+	glGetShaderiv(vertexShader, GL_COMPILE_STATUS, &success);
+	if (!success)
+	{
+		glGetShaderInfoLog(vertexShader, 512, NULL, infoLog);
+		std::cout << "ERROR::SHADER::VERTEX::COMPILATION_FAILED\n" << infoLog << std::endl;
+	}
+	// fragment shader
+	fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
+	glShaderSource(fragmentShader, 1, &fragmentShaderSource, NULL);
+	glCompileShader(fragmentShader);
+	// check for shader compile errors
+	glGetShaderiv(fragmentShader, GL_COMPILE_STATUS, &success);
+	if (!success)
+	{
+		glGetShaderInfoLog(fragmentShader, 512, NULL, infoLog);
+		std::cout << "ERROR::SHADER::FRAGMENT::COMPILATION_FAILED\n" << infoLog << std::endl;
+	}
+	// link shaders
+	shaderProgram = glCreateProgram();
+	glAttachShader(shaderProgram, vertexShader);
+	glAttachShader(shaderProgram, fragmentShader);
+	glLinkProgram(shaderProgram);
+	// check for linking errors
+	glGetProgramiv(shaderProgram, GL_LINK_STATUS, &success);
+	if (!success) {
+		glGetProgramInfoLog(shaderProgram, 512, NULL, infoLog);
+		std::cout << "ERROR::SHADER::PROGRAM::LINKING_FAILED\n" << infoLog << std::endl;
+	}
+	glDeleteShader(vertexShader);
+	glDeleteShader(fragmentShader);
+}					
+					\end{lstlisting}
+				
+		
+		\subsection{索引绘画方式}
+			为了避免相同点的数据多次复制，引入indexed 绘画方式。
+		
+			和顶点缓冲对象一样，EBO也是一个缓冲，它专门\textbf{储存索引}，OpenGL调用这些顶点的索引来决定该绘制哪个顶点。
+			
+			\begin{lstlisting}
+float vertices[] = {
+    0.5f, 0.5f, 0.0f,   // 右上角
+    0.5f, -0.5f, 0.0f,  // 右下角
+    -0.5f, -0.5f, 0.0f, // 左下角
+    -0.5f, 0.5f, 0.0f   // 左上角
+};
+
+unsigned int indices[] = { // 注意索引从0开始! 
+    0, 1, 3, // 第一个三角形
+    1, 2, 3  // 第二个三角形
+};			
+						
+unsigned int VBO, VAO, EBO;
+glGenVertexArrays(1, &VAO);
+glGenBuffers(1, &VBO);
+glGenBuffers(1, &EBO);
+// bind the Vertex Array Object first, then bind and set vertex buffer(s), and then configure vertex attributes(s).
+glBindVertexArray(VAO);
+
+glBindBuffer(GL_ARRAY_BUFFER, VBO);
+glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+
+glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+
+glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+glEnableVertexAttribArray(0);
+
+// note that this is allowed, the call to glVertexAttribPointer registered VBO as the vertex attribute's bound vertex buffer object so afterwards we can safely unbind
+glBindBuffer(GL_ARRAY_BUFFER, 0); 
+
+// remember: do NOT unbind the EBO while a VAO is active as the bound element buffer object IS stored in the VAO; keep the EBO bound.
+//glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+
+// You can unbind the VAO afterwards so other VAO calls won't accidentally modify this VAO, but this rarely happens. Modifying other
+// VAOs requires a call to glBindVertexArray anyways so we generally don't unbind VAOs (nor VBOs) when it's not directly necessary.
+glBindVertexArray(0); 
+
+
+// 绘画核心代码
+glUseProgram(shaderProgram);
+glBindVertexArray(VAO); // seeing as we only have a single VAO there's no need to bind it every time, but we'll do so to keep things a bit more organized
+//glDrawArrays(GL_TRIANGLES, 0, 6);
+glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+// glBindVertexArray(0); // no need to unbind it every time 
+			\end{lstlisting}
+				
 		\subsection{总结}
 			最终渲染管线的效果会具体如下所示：
 			\begin{figure}[h]
 				\centering
 				\includegraphics[width=.9\linewidth]{OpenGLPipeline1.png}
 				\caption{OpenGL 渲染管线}
-			\end{figure}		
+			\end{figure}	
+			
+				
 		
-		
-
 	\section{着色器}
-		参考文献：\url{http://blog.csdn.net/column/details/13062.html}
-		
-		着色器是目前做3D图形最流行的方式。着色器使得开发者能更加自由的通过编程实现自己的图形效果，使开发更加灵活和具有创新性。
-			
-		\textbf{Shader着色器}的使用跟C/C++程序的创建过程类似。
-		\textbf{首先}你要\textit{写一个shader着色器文本}并使其在你的程序中有效可用，这个过程可以通过依次简单的引用这些源码脚本或者从外部文件中加载，注意都是以字符串数组的形式。
-		\textbf{然后}一个个的\textit{编译这些shader文本}成shader对象。
-		\textbf{最后}你就可以\textit{将这些shader着色器}\textbf{连接到}\textit{单个程序中并加载到GPU中}。链接这些shader可以使驱动器能够有机会精减这些shader并根据他们的关系优化他们。例如：可能一个顶点着色器发出的法向量在相应的片段着色器阶段中被忽视，这样驱动中的GLSL编译器就会移除着色器中与这个法向量相关的函数功能从而更快的执行这个顶点着色器。如果之后那个着色器又匹配了需要用到那个法向量的片段着色器，然后连接到其他程序后会产生一个不同的顶点着色器。  
-
-		\subparagraph{核心流程}
-		
-			\begin{itemize}
-			\item \verb|创建着色器程序对象|:我们通过\textbf{创建程序对象}\textit{来建立}\textbf{shader着色器程序}。我们将把所有的着色器连接到这个对象上。
-			\begin{lstlisting}
-	GLuint ShaderProgram = glCreateProgram();
-			\end{lstlisting}
-			
-			\item \verb|创建着色器对象|：使用下面的函数创建两个shader着色器对象。其中一个使用的ShaderType为\verb|GL_VERTEX_SHADER|，另一个的类型为\verb|GL_FRAGMENT_SHADER|。
-			\begin{lstlisting}
-	GLuint ShaderObj = glCreateShader(ShaderType); 
-			\end{lstlisting}
-			
-			\item \verb|定义着色器对象代码源|：函数\verb|glShaderSource|以\textbf{shader对象}为参数，使你可以灵活的定义代码来源。shader源代码（也就是我们所常说的shader脚本）可以由多个字符串数组排布组合而成，你需要提供一个指针数组来对应指向这些字符串数组，同时要提供一个整型数组来对应表示每个数组的长度。为了简单，我们这里只使用一个字符串数组来保存所有的shader源代码，并且分别用数组的一个元素来分别指向这个字符串数组和表示数组的长度。 
-			第二个参数表示的是这两个数组的元素个数（我们的例子中则只有1个）。
-			\begin{lstlisting}
-	const GLchar* p[1]; 
-	p[0] = pShaderText; 
-	GLint Lengths[1]; 
-	Lengths[0]= strlen(pShaderText); 
-	glShaderSource(ShaderObj, 1, p, Lengths);
-			\end{lstlisting}
-			
-			\item \verb|编译着色器对象|
-			\begin{lstlisting}
-	glCompileShader(ShaderObj); 
-			\end{lstlisting}	
-			
-			\item \verb|打印编译信息|
-			\begin{lstlisting}
-	GLint success; 
-	glGetShaderiv(ShaderObj, GL_COMPILE_STATUS, &success); 
-	if (!success) 
-	{ 
-		GLchar InfoLog[1024]; 
-		glGetShaderInfoLog(ShaderObj, sizeof(InfoLog), NULL, InfoLog); 
-		fprintf(stderr, "Error compiling shader type %d: '%s'\n", ShaderType, InfoLog); 
-	} 
-			\end{lstlisting}
-		
-			\item \verb|绑定着色器对象到着色器程序对象上|
-			\begin{lstlisting}
-	glAttachShader(ShaderProgram, ShaderObj);
-			\end{lstlisting}
-			
-			
-			\item \verb|链接所有的编译的对象|：编译好所有的shader对象并将他们绑定到程序中后我就可以连接他们了。
-			
-			注意在完成程序的连接后你可以通过调用函数glDetachShader和glDeleteShader来清除每个中介shader对象。OpenGL保存着由它产生的多数对象的引用计数，如果一个shader对象被创建后又被删除的话驱动程序也会同时清除掉它，但是如果他被绑定在程序上，只调用glDeleteShader函数只是会标记它等待删除，只有等你调用glDetachShader后它的引用计数才会被置零然后被移除掉。
-			\begin{lstlisting}
-	glLinkProgram(ShaderProgram); 
-			\end{lstlisting}
-			
-			\item \verb|获取链接编译信息|:如同程序的链接信息一样 LNK,我们使用glGetProgramiv而不是glGetShaderiv，glGetProgramInfoLog而不是glGetShaderInfoLog。
-			\begin{lstlisting}
-	glGetProgramiv(ShaderProgram, GL_LINK_STATUS, &Success); 
-	if (Success == 0) 
-	{ 
-		glGetProgramInfoLog(ShaderProgram, sizeof(ErrorLog), NULL, ErrorLog); 
-		fprintf(stderr, "Error linking shader program: '%s'\n", ErrorLog); 
-	} 
-			\end{lstlisting}
-			
-			\item \verb|使用回调函数完成渲染|：要使用连接好的shader程序你需要用下面的回调函数将它设置到管线声明中。这个程序将在所有的draw call中一直生效直到你用另一个替换掉它或者使用glUseProgram指令将其置NULL明确地禁用它。如果你创建的shader程序只包含一种类型的shader（只是为某一个阶段添加的自定义shader），那么在其他阶段的该操作将会使用它们默认的固定功能操作。
-			
-			到现在我们已经完成了OpenGL中和shader相关操作的准备工作的学习。在这篇教程之后的内容主要是关于顶点着色器和片段着色器（包含在pVS和pFS脚本中）。
-			\begin{lstlisting}
-	glUseProgram(ShaderProgram); 
-			\end{lstlisting}
-		\end{itemize}
-		
-		\subparagraph{示例}\verb|着色器使用示例|
-		
-			\begin{lstlisting}
-	GLuint VBO;
-	
-	// 定义要读取的顶点着色器脚本和片断着色器脚本的文件名，作为文件读取路径（这样的话shader.vs和shader.fs文件要放到工程的根目录下，保证下面定义的是这两个文件的文件路径）
-	const char* pVSFileName = "shader.vs";
-	const char* pFSFileName = "shader.fs";
-	
-	static void RenderSceneCB()
-	{
-		glClear(GL_COLOR_BUFFER_BIT);
-		
-		glEnableVertexAttribArray(0);
-		glBindBuffer(GL_ARRAY_BUFFER, VBO);
-		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
-		
-		// 依然还是绘制一个三角形
-		glDrawArrays(GL_TRIANGLES, 0, 3);
-		
-		glDisableVertexAttribArray(0);
-		
-		glutSwapBuffers();
-	}
-	
-	
-	static void InitializeGlutCallbacks()
-	{
-		glutDisplayFunc(RenderSceneCB);
-	}
-	
-	static void CreateVertexBuffer()
-	{
-		Vector3f Vertices[3];
-		Vertices[0] = Vector3f(-1.0f, -1.0f, 0.0f);
-		Vertices[1] = Vector3f(1.0f, -1.0f, 0.0f);
-		Vertices[2] = Vector3f(0.0f, 1.0f, 0.0f);
-		
-		glGenBuffers(1, &VBO);
-		glBindBuffer(GL_ARRAY_BUFFER, VBO);
-		glBufferData(GL_ARRAY_BUFFER, sizeof(Vertices), Vertices, GL_STATIC_DRAW);
-	}
-	
-	// 使用shader文本编译shader对象，并绑定shader都想到着色器程序中
-	static void AddShader(GLuint ShaderProgram, const char* pShaderText, GLenum ShaderType)
-	{
-		// 根据shader类型参数定义两个shader对象
-		GLuint ShaderObj = glCreateShader(ShaderType);
-		// 检查是否定义成功
-		if (ShaderObj == 0) {
-			fprintf(stderr, "Error creating shader type %d\n", ShaderType);
-			exit(0);
-		}
-		
-		// 定义shader的代码源
-		const GLchar* p[1];
-		p[0] = pShaderText;
-		GLint Lengths[1];
-		Lengths[0]= strlen(pShaderText);
-		glShaderSource(ShaderObj, 1, p, Lengths);
-		glCompileShader(ShaderObj);// 编译shader对象
-		
-		// 检查和shader相关的错误
-		GLint success;
-		glGetShaderiv(ShaderObj, GL_COMPILE_STATUS, &success);
-		if (!success) {
-			GLchar InfoLog[1024];
-			glGetShaderInfoLog(ShaderObj, 1024, NULL, InfoLog);
-			fprintf(stderr, "Error compiling shader type %d: '%s'\n", ShaderType, InfoLog);
-			exit(1);
-		}
-		
-		// 将编译好的shader对象绑定到program object程序对象上
-		glAttachShader(ShaderProgram, ShaderObj);
-	}
-	
-	// 编译着色器函数
-	static void CompileShaders()
-	{
-		// 创建着色器程序
-		GLuint ShaderProgram = glCreateProgram();
-		// 检查是否创建成功
-		if (ShaderProgram == 0) {
-			fprintf(stderr, "Error creating shader program\n");
-			exit(1);
-		}
-		
-		// 存储着色器文本的字符串缓冲
-		string vs, fs;
-		// 分别读取着色器文件中的文本到字符串缓冲区
-		if (!ReadFile(pVSFileName, vs)) {
-			exit(1);
-		};
-		if (!ReadFile(pFSFileName, fs)) {
-			exit(1);
-		};
-		
-		// 添加顶点着色器和片段着色器
-		AddShader(ShaderProgram, vs.c_str(), GL_VERTEX_SHADER);
-		AddShader(ShaderProgram, fs.c_str(), GL_FRAGMENT_SHADER);
-		
-		// 链接shader着色器程序，并检查程序相关错误
-		GLint Success = 0;
-		GLchar ErrorLog[1024] = { 0 };
-		glLinkProgram(ShaderProgram);
-		glGetProgramiv(ShaderProgram, GL_LINK_STATUS, &Success);
-		if (Success == 0) {
-			glGetProgramInfoLog(ShaderProgram, sizeof(ErrorLog), NULL, ErrorLog);
-			fprintf(stderr, "Error linking shader program: '%s'\n", ErrorLog);
-			exit(1);
-		}
-		
-		// 检查验证在当前的管线状态程序是否可以被执行
-		glValidateProgram(ShaderProgram);
-		glGetProgramiv(ShaderProgram, GL_VALIDATE_STATUS, &Success);
-		if (!Success) {
-			glGetProgramInfoLog(ShaderProgram, sizeof(ErrorLog), NULL, ErrorLog);
-			fprintf(stderr, "Invalid shader program: '%s'\n", ErrorLog);
-			exit(1);
-		}
-		
-		// 设置到管线声明中来使用上面成功建立的shader程序
-		glUseProgram(ShaderProgram);
-	}
-	
-	// 主函数
-	int main(int argc, char** argv)
-	{
-		glutInit(&argc, argv);
-		glutInitDisplayMode(GLUT_DOUBLE|GLUT_RGB);
-		glutInitWindowSize(1024, 768);
-		glutInitWindowPosition(100, 100);
-		glutCreateWindow("Tutorial 04");
-		
-		InitializeGlutCallbacks();
-		
-		// 必须在glut初始化后！
-		GLenum res = glewInit();
-		if (res != GLEW_OK) {
-			fprintf(stderr, "Error: '%s'\n", glewGetErrorString(res));
-			return 1;
-		}
-		
-		printf("GL version: %s\n", glGetString(GL_VERSION));
-		
-		glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
-		
-		CreateVertexBuffer();
-		
-		// 编译着色器
-		CompileShaders();
-		
-		glutMainLoop();
-		
-		return 0;
-	}
-			\end{lstlisting}
-
-		顶点着色器shader.vs脚本代码：
-		\begin{lstlisting}
-	#version 330  //告诉编译器我们的目标GLSL编译器版本是3.3
-	
-	layout (location = 0) in vec3 Position; // 绑定定点属性名和属性，方式二缓冲属性和shader属性对应映射
-	
-	void main()
-	{
-		gl_Position = vec4(0.5 * Position.x, 0.5 * Position.y, Position.z, 1.0); // 为glVertexAttributePointer提供返回值
-	}		
-		\end{lstlisting}
-		
-		片段着色器shader.fs脚本代码：
-		\begin{lstlisting}
-	#version 330  //告诉编译器我们的目标GLSL编译器版本是3.3
-	
-	out vec4 FragColor;  // 片段着色器的输出颜色变量
-	
-	// 着色器的唯一入口函数
-	void main()
-	{
-		// 定义输出颜色值（R G B 透明度）
-		FragColor = vec4(1.0, 0.0, 0.0, 1.0);
-	}	
-		\end{lstlisting}
-		
-		\begin{figure}[h]
-			\centering
-			\includegraphics[scale = 0.4]{result.png}
-			\caption{OpenGL 渲染管线}
-		\end{figure}
-		
-
-		\subsection{顶点着色器}
-			\subparagraph{主要功能}
-				\begin{itemize}[itemindent = 1em]
-					\item 顶点法线变换及单位化
-					\item 纹理坐标变换
-					\item 光照参数生成
-				\end{itemize}
-			\subparagraph{输入内容}
-				\begin{itemize}[itemindent = 1em]
-					\item 着色器源代码
-					\item attribute变量
-					\item uniform变量
-				\end{itemize}
-			\subparagraph{输出内容}
-				\begin{itemize}[itemindent = 1em]
-					\item varying变量
-					\item 内置的特殊变量,如\verb|gl_Position、gl_FrontFacing、gl_PointSize|
-				\end{itemize}
-		\subsection{片段着色器}
-			\subparagraph{主要功能}
-				\begin{itemize}[itemindent = 1em]
-					\item 在差值得到的值上进行操作
-					\item 访问纹理
-					\item 应用纹理
-					\item 雾化
-					\item 颜色融合
-				\end{itemize}
-			\subparagraph{输入内容}
-				\begin{itemize}[itemindent = 1em]
-					\item 着色器源代码
-					\item 用户自定义的varying变量
-					\item uniform变量
-					\item 采样器（Sampler）
-					\item 一些内置的特殊变量（\verb|gl_PointCoord、gl_FragCoord、gl_FrontFacing等）|	
-				\end{itemize}
-			\subparagraph{输出内容}:内置的特殊变量\verb|gl_FragColor|
-			
 		\subsection{程序组成}
 			在OpenGL程序中\textbf{使用着色器}一般需要依次执行以下步骤：
 			\begin{enumerate}[itemindent = 1em]
@@ -714,7 +676,238 @@ glDeleteShader(fragmentShader);
 				\item \textbf{创建着色器程序对象}
 				\item \textbf{链接着色器程序对象与着色器对象}
 				\item \textbf{在程序中使用着色器}
-			\end{itemize}	
+			\end{itemize}
+			
+		
+		\subsection{数据类型}
+		
+		
+		\subsection{输入输出}
+		
+		
+		\subsection{Uniform}
+		
+		
+		\subsection{自定义属性}
+		
+		
+		\subsection{从文件中读取}		
+		
+		
+		
+		
+		
+		
+		
+
+	\section{纹理}
+		\subsection{纹理坐标}
+			为了能够把纹理映射(Map)到三角形上，我们需要指定三角形的每个顶点各自对应纹理的哪个部分。\textbf{这样每个顶点就会关联着一个纹理坐标(Texture Coordinate)，用来标明该从纹理图像的哪个部分采样}（译注：采集片段(\textit{单个像素})颜色）\textbf{。之后在图形的其它片段上进行片段}(\textit{像素})\textbf{插值}(Fragment Interpolation)。
+			
+			纹理坐标在x和y轴上，\textbf{范围为0到1之间}（注意我们使用的是2D纹理图像）。使用纹理坐标获取纹理颜色叫做采样(Sampling)。纹理坐标起始于(0, 0)，也就是纹理图片的左下角，终始于(1, 1)，即纹理图片的右上角。下面的图片展示了我们是如何把纹理坐标映射到三角形上的。
+			
+			\begin{figure}[H]
+				\centering
+				\includegraphics[width=.7\linewidth]{tex_coords}
+			\end{figure}
+			
+			为三角形指定了3个纹理坐标点。如上图所示，我们希望三角形的左下角对应纹理的左下角，因此我们把三角形左下角顶点的纹理坐标设置为(0, 0)；三角形的上顶点对应于图片的上中位置所以我们把它的纹理坐标设置为(0.5, 1.0)；同理右下方的顶点设置为(1, 0)。\textbf{只要给顶点着色器传递这三个纹理坐标就行了，接下来它们会被传片段着色器中，它会为每个片段进行纹理坐标的插值}。
+			
+			纹理坐标看起来就像这样：
+			\begin{lstlisting}
+	float texCoords[] = {
+	    0.0f, 0.0f, // 左下角
+	    1.0f, 0.0f, // 右下角
+	    0.5f, 1.0f // 上中
+	};		
+			\end{lstlisting}
+			
+			
+		\subsection{环绕模式}
+			纹理坐标的范围通常是从(0, 0)到(1, 1)，把纹理坐标设置在范围之外会发生什么？OpenGL默认的行为是\textbf{重复这个纹理图像}（我们基本上忽略浮点纹理坐标的整数部分），但OpenGL提供了更多的选择：
+			
+			\begin{itemize}
+				\item \verb|GL_REPEAT|:	对纹理的默认行为。重复纹理图像。
+				\item \verb|GL_MIRRORED_REPEAT|:	和\verb|GL_REPEAT|一样，但每次重复图片是镜像放置的。
+				\item \verb|GL_CLAMP_TO_EDGE|:	纹理坐标会被约束在0到1之间，超出的部分会重复纹理坐标的边缘，产生一种边缘被拉伸的效果。
+				\item \verb|GL_CLAMP_TO_BORDER|:	超出的坐标为用户指定的边缘颜色。
+			\end{itemize}
+			
+			\begin{figure}[H]
+				\centering
+				\includegraphics[width=.95\linewidth]{texture_wrapping}
+			\end{figure}
+			
+			每个选项都可以使用\verb|glTexParameter*()函数|对单独的一个坐标轴设置(s、t(如果是使用3D纹理那么还有一个r), 它们和x、y、z是等价的).
+			
+			\begin{lstlisting}
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
+			\end{lstlisting}
+			
+			如果我们选择\verb|GL_CLAMP_TO_BORDER|选项，我们还需要指定一个边缘的颜色。这需要使用 \verb|glTexParameter()函数| 的\textit{fv后缀形式}，用\verb|GL_TEXTURE_BORDER_COLOR|作为它的选项，并且\textbf{传递一个float数组作为边缘的颜色值}：
+			\begin{lstlisting}
+	float borderColor[] = { 1.0f, 1.0f, 0.0f, 1.0f };
+	glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, borderColor);
+			\end{lstlisting}
+			
+		
+		\subsection{纹理过滤}
+			对纹理进行\textit{放大或者缩小}的过程叫做纹理过滤, 纹理过滤有很多个选项，现在只讨论最重要的两种：
+			
+			\paragraph{临近过滤}
+				\verb|GL_NEAREST|（也叫邻近过滤，Nearest Neighbor Filtering）是OpenGL\textit{默认的纹理过滤方式}。当设置为\verb|GL_NEAREST|的时候，OpenGL会\textbf{选择中心点最接近纹理坐标的那个像素}。下图中你可以看到四个像素，加号代表纹理坐标。左上角那个纹理像素的中心距离纹理坐标最近，所以它会被选择为样本颜色：
+				
+				\begin{figure}[H]
+					\centering
+					\includegraphics[width=.5\linewidth]{filter_nearest}
+				\end{figure}
+			
+			\paragraph{线性过滤}
+				\verb|GL_LINEAR|（也叫线性过滤，(Bi)linear Filtering）它会\textbf{基于纹理坐标附近的纹理像素，计算出一个插值，近似出这些纹理像素之间的颜色}。一个纹理像素的中心距离纹理坐标越近，那么这个纹理像素的颜色对最终的样本颜色的贡献越大。下图中你可以看到返回的颜色是邻近像素的混合色：
+				\begin{figure}[H]
+					\centering
+					\includegraphics[width=.5\linewidth]{filter_linear}
+				\end{figure}			
+		
+			
+			\paragraph{应用与比较}
+				当进行\textbf{放大(Magnify)和缩小(Minify)}操作的时候可以\textbf{设置纹理过滤}的选项，比如你可以在纹理被缩小的时候使用邻近过滤，被放大时使用线性过滤。我们需要使用\textbf{glTexParameter*()函数}为放大和缩小指定过滤方式。
+				
+				\begin{lstlisting}
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);			
+				\end{lstlisting}
+				
+				\begin{figure}[H]
+					\centering
+					\includegraphics[width=.9\linewidth]{texture_filtering}
+					\caption{临近过滤与线性过滤比较}
+				\end{figure}
+			
+			
+		\subsection{多级纹理-mipmap}
+			想象一下，假设我们有一个包含着上千物体的大房间，每个物体上都有纹理。有些物体会很远，但其纹理会拥有与近处物体同样高的分辨率。由于远处的物体可能只产生很少的片段，OpenGL从高分辨率纹理中为这些片段获取正确的颜色值就很困难，因为它需要对一个跨过纹理很大部分的片段只拾取一个纹理颜色。在小物体上这会\textbf{产生不真实的感觉}，更不用说对它们使用\textbf{高分辨率纹理浪费内存的问题}了。		
+			
+			OpenGL使用一种叫做多级渐远纹理(Mipmap)的概念来解决这个问题，它简单来说就是一系列的纹理图像，后一个纹理图像是前一个的二分之一。多级渐远纹理背后的理念很简单：距观察者的距离超过一定的阈值，OpenGL会使用不同的多级渐远纹理，即最适合物体的距离的那个。由于距离远，解析度不高也不会被用户注意到。同时，多级渐远纹理另一加分之处是它的性能非常好。
+			
+			\begin{figure}[H]
+				\centering
+				\includegraphics[width=.7\linewidth]{mipmaps}
+			\end{figure}
+			
+			OpenGL有一个glGenerateMipmaps函数，在创建完一个纹理后调用它OpenGL就会创建该纹理的mipmap.
+			
+			在渲染中切换多级渐远纹理级别(Level)时，OpenGL在两个不同级别的多级渐远纹理层之间会产生不真实的生硬边界。就像普通的纹理过滤一样，切换多级渐远纹理级别时你也可以在两个不同多级渐远纹理级别之间使用NEAREST和LINEAR过滤。
+			
+			为了指定不同多级渐远纹理级别之间的过滤方式，你可以使用下面四个选项中的一个代替原有的过滤方式：
+			\begin{itemize}
+				\item \verb|GL_NEAREST_MIPMAP_NEAREST|	使用最邻近的多级渐远纹理来匹配像素大小，并使用邻近插值进行纹理采样
+				\item \verb|GL_NEAREST_MIPMAP_LINEAR|	在两个最匹配像素大小的多级渐远纹理之间进行线性插值，使用邻近插值进行采样
+				\item \verb|GL_LINEAR_MIPMAP_NEAREST|	使用最邻近的多级渐远纹理级别，并使用线性插值进行采样
+				\item \verb|GL_LINEAR_MIPMAP_LINEAR|	在两个邻近的多级渐远纹理之间使用线性插值，并使用线性插值进行采样
+			\end{itemize}
+			
+			就像纹理过滤一样，我们可以使用glTexParameteri将过滤方式设置为前面四种提到的方法之一：
+			\begin{lstlisting}
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);				
+			\end{lstlisting}
+			
+			
+			多级渐远纹理\textbf{主要是使用在纹理被缩小的情况下的}：纹理放大不会使用多级渐远纹理，为放大过滤设置多级渐远纹理的选项会产生一个\verb|GL_INVALID_ENUM|错误代码。
+			
+		\subsection{纹理压缩格式}
+			etc1、etc2、dds
+		
+		
+		\subsection{应用}
+			分为5个步骤，加载图片源、创建纹理、设置纹理属性、顶点着色器传递纹理坐标、片元着色器使用纹理坐标取色。
+			
+			\paragraph{加载图片源-SOIL}
+				使用SOIL 库(Simple OpenGL Image Library)
+				
+				\begin{lstlisting}
+	#include <SOIL.h>
+	int width, height;
+	unsigned char* image = SOIL_load_image("container.jpg", &width, &height, 0, SOIL_LOAD_RGB);			
+				\end{lstlisting}
+				
+				函数首先需要输入图片文件的\textbf{路径}。然后需要两个int指针作为第二个和第三个参数，SOIL会分别返回图片的宽度和高度到其中。后面我们在生成纹理的时候会用图像的宽度和高度。第四个参数指定图片的通道(Channel)数量，但是这里我们只需留为0。最后一个参数告诉SOIL如何来加载图片：我们只关注图片的RGB值。结果会储存为一个很大的char/byte数组。
+			
+			\paragraph{创建纹理-设置纹理属性}
+				和之前生成的OpenGL对象一样，纹理也是使用ID引用的。
+				
+				\begin{lstlisting}
+	GLuint texture;
+	glGenTextures(1, &texture);		
+	glBindTexture(GL_TEXTURE_2D, texture);	
+	// 为当前绑定的纹理对象设置环绕、过滤方式
+	...
+	// 加载并生成纹理
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, image);
+	glGenerateMipmap(GL_TEXTURE_2D);	
+	SOIL_free_image_data(image);
+	glBindTexture(GL_TEXTURE_2D, 0);
+				\end{lstlisting}
+
+			\paragraph{顶点着色器传递纹理坐标}
+				
+				通过VBO 顶点属性传递。
+				
+				\begin{lstlisting}
+	#version 330 core
+	layout (location = 0) in vec3 position;
+	layout (location = 1) in vec3 color;
+	layout (location = 2) in vec2 texCoord;
+	
+	out vec3 ourColor;
+	out vec2 TexCoord;
+	
+	void main()
+	{
+	    gl_Position = vec4(position, 1.0f);
+	    ourColor = color;
+	    TexCoord = texCoord;
+	}				
+				\end{lstlisting}
+				
+			
+			\paragraph{片元着色器使用uv坐标取色}
+				
+				通过uniform 将纹理传递过来，通过顶点着色器将纹理坐标传过来，然后取出当前UV坐标点的像素颜色。
+			
+				\begin{lstlisting}
+	#version 330 core
+	in vec3 ourColor;
+	in vec2 TexCoord;
+	
+	out vec4 color;
+	
+	uniform sampler2D ourTexture;
+	
+	void main()
+	{
+	    color = texture(ourTexture, TexCoord);
+	}				
+				\end{lstlisting}
+			
+			
+			\paragraph{纹理混合}
+				两张或多张(至多16) 以某种方式混合
+				
+				\begin{lstlisting}
+	#version 330 core
+	...
+	
+	uniform sampler2D ourTexture1;
+	uniform sampler2D ourTexture2;
+	
+	void main()
+	{
+	    color = mix(texture(ourTexture1, TexCoord), texture(ourTexture2, TexCoord), 0.2);
+	}				
+				\end{lstlisting}
 
 
 \chapter{三大变换}
@@ -731,7 +924,7 @@ glDeleteShader(fragmentShader);
 		这里我们先看一下平移变换，使一个物体沿着一个任意长度任意方向的向量平移，比如说让一个三角形从左边移动到右边：
 			\begin{figure}[h]
 				\centering
-				\includegraphics[scale = 0.4]{transfer.png}
+				\includegraphics[width=.7\linewidth]{transfer.png}
 				\caption{平移示例}
 			\end{figure}
 
@@ -1287,7 +1480,59 @@ glDeleteShader(fragmentShader);
 			\end{lstlisting}
 			
 			两个函数来指定。其中(sx,sy)表示\textbf{窗口的左下角}，ns和 fs指定\textbf{远近剪裁平面到屏幕坐标的映射关系}。视口变换由OpenGL自动执行，不需要额外代码。
-\chapter{OpenGL基础编程}
+			
+			
+			
+			
+\chapter{光照}
+	\section{颜色}
+	
+	\section{基础光照}
+	
+	\section{材质}
+	
+	\section{光照贴图}		
+			
+	\section{投光物}
+	
+	\section{多光源}
+	
+	\section{Gamma 矫正}
+	
+	\section{阴影}
+	
+	\section{法线贴图}
+	
+	\section{HDR}
+	
+	\section{延迟着色法}
+	
+
+
+
+\chapter{高级-特性}
+	\section{模版测试}
+	
+	
+	\section{深度测试}
+	
+	
+	\section{混合}
+	
+	
+	\section{面剔除}
+	
+	
+	\section{帧缓冲}
+
+
+	\section{立方体贴图}
+	
+	
+	\section{几何着色器}
+			
+			
+\chapter{OpenGL基础编程-API解释}
 	
 	\subsection{基本结构-框架}
 		跟DirectX类似，都是进入消息循环然后不断监听消息。区别在于函数名可能不同，与其内部实现不同。
@@ -1608,9 +1853,21 @@ glDeleteShader(fragmentShader);
 				\label{VAOResult}
 			\end{figure}
 	
-	\subsection{光照添加}
 	
-	\subsection{纹理添加}
+	
+	\section{API-VAO、VBO、EBO}
+		\subsection{glVertexAttribPointer()}
+			\begin{lstlisting}
+void glVertexAttribPointer(	
+	GLuint index,
+ 	GLint size,
+ 	GLenum type,
+ 	GLboolean normalized,
+ 	GLsizei stride,
+ 	const GLvoid * pointer);			
+			\end{lstlisting}
+
+			
 		
 
 \chapter{MFC with OpenGL}
