@@ -74,9 +74,10 @@
 	keywordstyle=\color{blue},       % keyword style
 	stringstyle=\color{mymauve}\ttfamily,     % string literal style
 	frame=L,
-	xleftmargin = .04\textwidth,
+	xleftmargin = .07\linewidth,
 	rulesepcolor=\color{red!20!green!20!blue!20},
 	% identifierstyle=\color{red},
+	escapeinside=``,
 	language=c++,
 }
  \author{\kaishu 郑华}
@@ -218,12 +219,32 @@ int main()
 	API：\url{https://www.khronos.org/opengl/wiki/Category:Core_API_Reference}
 	
 	\section{OpenGL 框架结构}
-		\begin{figure}[H]
-			\centering
-			\includegraphics[width=.91\linewidth]{openGlArch}
-			\caption{基本渲染框架}
-		\end{figure}
+	
+		\subsection{渲染框架}
+			\begin{figure}[H]
+				\centering
+				\includegraphics[width=.91\linewidth]{openGlArch}
+				\caption{基本渲染框架}
+			\end{figure}
 			
+		\subsection{坐标系}
+			\begin{figure}[H]
+				\centering
+				\includegraphics[width=.62\linewidth]{coordinate_systems_right_handed}
+				\caption{OpenGL 右手坐标系}
+			\end{figure}			
+			
+			简单来说，就是正x轴在你的右手边，正y轴朝上，而正z轴穿过你的屏幕朝向你。
+			
+			为了理解为什么被称为右手坐标系，按如下的步骤做：
+			\begin{itemize}[itemindent = 1em]
+				\item 沿着正y轴方向伸出你的右臂，手指着上方。
+				\item 大拇指指向右方。
+				\item 食指指向上方。
+				\item 中指向下弯曲90度。
+			\end{itemize}
+			
+			如果你的动作正确，那么你的大拇指指向正x轴方向，食指指向正y轴方向，中指指向正z轴方向。\textbf{如果你用左臂来做这些动作}，你会发现z轴的方向是相反的。这个叫做\textbf{左手坐标系}，它被DirectX广泛地使用。注意在标准化设备坐标系中OpenGL实际上使用的是左手坐标系（投影矩阵交换了左右手）。
 				
 	\section{绘制三角形}
 	
@@ -678,21 +699,209 @@ glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 				\item \textbf{在程序中使用着色器}
 			\end{itemize}
 			
-		
 		\subsection{数据类型}
-		
-		
+			\begin{table}[H]
+				\centering
+				\begin{tabular}{p{3cm}|p{9cm}}
+					\toprule
+						类型 &  含义  	\\
+					\midrule
+						vecn &	包含n个float分量的默认向量\\
+						bvecn&	包含n个bool分量的向量\\
+						ivecn&	包含n个int分量的向量\\
+						uvecn&	包含n个unsigned int分量的向量\\
+						dvecn&	包含n个double分量的向量\\
+					\bottomrule
+				\end{tabular}
+			\end{table}
+			
+			一个向量的分量可以通过\verb|vec.x|这种方式获取，这里x是指这个向量的第一个分量。你可以分别使用\verb|.x|、\verb|.y|、\verb|.z|和\verb|.w|来获取它们的第\textit{1、2、3、4}个分量。GLSL也允许你\textbf{对颜色}使用\verb|rgba|，或是\textbf{对纹理坐标}使用\verb|stpq|访问相同的分量。
+			
+			向量这一数据类型也允许一些有趣而灵活的分量选择方式，叫做\textbf{重组(Swizzling)},重组允许以下特别的语法。
+			\begin{lstlisting}
+	vec2 someVec;
+	vec4 differentVec = someVec.xyxx;
+	vec3 anotherVec = differentVec.zyw;
+	vec4 otherVec = someVec.xxxx + anotherVec.yxzy;			
+			\end{lstlisting}
+			
+			
 		\subsection{输入输出}
-		
+			
+			\paragraph{in-out 关键字}
+				GLSL定义了\verb|in |和\verb|out |关键字专门来实现这个目的。每个着色器使用这两个关键字设定输入和输出，只要一个输出变量与下一个着色器阶段的输入匹配.
+			
+			\paragraph{layout (location = 0)标识符}
+				\textbf{顶点着色器}应该接收的是一种特殊形式的输入，否则就会效率低下。顶点着色器的输入特殊在，它从顶点数据中(CPU)直接接收输入。为了定义顶点数据该如何管理，我们使用\verb|location|这一元数据指定输入变量，这样我们才可以在CPU上配置顶点属性。
+			
+			
 		
 		\subsection{Uniform}
 		
-		
-		\subsection{自定义属性}
-		
+			\paragraph{概述}
+				Uniform是一种从CPU中的应用向GPU中的着色器发送数据的方式，但uniform和顶点属性有些不同。
+				
+				首先，\textbf{uniform是全局的(Global)}。全局意味着uniform变量必须在每个着色器程序对象中都是\textbf{独一无二的}，而且它可以被着色器程序的\textit{任意着色器}\textbf{在任意阶段访问}。
+				
+				第二，无论你把uniform值设置成什么，uniform\textit{会一直保存它们的数据}，\textbf{直到它们被重置或更新}。
+			
+			
+				最后，如果\textit{声明了一个uniform却在GLSL代码中没用过}，编译器\textbf{会静默移除这个变量}，导致最后编译出的版本中并不会包含它，这可能导致几个非常麻烦的错误，记住这点！
+			
+			\paragraph{使用要点}\verb|->|
+				\begin{lstlisting}
+	int vertexColorLocation = glGetUniformLocation(shaderProgram, "ourColor");
+	glUseProgram(shaderProgram);
+	glUniform4f(vertexColorLocation, 0.0f, greenValue, 0.0f, 1.0f);
+				\end{lstlisting}
+				
+				用\verb|glGetUniformLocation()|查询\verb|uniform | \textit{ourColor}的\textbf{位置值}。我们为查询函数提供着色器程序和uniform的名字（这是我们希望获得的位置值的来源）。如果\verb|glGetUniformLocation()|返回\verb|-1|就代表\textit{没有找到这个位置值}。最后，我们可以通过\verb|glUniform4f()|函数\textbf{设置uniform值}。注意，\textbf{查询uniform地址不要求你之前使用过着色器程序，但是更新一个uniform之前你必须先使用程序（调用glUseProgram)，因为它是在\underline{当前激活的着色器程序}中设置uniform的}。
+				
+				\verb|glUniform()|系列函数怎么选择！因为OpenGL在其核心是一个C库，所以它\textbf{不支持类型重载，在函数参数不同的时候就要为其定义新的函数}；\verb|glUniform()|是一个典型例子。这个函数有一个特定的后缀，标识设定的uniform的类型。可能的后缀有：
+				\begin{table}[H]
+					\centering
+					\begin{tabular}{p{3cm}|p{10cm}}
+						\toprule
+							后缀 &  含义 	\\
+						\midrule
+							f	&	函数需要一个float作为它的值\\
+							i	&	函数需要一个int作为它的值	\\
+							ui	&	函数需要一个unsigned int作为它的值\\
+							3f	&	函数需要3个float作为它的值		\\
+							fv	&	函数需要一个float向量/数组作为它的值\\					
+						\bottomrule
+					\end{tabular}
+				\end{table}
+				
+				\subparagraph{注意}：当传递纹理时，如\verb|uniform sampler2D texture|, 很多时候我们会以为要把纹理ID作为sampler2D参数的值传给GLSL，  
+				// 我们可能会这样写\verb|glUniform1i(texLoc, TexureID)|,但这做法是错的，GLSL的sample2D 只接受纹理单元的\textbf{索引号}，\verb|GL_TEXTURE0+i|.
+					
+				\begin{lstlisting}
+	////////////////////////////////////////////////////////////				
+	.frag
+	uniform sampler2D BaseMap;  
+	uniform sampler2D ReflectMap;  
+	uniform sampler2D RefractMap;  			
+				
+				
+	/////////////////////////////////////////////////////////////			
+	.cpp
+	glBindTexture(GL_TEXTURE_2D, BaseID);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, Width, Height, 0, GL_RGB, GL_UNSIGNED_BYTE, BaseData);
+	 
+	glBindTexture(GL_TEXTURE_2D, ReflectionID);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, Width, Height, 0, GL_RGB, GL_UNSIGNED_BYTE, ReflectionData);
+	 
+	glBindTexture(GL_TEXTURE_2D, RefractionID);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, Width, Height, 0, GL_RGB, GL_UNSIGNED_BYTE, RefractionData);
+	 
+	glUseProgram(ShaderID);
+	 
+	 
+	//　设定纹理参数的数值，这里是关键，很多时候我们会以为要把 `\textbf{纹理ID}` 作为 `\textbf{sampler2D参数的值}` 传给GLSL，
+	// 我们可能会这样写glUniform1i(texLoc, BaseID,但这做法是错的，GLSL的sample2D `\textbf{只接受}`纹理单元的`\textbf{索引号}`，GL_TEXTURE0+i
+	// 还有一个要注意的地方就是要用glUniform1i函数，而不要用glUniform1ui();
+	 
+	GLint texLoc;
+	texLoc = glGetUniformLocation(ShaderID, "BaseMap");
+	glUniform1i(texLoc, 0); //GL_TEXTURE0,
+	//这里我觉得是opengl做得最不人性化的地方，你只能输入0，1，2来代表纹理单元的索引，不直观，让人摸不着头脑。
+	 
+	texLoc = glGetUniformLocation(ShaderID, "ReflectMap");
+	glUniform1i(texLoc, 1); //GL_TEXTURE1
+	 
+	texLoc = glGetUniformLocation(ShaderID, "RefractMap");
+	glUniform1i(texLoc, 2); //GL_TEXTURE2
+	 
+	Then in further down in my draw() function:
+	 
+	//　把纹理ID和纹理单元绑定在一起。
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, BaseID);
+	 
+	glActiveTexture(GL_TEXTURE1);
+	glBindTexture(GL_TEXTURE_2D, ReflectionID);
+	 
+	glActiveTexture(GL_TEXTURE2);
+	glBindTexture(GL_TEXTURE_2D, RefractionID);
+	 
+	// 用了GLSL，glEnable(GL_TEXTURE_2D);glDisable(GL_TEXTURE_2D);就不起作用了，一切由着色代码来控制。
+				\end{lstlisting}
+				
+				
+			\paragraph{例子}
+				如果我们打算让颜色慢慢变化，我们就要在\textbf{游戏循环的每一次迭代中（所以他会逐帧改变）更新这个uniform}，否则三角形就不会改变颜色。下面我们就计算greenValue然后每个渲染迭代都更新这个uniform：
+				\begin{lstlisting}
+while(!glfwWindowShouldClose(window))
+{
+	// 输入
+	processInput(window);
+	
+	// 渲染
+	// 清除颜色缓冲
+	glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+	glClear(GL_COLOR_BUFFER_BIT);
+	
+	// 记得激活着色器
+	`\color{blue}\textbf{glUseProgram(shaderProgram);}`
+	
+	// 更新uniform颜色
+	float timeValue = glfwGetTime();
+	float greenValue = sin(timeValue) / 2.0f + 0.5f;
+	`\color{blue}\textbf{int vertexColorLocation = glGetUniformLocation(shaderProgram, "ourColor");}`
+	`\color{blue}\textbf{glUniform4f(vertexColorLocation, 0.0f, greenValue, 0.0f, 1.0f);}`
+	
+	// 绘制三角形
+	glBindVertexArray(VAO);
+	glDrawArrays(GL_TRIANGLES, 0, 3);
+	
+	// 交换缓冲并查询IO事件
+	glfwSwapBuffers(window);
+	glfwPollEvents();
+}					
+				\end{lstlisting}
+				
 		
 		\subsection{从文件中读取}		
-		
+			基本原理就是逐行读文件。
+			
+			\begin{lstlisting}
+Shader(const char* vertexPath, const char* fragmentPath)
+{
+	// 1. 从文件路径中获取顶点/片段着色器
+	std::string vertexCode;
+	std::string fragmentCode;
+	std::ifstream vShaderFile;
+	std::ifstream fShaderFile;
+	// 保证ifstream对象可以抛出异常：
+	vShaderFile.exceptions (std::ifstream::failbit | std::ifstream::badbit);
+	fShaderFile.exceptions (std::ifstream::failbit | std::ifstream::badbit);
+	try 
+	{
+		// 打开文件
+		vShaderFile.open(vertexPath);
+		fShaderFile.open(fragmentPath);
+		std::stringstream vShaderStream, fShaderStream;
+		// 读取文件的缓冲内容到数据流中
+		vShaderStream << vShaderFile.rdbuf();
+		fShaderStream << fShaderFile.rdbuf();       
+		// 关闭文件处理器
+		vShaderFile.close();
+		fShaderFile.close();
+		// 转换数据流到string
+		vertexCode   = vShaderStream.str();
+		fragmentCode = fShaderStream.str();     
+	}
+	catch(std::ifstream::failure e)
+	{
+		std::cout << "ERROR::SHADER::FILE_NOT_SUCCESFULLY_READ" << std::endl;
+	}
+	const char* vShaderCode = vertexCode.c_str();
+	const char* fShaderCode = fragmentCode.c_str();
+}			
+			\end{lstlisting}
+			
+			
 		
 		
 		
@@ -875,7 +1084,7 @@ glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 			
 			\paragraph{片元着色器使用uv坐标取色}
 				
-				通过uniform 将纹理传递过来，通过顶点着色器将纹理坐标传过来，然后取出当前UV坐标点的像素颜色。
+				通过uniform 将纹理传递过来，注意，传递的是纹理索引，如使用第一张则传递0， 第二张则使用1,默认为0。通过顶点着色器将纹理坐标传过来，然后取出当前UV坐标点的像素颜色。
 			
 				\begin{lstlisting}
 	#version 330 core
@@ -910,7 +1119,7 @@ glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 				\end{lstlisting}
 
 
-\chapter{三大变换}
+\chapter{三大变换-3D转换}
 	从这个教程开始我们开始研究各种各样的图形变换，\textbf{图形变换就可以让一个3d物体在屏幕中变换的的时候看上去保持有深度的错觉}，也就是立体的投影效果。
 	
 	\textbf{实现}立体效果的\textbf{方法是}使用一个\textbf{经过多次相乘的变换矩阵}得到的\textbf{最终变换矩阵}来\textbf{和顶点的位置再相乘}，\textit{这样得到3d物体的一个多次变换后的最终复合变换效果}。
@@ -922,7 +1131,7 @@ glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 		
 		
 		这里我们先看一下平移变换，使一个物体沿着一个任意长度任意方向的向量平移，比如说让一个三角形从左边移动到右边：
-			\begin{figure}[h]
+			\begin{figure}[H]
 				\centering
 				\includegraphics[width=.7\linewidth]{transfer.png}
 				\caption{平移示例}
@@ -1012,9 +1221,9 @@ glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 		旋转变换将总是改变位置的其中两个坐标，第三个坐标保持不变，这意味着旋转的路径会保持在其中一个平面上：XY平面（绕Z轴旋转），YZ平面（绕X轴旋转）和XZ平面（绕Y轴旋转）。也有一些复杂的旋转变换允许图形绕着任意向量旋转，但在我们这个阶段还不需要。
 		
 		让我们从普遍统一的角度来定义这个问题。看下面这个图：
-			\begin{figure}[h]
+			\begin{figure}[H]
 				\centering
-				\includegraphics[scale = 0.7]{rotate.png}
+				\includegraphics[width=.4\linewidth]{rotate.png}
 				\caption{旋转示例}
 			\end{figure}
 		
@@ -1084,32 +1293,107 @@ glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 		
 		进行缩放变换其实很简单。我们从最开始的原变换矩阵来看，回忆平移变换矩阵的样子，我们保持结果矩阵中V1,V2和V3保持原样的办法是让变换矩阵主对角线上的值都为’1’，这样原向量一次都和1相乘之后依然保持不变，各分量之间互不影响。所以，这里的缩放变换，只要把那些‘1’换成我们想缩放的值，原向量各分量分别乘以这些值之后就会在相应坐标轴上进行相应的缩放了，值大于1则放大，值小于1则缩小。
 		
-		\begin{figure}[h]
+		\begin{figure}[H]
 			\centering
-			\includegraphics[scale = 0.57]{scale_1.png}
-			\includegraphics[scale = 0.57]{scale_2.png}
+			\includegraphics[width=.46\linewidth]{scale_1.png}
+			\includegraphics[width=.46\linewidth]{scale_2.png}
 			\caption{缩放示例}
 		\end{figure}
+		
+		
+		
+	\section{glm API示例}
+		
+		\url{https://learnopengl.com/code_viewer_gh.php?code=src/1.getting_started/6.3.coordinate_systems_multiple/coordinate_systems_multiple.cpp}
+	
+		\begin{lstlisting}
+	// 坐标变换的顺序必须是： 缩放->旋转->平移
+	// 模型矩阵
+	glm::mat4 model;
+	model = glm::::scale(model, glm::vec3(0.5, 0.5, 0.5));
+	model = glm::rotate(model, glm::radians(-55.0f), glm::vec3(1.0f, 0.0f, 0.0f));	
+	
+	// 视野矩阵
+	glm::mat4 view;
+	view = glm::translate(view, glm::vec3(0.0f, 0.0f, -3.0f));
+	
+	// 投影矩阵
+	glm::mat4 projection;
+	projection = glm::perspective(glm::radians(45.0f), screenWidth / screenHeight, 0.1f, 100.0f);	
+		\end{lstlisting}
 
-\chapter{四大变换}
-参考文献:\url{http://blog.csdn.net/lyx2007825/article/details/8792475}
-
-\verb|--|:\url{https://blog.csdn.net/u012501459/article/details/12945147}
-
-\verb|数学变换过程：|\url{https://blog.csdn.net/wangdingqiaoit/article/details/51594408}
-
+		顶点着色器示例代码：		
+		\begin{lstlisting}
+	#version 330 core
+	layout (location = 0) in vec3 aPos;
+	...
+	uniform mat4 model;
+	uniform mat4 view;
+	uniform mat4 projection;
+	
+	void main()
+	{
+	    // 注意乘法要从右向左读
+	    gl_Position = projection * view * model * vec4(aPos, 1.0);
+	    ...
+	}	
+		\end{lstlisting}
+		
+		\begin{lstlisting}
+	int modelLoc = glGetUniformLocation(ourShader.ID, "model"));
+	glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));		
+		\end{lstlisting}
+	
+	
+	\section{坐标转换顺序}
+		\url{https://blog.csdn.net/zsq306650083/article/details/50561857}
+		
+		坐标变换的顺序必须是： \textbf{缩放->旋转->平移}.
+		
+		理想状态下，一个操作需要通过  缩放、旋转最后平移达到目的，那么 推导出：
+		
+		\verb|3DPoint * M缩放 * M旋转 * M平移 * V * P|//这个是实际操作顺序
+		
+		但在OpenGL中写出来就应该相反：
+		
+		\verb|P * V * M平移 * M旋转 * M缩放 * 3DPoint|//才能得到正确结果
+		
+	
+	
+	\section{拓展-欧拉角}	
+		一共有3种欧拉角：俯仰角(Pitch)、偏航角(Yaw)和滚转角(Roll)。
+	
+	
+	\section{拓展-四元数}
+		解决万向锁问题
+		
+		
+		
+\chapter{四大变换-3D到2D}
+	
+	将坐标变换为标准化设备坐标(\verb|-1.0~1.0|)，接着再转化为屏幕坐标的过程通常是分步进行的，也就是类似于流水线那样子。在流水线中，物体的顶点在最终转化为屏幕坐标之前还会被变换到多个坐标系统(Coordinate System)。\textbf{将物体的坐标变换到几个过渡坐标系(Intermediate Coordinate System)的优点在于，在这些特定的坐标系统中，一些操作或运算更加方便和容易}。
+	
+	参考文献:\url{http://blog.csdn.net/lyx2007825/article/details/8792475}
+	
+	\verb|--|:\url{https://blog.csdn.net/u012501459/article/details/12945147}
+	
+	\verb|数学变换过程：|\url{https://blog.csdn.net/wangdingqiaoit/article/details/51594408}
+		
+	
+	\newpage
 	\section{坐标变化全过程演示}
 		OpenGL中的坐标处理过程包括\textbf{模型变换}、\textbf{照像机变换}、\textbf{投影变换}、\textbf{视口变换}等过程，如下图所示：
 		
-		\begin{figure}[htbp]
+		\begin{figure}[H]
 			\centering
-			\includegraphics[scale = 0.57]{transferAll.png}
+			\includegraphics[width=.95\linewidth]{transferAll.png}
+			\includegraphics[width=.93\linewidth]{transferAll3.png}
 			\caption{转化流程}
 		\end{figure}
 		
 		在上面的图中，注意，OpenGL只定义了\textit{裁剪坐标系、规范化设备坐标系和屏幕坐标系}，而\textbf{局部坐标系(模型坐标系)、世界坐标系和照相机坐标系}都是为了方便用户设计而自定义的坐标系，它们的关系如下图所示
 		
-		\begin{figure}[htbp]
+		\begin{figure}[H]
 			\centering
 			\includegraphics[scale = 0.9]{transferAll2.png}
 			\caption{转化流程2}
@@ -1117,16 +1401,27 @@ glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 		
 		图中左边的过程包括模型变换、视变换，投影变换，这些变换可以由用户根据需要自行指定，这些内容在顶点着色器中完成；而图中右边的两个步骤，包括透视除法、视口变换，这两个步骤是OpenGL自动执行的，在顶点着色器处理后的阶段完成。
 		
+		大概具体的流程及具体工作内容如下：
+		\begin{enumerate}[itemindent = 1em]
+			\item \textbf{局部坐标}是对象相对于局部原点的坐标，也是物体起始的坐标。
+			\item 将局部坐标变换为\textbf{世界空间坐标}，世界空间坐标是处于一个更大的空间范围的。这些坐标相对于世界的全局原点，它们会和其它物体一起相对于世界的原点进行摆放。
+			\item 将世界坐标变换为\textbf{观察空间坐标}，使得每个坐标都是从摄像机或者说观察者的角度进行观察的。
+			\item 将观察空间坐标投影到\textbf{裁剪坐标}。裁剪坐标会被处理至-1.0到1.0的范围内，并判断哪些顶点将会出现在屏幕上。
+			\item 将裁剪坐标变换为\textbf{屏幕坐标}，此过程将使用一个叫做\textit{视口变换(Viewport Transform)}的过程。视口变换将位于\verb|-1.0到1.0|范围的坐标变换到由glViewport函数所定义的坐标范围内。最后变换出来的坐标将会送到光栅器，将其转化为片段。		
+		\end{enumerate}
+		
+		
+		
 	\section{模型变换(世界变换)}
 			\subparagraph{包含}：所有单位模型的变换，为了能够在世界坐标系中正确的显式相对位置。如图\ref{mxzh}
-				\begin{figure}[htbp]
+				\begin{figure}[H]
 					\centering
-					\includegraphics[scale = 0.7]{transferModel.png}
+					\includegraphics[width=.8\linewidth]{transferModel.png}
 					\caption{模型转换过程}
 					\label{mxzh}
 				\end{figure}
 			
-			\subparagraph{顺序}：\verb|缩放–>旋转—>平移|
+			\subparagraph{顺序}：\verb|缩放-->旋转-->平移|
 		
 			\subparagraph{数学}->\verb|变换矩阵*位置坐标|，如公式\ref{model transform}
 					\begin{equation}\label{model transform}
@@ -1171,9 +1466,9 @@ glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 			数学变换参考文献：\url{https://blog.csdn.net/wangdingqiaoit/article/details/51570001}
 			
 			\subparagraph{包含}：相机坐标系中的坐标，就是从相机的角度来解释世界坐标系中位置。如
-				\begin{figure}[htbp]
+				\begin{figure}[H]
 					\centering
-					\includegraphics[scale = 0.7]{transferEye.png}
+					\includegraphics[width=.8\linewidth]{transferEye.png}
 					\caption{摄像机转换过程}
 				\end{figure}
 			
@@ -1184,9 +1479,9 @@ glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 				\end{itemize}
 				
 				\textbf{OpenGL中采用方式2的观点来解释视变换。}例如下面\ref{sxweizhi}的图表示了假想的相机：
-				\begin{figure}[htbp]
+				\begin{figure}[H]
 					\centering
-					\includegraphics[scale = 0.4]{Eye.png}
+					\includegraphics[width=.8\linewidth]{Eye.png}
 					\caption{openGL摄像机位置}
 					\label{sxweizhi}
 				\end{figure}	
@@ -1210,16 +1505,16 @@ glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 			进一步说明这里相对的概念，对这个概念不感兴趣的可以跳过。默认时相机位于(0,0,0)，指向-z轴，相当于调用了：
 			\begin{lstlisting}
 	glm::lookAt(glm::vec(0.0f,0.0f,0.0f),
-		glm::vec3(0.0f, 0.0f, -1.0f),
-		glm::vec3(0.0f, 1.0f, 0.0f));
+	glm::vec3(0.0f, 0.0f, -1.0f),
+	glm::vec3(0.0f, 1.0f, 0.0f));
 			\end{lstlisting}
 			得到是单位矩阵，\textbf{这是相机的默认情况}。
 			
 			\textbf{上述第一种方式}，相机绕着+y轴旋转90度，相机指向-x轴，则等价于调用变为:
 			\begin{lstlisting}
 	glm::mat4 view =glm::lookAt(glm::vec(0.0f,0.0f,0.0f),
-		glm::vec3(-1.0f, 0.0f, 0.0f),
-		glm::vec3(0.0f, 1.0f, 0.0f));
+	glm::vec3(-1.0f, 0.0f, 0.0f),
+	glm::vec3(0.0f, 1.0f, 0.0f));
 			\end{lstlisting}
 			得到的视变换矩阵为:
 				$$
@@ -1247,9 +1542,9 @@ glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 			
 			\subparagraph{计算变换矩阵}
 				相机坐标系由相机位置eye和UVN基向量(或者说由forward, side ,up）构成，如下图\ref{shexiang}所示：
-				\begin{figure}[htbp]
+				\begin{figure}[H]
 					\centering
-					\includegraphics[scale = 0.7]{EyeTrans.png}
+					\includegraphics[width=.8\linewidth]{EyeTrans.png}
 					\caption{摄像机-物体图例}
 					\label{shexiang}
 				\end{figure}
@@ -1261,9 +1556,9 @@ glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 					\item \textbf{相机顶部正朝向}: View Up Vector 确定在相机哪个方向是向上的，一般取(0, 1, 0)。
 				\end{itemize}
 				上面的图简化为图\ref{shexiangjie2}： 
-				\begin{figure}[htbp]
+				\begin{figure}[H]
 					\centering
-					\includegraphics[scale = 0.7]{EyeTrans2.png}
+					\includegraphics[width=.8\linewidth]{EyeTrans2.png}
 					\caption{摄像机-物体图例2}
 					\label{shexiangjie2}
 				\end{figure}
@@ -1271,8 +1566,8 @@ glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 				在使用过程中，我们是要指定的参数即为\textbf{相机位置(eye)}，\textbf{相机指向的目标位置(target)}和\textbf{viewUp vector}三个参数。 
 				
 				\begin{enumerate}[itemindent = 1em]
-					\item 首选\textbf{计算相机镜头方向}：$forwrad=(target−eye)$，并完成标准化$\frac{forward}{|forward|}$
-					\item 根据view-up vector和forward\textbf{确定相机的side向量}:
+					\item 首选\textbf{计算相机镜头方向(方向向量)}：$forwrad=(target−eye)$，并完成标准化$\frac{forward}{|forward|}$
+					\item 根据view-up vector和forward\textbf{确定相机的side(Right)向量}:
 						$$viewUp' = \dfrac{viewUp}{||viewUp||}$$
 						$$side = cross(forward, viewUp')$$
 					\item 根据forward和side\textbf{计算up向量}: 
@@ -1299,7 +1594,8 @@ glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 								\right)
 								$$
 								
-				通过一些列变换求得视变换矩阵为
+				通过一些列变换\textbf{求得}视变换矩阵为
+				
 					$$
 					Model_{view} =  
 					\left(
@@ -1314,13 +1610,14 @@ glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 					\end{array}
 					\right)
 					$$
-					
+			
+				\verb|glm::LookAt()|函数需要一个\textbf{位置}、\textbf{目标}和\textbf{上向量}。它会创建一个和之前介绍一样的观察矩阵。	
 				这种方式对应的计算代码如下：
 				\begin{lstlisting}
 	// 手动构造LookAt矩阵 方式1
 	glm::mat4 computeLookAtMatrix1(glm::vec3 eye, glm::vec3 target, glm::vec3 viewUp)
 	{
-		glm::vec3 f = glm::normalize(target - eye); // forward vector
+		glm::vec3 f = glm::normalize(target - eye); // forward vector 
 		glm::vec3 s = glm::normalize(glm::cross(f, viewUp)); // side vector
 		glm::vec3 u = glm::normalize(glm::cross(s, f)); // up vector
 		glm::mat4 lookAtMat(
@@ -1368,16 +1665,16 @@ glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 				\item \textbf{透视投影}的投影线相交于一点，因此投影的结果与原物体的实际大小并不一致，而是会近大远小。因此透视投影更接近于真实世界的投影方式。
 			\end{itemize}
 			两者的示意图如下\ref{tyqb}：
-			\begin{figure}[htbp]
+			\begin{figure}[H]
 				\centering
-				\includegraphics[scale = 0.7]{project.png}
+				\includegraphics[width=.8\linewidth]{project.png}
 				\caption{投影区别}
 				\label{tyqb}
 			\end{figure}
 			在OpenGL中成像时的效果如下\ref{touyingqubie}所示：
-			   \begin{figure}[htbp]
+			   \begin{figure}[H]
 			   	\centering
-			   	\includegraphics[scale = 0.7]{project2.png}
+			   	\includegraphics[width=.8\linewidth]{project2.png}
 			   	\caption{openGL投影区别}
 			   	\label{touyingqubie}
 			   \end{figure}
@@ -1386,33 +1683,40 @@ glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 			在openGL 实现如下：
 			
 			使用\verb|glOrtho(xleft, xright, ybottom, ytop, znear, zfar);|或者类似API\textbf{指定正交投影}，参数意义形象表示为下图\ref{zhengjiao}所示
-				\begin{figure}[htbp]
+				\begin{figure}[H]
 					\centering
-					\includegraphics[scale = 0.7]{Ortho.png}
+					\includegraphics[width=.8\linewidth]{Ortho.png}
 					\caption{openGL正交投影效果}
 					\label{zhengjiao}
 				\end{figure}
 			
 			使用\verb|void gluPerspective(...);|或者类似的API指定透视投影的视见体，其参数含义如下图\ref{toushi}所示
-				\begin{figure}[htbp]
+				\begin{figure}[H]
 					\centering
-					\includegraphics[scale = 0.7]{project3.png}
+					\includegraphics[width=.8\linewidth]{project3.png}
 					\caption{openGL透视投影效果}
 					\label{toushi}
 				\end{figure}
 				
-			另外一种经常使用 的方式是\textbf{通过视角(Fov)，宽高比(Aspect)来指定透视投影}，例如旧版中函数gluPerspective 如图\ref{ts1}:
-				\begin{figure}[htbp]
+			另外一种经常使用 的方式是\textbf{通过视角(Fov)，宽高比(Aspect)来指定透视投影}，例如旧版中函数gluPerspective 如图\ref{ts1}。
+			在glm 中则使用函数perspective 求取裁剪矩阵。
+			\begin{lstlisting}
+	glm::mat4 proj = glm::perspective(glm::radians(45.0f), (float)width/(float)height, 0.1f, 100.0f);		
+			\end{lstlisting}
+			
+			\textbf{第一个参数}定义了\textit{fov}的值，它表示的是视野(\textit{Field of View})，并且设置了观察空间的大小。如果想要一个真实的观察效果，它的值通常设置为45.0f，但想要一个末日风格的结果你可以将其设置一个更大的值。\textbf{第二个参数}设置了宽高比，由视口的宽除以高所得。\textbf{第三和第四个参数}设置了平截头体的近和远平面。
+				
+				\begin{figure}[H]
 					\centering
-					\includegraphics[scale = 0.7]{toushi.png}
+					\includegraphics[width=.73\linewidth]{toushi.png}
 					\caption{openGL投影示意}
 					\label{ts1}
 				\end{figure}
 			
 			这些参数指定的是一个对称的视见体，如下图\ref{ts2}所示
-				\begin{figure}[htbp]
+				\begin{figure}[H]
 					\centering
-					\includegraphics[scale = 1]{toushi2.png}
+					\includegraphics[width=.8\linewidth]{toushi2.png}
 					\caption{openGL投影示意2}
 					\label{ts2}
 				\end{figure}
@@ -1463,12 +1767,19 @@ glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 				\end{array}	
 				\right) 
 				$$	
+	
+		\subsection{总结}
+			上述的每一个步骤都创建了一个\textit{变换矩阵}：\textbf{模型矩阵}、\textbf{观察矩阵} 和 \textbf{投影矩阵}。一个顶点坐标将会根据以下过程被变换到裁剪坐标：
+	
+			$$ V_{clip} = M_{projection} \cdot M_{view} \cdot M_{model} \cdot V_{local}$$
+			
+			\textbf{注意矩阵运算的顺序是相反的}（记住我们需要\textit{从右往左阅读矩阵的乘法}）。最后的顶点应该被赋值到顶点着色器中的\verb|gl_Position|，\textit{OpenGL将会自动进行透视除法和裁剪}。
 			
 	\section{视口变换}
 		\subparagraph{含义}：是将规范化设备坐标(NDC)转换为屏幕坐标的过程，如下图\ref{shikou}所示：
-			\begin{figure}[htbp]
+			\begin{figure}[H]
 				\centering
-				\includegraphics[scale = 1.2]{viewPort.png}
+				\includegraphics[width=.9\linewidth]{viewPort.png}
 				\caption{视口变换图例}
 				\label{shikou}
 			\end{figure}
@@ -1486,31 +1797,382 @@ glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 			
 \chapter{光照}
 	\section{颜色}
+		\url{https://learnopengl-cn.github.io/02%20Lighting/01%20Colors/}
 	
+		我们在现实生活中看到某一物体的颜色并不是这个物体真正拥有的颜色，而是它所反射的(Reflected)颜色。换句话说，那些不能被物体所吸收(Absorb)的颜色（被拒绝的颜色）就是我们能够感知到的物体的颜色。
+		
+		当我们在OpenGL中创建一个光源时，我们希望给光源一个颜色。在上一段中我们有一个白色的太阳，所以我们也将光源设置为白色。\textbf{当我们把光源的颜色与物体的颜色值相乘，所得到的就是这个物体所反射的颜色（也就是我们所感知到的颜色）}。
+		
+		$$\textbf{反射颜色} = \textbf{光源颜色} \times \textbf{物体颜色}$$
+		
+		\begin{lstlisting}
+	glm::vec3 lightColor(1.0f, 1.0f, 1.0f);
+	glm::vec3 toyColor(1.0f, 0.5f, 0.31f);
+	glm::vec3 result = lightColor * toyColor; // = (1.0f, 0.5f, 0.31f);		
+		\end{lstlisting}
+		
+		如果我们用绿色光源来照射玩具，那么只有绿色分量能被反射和感知到，红色和蓝色都不能被我们所感知到。这样做的结果是，一个珊瑚红的玩具突然变成了深绿色物体.
+		
+		\begin{lstlisting}
+	glm::vec3 lightColor(0.0f, 1.0f, 0.0f);
+	glm::vec3 toyColor(1.0f, 0.5f, 0.31f);
+	glm::vec3 result = lightColor * toyColor; // = (0.0f, 0.5f, 0.0f);		
+		\end{lstlisting}
+		
 	\section{基础光照}
+			\begin{figure}[H]
+				\centering
+				\includegraphics[width=.9\linewidth]{basic_lighting_phong}
+			\end{figure}
 	
+			$$\textbf{光照} = \textbf{环境光} + \textbf{漫反射} +\textbf{镜面反射}$$
+			
+	
+		\subsection{环境光照}
+			即使在黑暗的情况下，世界上通常也仍然有一些光亮（月亮、远处的光），所以物体几乎永远不会是完全黑暗的。为了模拟这个，我们会使用一个环境光照常量，它永远会给物体一些颜色。
+			
+			我们使用一个很小的常量（光照）颜色，添加到物体片段的最终颜色中，这样子的话即便场景中没有直接的光源也能看起来存在有一些发散的光。
+			
+			把环境光照添加到场景里非常简单。我们用光的颜色乘以一个很小的常量环境因子，再乘以物体的颜色，然后将最终结果作为片段的颜色：
+			
+			\begin{lstlisting}
+void main()
+{
+	float ambientStrength = 0.1;
+	vec3 ambient = ambientStrength * lightColor;
+	
+	vec3 result = ambient * objectColor;
+	FragColor = vec4(result, 1.0);
+}			
+			\end{lstlisting}
+			
+			这个物体非常暗，但由于应用了环境光照（注意光源立方体没受影响是因为我们对它使用了另一个着色器），也不是完全黑的。它看起来应该像这样：
+			
+			\begin{figure}[H]
+				\centering
+				\includegraphics[width=.83\linewidth]{ambient_lighting}
+			\end{figure}
+			
+		\subsection{漫反射光照}
+			\textbf{模拟光源对物体的方向性影响(Directional Impact)}。它是冯氏光照模型中视觉上最显著的分量。物体的某一部分越是正对着光源，它就会越亮。
+			
+			\textit{两个单位向量的夹角越小，它们点乘的结果越倾向于1。当两个向量的夹角为90度的时候，点乘会变为0。}点乘返回一个标量，可以用它计算光线对片段颜色的影响。不同片段朝向光源的方向的不同，这些片段被照亮的情况也不同。所以，计算漫反射光照需要：
+			
+			\begin{itemize}
+				\item \textbf{法向量}：一个垂直于顶点表面的向量。
+				\item \textbf{定向的光线}：作为\textbf{光源}的位置与\textbf{片段}的位置之间向量差的\textbf{方向向量}。\underline{为了计算这个光线}，我们需要\textit{光的位置向量}和\textit{片段的位置向量}。
+			\end{itemize}
+			
+			
+			\paragraph{法向量}
+				法向量是一个\textit{垂直于顶点表面的（单位）向量}。由于顶点本身并没有表面（它只是空间中一个独立的点），我们\textit{利用它周围的顶点}来计算出这个顶点的表面。
+				
+				由于向顶点数组添加了额外的数据(法线)属性，数据增加一个法线向量，所以我们应该更新光照的顶点着色器：
+				\begin{lstlisting}
+	#version 330 core
+	layout (location = 0) in vec3 aPos;
+	layout (location = 1) in vec3 aNormal;				
+				\end{lstlisting}
+				
+				\textbf{所有光照的计算都是在片段着色器里进行}，所以我们需要将法向量由\textbf{顶点着色器}传递到片段着色器。我们这么做：
+				\begin{lstlisting}
+	out vec3 Normal;
+	
+	void main()
+	{
+	    gl_Position = projection * view * model * vec4(aPos, 1.0);
+	    Normal = aNormal;
+	}					
+				\end{lstlisting}
+				
+				接下来，\textbf{在片段着色器}中定义相应的输入变量：
+				\begin{lstlisting}
+	in vec3 Normal;			
+				\end{lstlisting}
+			
+			
+			\paragraph{光源+方向}
+				\textbf{光源的位置向量}，由于光源的位置是一个静态变量，我们可以简单地在片段着色器中把它声明为uniform。
+				
+				\begin{lstlisting}
+	uniform vec3 lightPos;				
+				\end{lstlisting}
+				
+				\textbf{片段的位置},我们会在\textbf{世界空间}中进行所有的光照计算，因此我们\textbf{需要一个在世界空间中的顶点位置}。我们可以通过\textit{把顶点位置属性乘以模型矩阵（\underline{不是观察和投影矩阵}）来把它变换到世界空间坐标}。这个在顶点着色器中很容易完成，所以我们声明一个输出变量，并计算它的世界空间坐标.
+				
+				\begin{lstlisting}
+	out vec3 FragPos;  
+	out vec3 Normal;
+	
+	void main()
+	{
+	    gl_Position = projection * view * model * vec4(aPos, 1.0);
+	    FragPos = vec3(model * vec4(aPos, 1.0));
+	    Normal = aNormal;
+	}				
+				\end{lstlisting}
+				
+				 那么光照的方向向量的计算如下：
+				 \begin{lstlisting}
+	vec3 lightDir = normalize(lightPos - FragPos);				 
+				 \end{lstlisting}
+				
+			\paragraph{计算漫反射}
+				对norm和lightDir向量进行点乘，计算光源对当前片段实际的漫发射影响。结果值再乘以光的颜色，得到漫反射分量.
+				两个向量之间的角度越大，漫反射分量就会越小
+				
+				如果两个向量之间的角度大于90度，点乘的结果就会变成负数，这样会导致漫反射分量变为负数。为此，我们使用max函数返回两个参数之间较大的参数，从而保证漫反射分量不会变成负数。负数颜色的光照是没有定义的.
+				
+				现在我们有了\textbf{环境光分量}和\textbf{漫反射分量}，我们\textbf{把它们相加，然后把结果乘以物体的颜色，来获得片段最后的输出颜色}。
+				
+				\begin{lstlisting}
+	#version 330 core
+	out vec4 FragColor;
+	
+	in vec3 Normal;  
+	in vec3 FragPos;  
+	  
+	uniform vec3 lightPos; 
+	uniform vec3 lightColor;
+	uniform vec3 objectColor;
+	
+	void main()
+	{
+	    // ambient
+	    float ambientStrength = 0.1;
+	    vec3 ambient = ambientStrength * lightColor;
+	  	
+	    // diffuse 
+	    vec3 norm = normalize(Normal);
+	    vec3 lightDir = normalize(lightPos - FragPos);
+	    float diff = max(dot(norm, lightDir), 0.0);
+	    vec3 diffuse = diff * lightColor;
+	            
+	    vec3 result = (ambient + diffuse) * objectColor;
+	    FragColor = vec4(result, 1.0);
+	} 				
+				\end{lstlisting}
+			
+			
+			
+		\subsection{镜面反射}
+			\textbf{模拟有光泽物体上面出现的亮点}。镜面光照的颜色相比于物体的颜色会更倾向于光的颜色。
+			
+			和漫反射光照一样，镜面光照也是\underline{依据}\textbf{光的方向向量}和\textbf{物体的法向量}来决定的，但是它\textbf{也依赖于观察方向}，例如玩家是从什么方向看着这个片段的。镜面光照是基于光的反射特性。如果我们想象物体表面像一面镜子一样，那么，无论我们从哪里去看那个表面所反射的光，镜面光照都会达到最大化。
+			
+			\begin{figure}[H]
+				\centering
+				\includegraphics[width=.7\linewidth]{basic_lighting_specular_theory}
+			\end{figure}
+			
+			通过反射法向量周围光的方向来计算\textbf{反射向量}。然后我们\textbf{计算反射向量和视线方向的角度差，如果夹角越小，那么镜面光的影响就会越大}。它的作用效果就是，当我们去看光被物体所反射的那个方向的时候，我们会看到一个高光。
+			
+			观察向量是镜面光照附加的一个变量，我们可以使用观察者世界空间位置和片段的位置来计算它.
+			
+			\paragraph{观察向量计算}
+				为了得到观察者的世界空间坐标，我们简单地使用摄像机对象的位置坐标代替。所以需要添加一个uniform到片段着色器，把相应的摄像机位置坐标传给片段着色器。
+				\begin{lstlisting}
+	uniform vec3 viewPos;
+	vec3 viewDir = normalize(viewPos - FragPos);			
+				\end{lstlisting}
+
+			\paragraph{反射向量计算}
+				需要注意的是我们对\verb|lightDir|向量进行了取反。\verb|reflect()|函数要求第一个向量是从光源指向片段位置的向量，但是lightDir当前正好相反，是从片段指向光源（\textit{由先前我们计算lightDir向量时，减法的顺序决定}）。\textbf{为了保证我们得到正确的reflect向量}，我们通过对lightDir向量取反来获得相反的方向。第二个参数要求是一个法向量，所以我们提供的是已标准化的norm向量。
+				
+				\begin{lstlisting}
+	vec3 reflectDir = reflect(-lightDir, norm);				
+				\end{lstlisting}
+			
+			\paragraph{散光度}
+				\subparagraph{高光强度}
+					定义一个镜面强度(Specular Intensity)变量，给镜面高光一个中等亮度颜色，让它不要产生过度的影响。
+					
+					\begin{lstlisting}
+	float specularStrength = 0.5;					
+					\end{lstlisting}	
+									
+				\subparagraph{散光度}
+					先计算视线方向与反射方向的点乘（并确保它不是负值），然后取它的32次幂。这个32是\textbf{高光的反光度(Shininess)}。一个物体的反光度越高，反射光的能力越强，散射得越少，高光点就会越小。在下面的图片里，你会看到不同反光度的视觉效果影响：
+					\begin{figure}[H]
+						\centering
+						\includegraphics[width=.91\linewidth]{basic_lighting_specular_shininess}
+					\end{figure}
+					
+					\begin{lstlisting}
+	float spec = pow(max(dot(viewDir, reflectDir), 0.0), 32);
+	vec3 specular = specularStrength * spec * lightColor;				
+					\end{lstlisting}
+			
+			\paragraph{计算}\verb|->|
+				
+				$$FinalColor = (Ambient + Diffuse + Specular) * ObjectColor $$
+				
+				\begin{lstlisting}
+	#version 330 core
+	out vec4 FragColor;
+	
+	in vec3 Normal;  
+	in vec3 FragPos;  
+	  
+	uniform vec3 lightPos; 
+	uniform vec3 viewPos; 
+	uniform vec3 lightColor;
+	uniform vec3 objectColor;
+	
+	void main()
+	{
+	    // ambient
+	    float ambientStrength = 0.1;
+	    vec3 ambient = ambientStrength * lightColor;
+	  	
+	    // diffuse 
+	    vec3 norm = normalize(Normal);
+	    vec3 lightDir = normalize(lightPos - FragPos);
+	    float diff = max(dot(norm, lightDir), 0.0);
+	    vec3 diffuse = diff * lightColor;
+	    
+	    // specular
+	    float specularStrength = 0.5;
+	    vec3 viewDir = normalize(viewPos - FragPos);
+	    vec3 reflectDir = reflect(-lightDir, norm);  
+	    float spec = pow(max(dot(viewDir, reflectDir), 0.0), 32);
+	    vec3 specular = specularStrength * spec * lightColor;  
+	        
+	    vec3 result = (ambient + diffuse + specular) * objectColor;
+	    FragColor = vec4(result, 1.0);
+	} 				
+				\end{lstlisting}
+			
+			
+			
 	\section{材质}
+		在现实世界里，每个物体会对光产生不同的反应。比如说，钢看起来通常会比陶瓷花瓶更闪闪发光，木头箱子也不会像钢制箱子那样对光产生很强的反射。每个物体对镜面高光也有不同的反应。有些物体反射光的时候不会有太多的散射(Scatter)，因而产生一个较小的高光点，而有些物体则会散射很多，产生一个有着更大半径的高光点。如果我们想要在OpenGL中模拟多种类型的物体，我们必须为每个物体分别定义一个\textbf{材质(Material)属性}。
+		
+		\textit{当描述一个物体的时候}，我们可以用这三个分量来定义一个材质颜色(Material Color)：\textbf{环境光照(Ambient Lighting)}、\textbf{漫反射光照(Diffuse Lighting)}和\textbf{镜面光照(Specular Lighting)}。通过为每个分量指定一个颜色，我们就能够对物体的颜色输出有着精细的控制了，再添加\textbf{反光度(Shininess)}这个分量到上述的三个颜色中，这就有我们需要的所有材质属性了。
+		
+		\begin{lstlisting}
+#version 330 core
+struct Material {
+	vec3 ambient;
+	vec3 diffuse;
+	vec3 specular;
+	float shininess;
+}; 
+
+uniform Material material;		
+		\end{lstlisting}
+		
+		\begin{itemize}
+			\item \textbf{ambient材质向量}定义了在\textbf{环境光照下这个物体反射得是什么颜色}，通常这是和物体颜色相同的颜色。
+			\item \textbf{diffuse材质向量}定义了在\textbf{漫反射光照下物体的颜色}。（和环境光照一样）漫反射颜色也要设置为我们需要的物体颜色。
+			\item \textbf{specular材质向量}设置的是镜面光照对物体的颜色影响（或者甚至可能反射一个物体特定的\textbf{镜面高光颜色}）。
+			\item \textbf{shininess}影响镜面高光的\textbf{散射/半径}。
+		\end{itemize}
+		
+		\subsection{物体设置材质影响因子}
+			\begin{lstlisting}
+	void main()
+	{    
+	    // 环境光
+	    vec3 ambient = lightColor * material.ambient;
 	
-	\section{光照贴图}		
+	    // 漫反射 
+	    vec3 norm = normalize(Normal);
+	    vec3 lightDir = normalize(lightPos - FragPos);
+	    float diff = max(dot(norm, lightDir), 0.0);
+	    vec3 diffuse = lightColor * (diff * material.diffuse);
+	
+	    // 镜面光
+	    vec3 viewDir = normalize(viewPos - FragPos);
+	    vec3 reflectDir = reflect(-lightDir, norm);  
+	    float spec = pow(max(dot(viewDir, reflectDir), 0.0), material.shininess);
+	    vec3 specular = lightColor * (spec * material.specular);  
+	
+	    vec3 result = ambient + diffuse + specular;
+	    FragColor = vec4(result, 1.0);
+	}	
+			\end{lstlisting}
+		
+		
+		\subsection{传递材质属性-uniform}
+		
+			以变量的具体属性名称获取其变量位置，然后赋值。
+		
+			\begin{lstlisting}
+	lightingShader.setVec3("material.ambient",  1.0f, 0.5f, 0.31f);
+	lightingShader.setVec3("material.diffuse",  1.0f, 0.5f, 0.31f);
+	lightingShader.setVec3("material.specular", 0.5f, 0.5f, 0.5f);
+	lightingShader.setFloat("material.shininess", 32.0f);			
+			\end{lstlisting}
+		
+			
+			
+		\subsection{光照设置材质影响因子}
+			同样，光也可以按照以上做法进行设置材质属性等。
+		
+			\begin{lstlisting}
+	struct Light {
+	    vec3 position;
+	
+	    vec3 ambient;
+	    vec3 diffuse;
+	    vec3 specular;
+	};
+	
+	uniform Light light;		
+			
+	vec3 ambient  = light.ambient * material.ambient;
+	vec3 diffuse  = light.diffuse * (diff * material.diffuse);
+	vec3 specular = light.specular * (spec * material.specular);			
+			\end{lstlisting}
+		
+	
+	\section{光照贴图}	
+		在上一节中，将整个物体的材质定义为一个整体，但现实世界中的\textbf{物体通常并不只包含有一种材质}，\textbf{而是由多种材质所组成}。想想一辆汽车：它的外壳非常有光泽，车窗会部分反射周围的环境，轮胎不会那么有光泽，所以它没有镜面高光，轮毂非常闪亮（如果你洗车了的话）。汽车同样会有漫反射和环境光颜色，它们在整个物体上也不会是一样的，汽车有着许多种不同的环境光/漫反射颜色。总之，这样的物体在不同的部件上都有不同的材质属性。
+		
+		
+		这种是将纹理贴到物体上后，再加上光照处理，不同的是物体的材质漫反射等属性vec 替换为 材质纹理。
+		
+		\subsection{漫反射贴图}
+				
+		\subsection{镜面光贴图}
+			
 			
 	\section{投光物}
+		
+	
+	
 	
 	\section{多光源}
 	
+	
+	
+	
 	\section{Gamma 矫正}
+	
+	
+	
 	
 	\section{阴影}
 	
+	
+	
+	
 	\section{法线贴图}
+	
+	
 	
 	\section{HDR}
 	
+	
+	
+	
 	\section{延迟着色法}
+
+
 	
 
-
-
-\chapter{高级-特性}
+\chapter{三大测试}
 	\section{模版测试}
 	
 	
@@ -1520,16 +2182,39 @@ glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 	\section{混合}
 	
 	
-	\section{面剔除}
 	
 	
-	\section{帧缓冲}
+\chapter{贴图}
 
+	\section{多纹理}
+	
+
+	\section{光照贴图}
+
+
+	\section{阴影贴图}
+	
 
 	\section{立方体贴图}
 	
 	
+	
+
+
+\chapter{性能优化}	
+	\section{面剔除}
+	
+	
+	\section{帧缓冲}
+		已经使用了很多屏幕缓冲了：用于写入颜色值的颜色缓冲、用于写入深度信息的深度缓冲和允许我们根据一些条件丢弃特定片段的模板缓冲。这些缓冲结合起来叫做帧缓冲(Framebuffer)，它被储存在显存中。
+	
+	
 	\section{几何着色器}
+		
+		
+		
+		
+			
 			
 			
 \chapter{OpenGL基础编程-API解释}
