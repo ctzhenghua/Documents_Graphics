@@ -2005,7 +2005,11 @@ void main()
 			
 			\paragraph{计算}\verb|->|
 				
-				$$FinalColor = (Ambient + Diffuse + Specular) * ObjectColor $$
+				$$FinalColor = (Ambient(\textbf{环境光强度}) + Diffuse(\textbf{方向影响}) + Specular(\textbf{光圈大小})) * ObjectColor $$
+				
+				\textit{Ambient 、Diffuse、Specular 等都是根据 光照的方向 与 顶点法线 进行计算的影响值}。
+				
+				而最后，\textbf{物体的颜色等于 光*物体的颜色 = (Ambient+Diffuse+Specular)*ObjectColor}.
 				
 				\begin{lstlisting}
 	#version 330 core
@@ -2133,56 +2137,866 @@ uniform Material material;
 		
 		这种是将纹理贴到物体上后，再加上光照处理，不同的是物体的材质漫反射等属性vec 替换为 材质纹理。
 		
-		\subsection{漫反射贴图}
+		
+		既\textbf{对纹理进行光照计算}->\textbf{用纹理颜色代替物体颜色}。
+		
+		\subsection{漫反射+高光 贴图}
+			\begin{lstlisting}
+struct Material {
+    sampler2D diffuse;
+    sampler2D specular;
+	float     shininess;
+}; 
+...
+in vec2 TexCoords;
+			\end{lstlisting}
+			
+			\begin{lstlisting}
+vec3 ambient  = light.ambient  * vec3(texture(material.diffuse, TexCoords));
+vec3 diffuse  = light.diffuse  * diff * vec3(texture(material.diffuse, TexCoords));  
+vec3 specular = light.specular * spec * vec3(texture(material.specular, TexCoords));
+FragColor = vec4(ambient + diffuse + specular, 1.0);			
+			\end{lstlisting}
+			
+			
+			\begin{lstlisting}
+lightingShader.setInt("material.diffuse", 0);
+...
+glActiveTexture(GL_TEXTURE0);
+glBindTexture(GL_TEXTURE_2D, diffuseMap);			
+			
+lightingShader.setInt("material.specular", 1);
+...
+glActiveTexture(GL_TEXTURE1);
+glBindTexture(GL_TEXTURE_2D, specularMap);			
+			\end{lstlisting}
 				
-		\subsection{镜面光贴图}
 			
 			
 	\section{投光物}
-		
+		\subsection{平行光}
+			当一个光源处于很远的地方时，来自光源的每条光线就会近似于互相平行。不论物体和/或者观察者的位置，看起来好像所有的光都来自于同一个方向。
+			
+			因为所有的光线都是平行的，所以物体与光源的相对位置是不重要的，因为对场景中每一个物体光的方向都是一致的。
+			
+			可以\textbf{定义一个光线方向向量}\textit{而不是位置向量}\textbf{来模拟一个定向光}，\textit{之前是通过点光源位置与当前片段位置计算光线的方向向量}。着色器的计算基本保持不变，但这次我们将直接使用光的direction向量而不是通过direction来计算lightDir向量。
+			
+			\begin{lstlisting}
+	struct Light {
+	    // vec3 position; // 使用定向光就不再需要了
+	    vec3 direction;
 	
+	    vec3 ambient;
+	    vec3 diffuse;
+	    vec3 specular;
+	};
 	
+	uniform Light light;
+	void main()
+	{
+	  vec3 lightDir = normalize(-light.direction);
+	}			
+			\end{lstlisting}
+			
+			\begin{lstlisting}
+	lightingShader.setVec3("light.direction", -0.2f, -1.0f, -0.3f);			
+			\end{lstlisting}
+			
+		\subsection{点光源}
+			在平行光之前的示例都是建立在点光源的模型上的，唯一的区别就是计算的不够精确，没有考虑光线的衰减。
+			
+			\begin{figure}[H]
+				\centering
+				\includegraphics[width=.69\linewidth]{light_casters_point}
+				\caption{点光源模型}
+			\end{figure}
+			
+			
+			\paragraph{衰减计算}
+				随着光线传播距离的增长逐渐削减光的强度通常叫做衰减(Attenuation)。在现实世界中，灯在近处通常会非常亮，但随着距离的增加光源的亮度一开始会下降非常快，但在远处时剩余的光强度就会下降的非常缓慢了。效果如下：
+				
+				\begin{figure}[H]
+					\centering
+					\includegraphics[width=.79\linewidth]{attenuation}
+					\caption{光照衰减模型}
+				\end{figure}
+				
+				而这种模型对应的计算公式如下：
+				$$ F_{att} = \dfrac{1.0}{K_c + K_l * d + K_q * d^2}$$
+				
+				在这里\textbf{d}代表了\textbf{片段距光源的距离}。接下来为了计算衰减值，我们定义3个（\textit{可配置的}）项：\textbf{常数项}$K_c$、\textbf{一次项}$K_l$和\textbf{二次项}$K_q$。
+					
+				\begin{itemize}
+					\item 常数项通常保持为1.0，它的主要作用是保证分母永远不会比1小，否则的话在某些距离上它反而会增加强度，这肯定不是我们想要的效果。
+					\item 一次项会与距离值相乘，以线性的方式减少强度。
+					\item 二次项会与距离的平方相乘，让光源以二次递减的方式减少强度。二次项在距离比较小的时候影响会比一次项小很多，但当距离值比较大的时候它就会比一次项更大了。
+				\end{itemize}
+			
+				因而面临一个\textbf{各个值的选择性的问题}。
+				
+				\begin{figure}[H]
+					\centering
+					\includegraphics[width=.85\linewidth]{attenuation2}
+					\caption{最大覆盖距离对应的各系数值}
+				\end{figure}
+			
+			\paragraph{应用}
+				为了实现衰减，在片段着色器中我们还需要三个额外的值：也就是公式中的常数项、一次项和二次项。它们最好储存在之前定义的Light结构体中。
+				
+				\begin{lstlisting}
+	struct Light {
+	    vec3 position;  
+	
+	    vec3 ambient;
+	    vec3 diffuse;
+	    vec3 specular;
+	
+	    float constant;		// K_c
+	    float linear;		// K_l
+	    float quadratic;	// K_q
+	};				
+				\end{lstlisting}
+				
+				\begin{lstlisting}
+	lightingShader.setFloat("light.constant",  1.0f);
+	lightingShader.setFloat("light.linear",    0.09f);
+	lightingShader.setFloat("light.quadratic", 0.032f);				
+				\end{lstlisting}
+				
+				
+				片段着色器核心实现。
+				\begin{lstlisting}
+	float distance    = length(light.position - FragPos);
+	float attenuation = 1.0 / (light.constant + light.linear * distance + 
+	                light.quadratic * (distance * distance));	
+	                
+	ambient  *= attenuation; 
+	diffuse  *= attenuation;
+	specular *= attenuation;	          			
+				\end{lstlisting}
+			
+				效果如下：
+				\begin{figure}[H]
+					\centering
+					\includegraphics[width=.7\linewidth]{light_casters_point_light}
+				\end{figure}
+			
+		\subsection{聚光灯}
+			聚光是位于环境中某个位置的光源，它只朝一个特定方向而不是所有方向照射光线。这样的结果就是只有在聚光方向的特定半径内的物体才会被照亮，其它的物体都会保持黑暗。聚光很好的例子就是\textbf{路灯或手电筒}。
+			
+			\begin{figure}[H]
+				\centering
+				\includegraphics[width=.83\linewidth]{light_casters_spotlight_angles}
+				\caption{聚光灯模型}
+			\end{figure}
+			
+			\begin{itemize}
+				\item LightDir：从片段指向光源的向量。
+				\item SpotDir：聚光所指向的方向。
+				\item $\Phi$：指定了聚光半径的切光角。落在这个角度之外的物体都不会被这个聚光所照亮。
+				\item $\theta$：LightDir向量和SpotDir向量之间的夹角。在聚光内部的话$\theta$值应该比$\Phi$值小。
+			\end{itemize}
+			
+			
+			\paragraph{手电筒效果}
+				在light 结构体中增加一个cutOff 表示与投射方向的最大偏移角度。从而达到对之外的物体只计算环境光照。
+				
+				\begin{lstlisting}
+	struct Light {
+	    vec3 position;  
+	    vec3 direction;
+	    float cutOff;
+	    ...
+	};
+	
+	void main()
+	{
+	    vec3 lightDir = normalize(light.position - FragPos);
+	    
+	    // check if lighting is inside the spotlight cone
+	    float theta = dot(lightDir, normalize(-light.direction)); 
+	    
+		if(theta > light.cutOff) 
+		{       
+		  // 执行光照计算
+		}
+		else  // 否则，使用环境光，让场景在聚光之外时不至于完全黑暗
+		{
+		  color = vec4(light.ambient * vec3(texture(material.diffuse, TexCoords)), 1.0);
+		}
+	} 				
+				\end{lstlisting}
+			
+			上面运行起来效果会是这样：
+			\begin{figure}[H]
+				\centering
+				\includegraphics[width=.79\linewidth]{light_casters_spotlight_hard}
+			\end{figure}
+			
+			边缘过于生硬，因而产生了边缘柔化。
+			
+			\paragraph{边缘柔化}
+				为了创建一种看起来边缘平滑的聚光，我们需要模拟聚光有一个\textbf{内圆锥(Inner Cone)和一个外圆锥(Outer Cone)}。我们可以将内圆锥设置为上一部分中的那个圆锥，但我们也需要一个外圆锥，来让光从内圆锥逐渐减暗，直到外圆锥的边界。
+				
+				为了创建一个外圆锥，我们只需要再定义一个余弦值来代表聚光方向向量和外圆锥向量的夹角。然后，如果一个片段处于内外圆锥之间，将会给它计算出一个0.0到1.0之间的强度值。如果片段在内圆锥之内，它的强度就是1.0，如果在外圆锥之外强度值就是0.0。
+				
+				用下面这个公式来计算这个值：
+				$$ I = \dfrac{\theta - \gamma}{\epsilon}$$
+				
+				这里$\epsilon$是内$\phi$和外圆锥$\gamma$之间的余弦值差$\epsilon = \phi - \gamma$。最终的I值就是在当前片段聚光的强度。
+				
+				一些实例值如下所示：
+				\begin{figure}[H]
+					\centering
+					\includegraphics[width=.9\linewidth]{outerCut}
+				\end{figure}
+				
+				我们现在有了一个在聚光外是负的，在内圆锥内大于1.0的，在边缘处于两者之间的强度值了。如果我们正确地约束(Clamp)这个值，在片段着色器中就不再需要if-else了，我们能够使用计算出来的强度值直接乘以光照分量：
+				
+				在具体实现中，需要给Light 结构体再增加一个light.outerCutoff 表示外圆锥的角度范围，具体如下：
+				
+				\begin{lstlisting}
+	struct Light {
+	    vec3 position;  
+	    vec3 direction;
+	    float cutOff;
+	    float outerCutOff;	
+	    ...
+	}		
+				
+	float theta     = dot(lightDir, normalize(-light.direction));
+	float epsilon   = light.cutOff - light.outerCutOff;
+	float intensity = clamp((theta - light.outerCutOff) / epsilon, 0.0, 1.0);    //使用了clamp函数，它把第一个参数约束(Clamp)在了0.0到1.0之间。这保证强度值不会在[0, 1]区间之外。
+	...
+	// 将不对环境光做出影响，让它总是能有一点光
+	diffuse  *= intensity;
+	specular *= intensity;
+	...			
+				\end{lstlisting}
+				
+				
+				以下使用的内切光角是12.5，外切光角是17.5，最终效果如：
+				\begin{lstlisting}
+	lightingShader.use();
+	lightingShader.setVec3("light.position", camera.Position);
+	lightingShader.setVec3("light.direction", camera.Front);
+	lightingShader.setFloat("light.cutOff", glm::cos(glm::radians(12.5f)));
+	lightingShader.setFloat("light.outerCutOff", glm::cos(glm::radians(17.5f)));					
+				\end{lstlisting}
+				
+				\begin{figure}[H]
+					\centering
+					\includegraphics[width=.79\linewidth]{light_casters_spotlight}
+				\end{figure}
+			
 	
 	\section{多光源}
+		为了在场景中使用多个光源，我们希望将光照计算封装到GLSL函数中。GLSL中的函数和C函数很相似，它有一个函数名、一个返回值类型，如果函数不是在main函数之前声明的，我们还必须在代码文件\textbf{顶部声明一个原型}。我们对每个光照类型都创建一个不同的函数：\textbf{定向光}、\textbf{点光源}和\textbf{聚光}。
+		
+		当我们在场景中使用多个光源时，通常使用以下方法：我们需要有一个单独的颜色向量代表片段的输出颜色。对于每一个光源，它对片段的贡献颜色将会加到片段的输出颜色向量上。所以场景中的每个光源都会计算它们各自对片段的影响，并结合为一个最终的输出颜色。大体的结构会像是这样：
+		
+		\begin{lstlisting}
+out vec4 FragColor;
+
+void main()
+{
+	// 定义一个输出颜色值
+	vec3 output;
+	// 将定向光的贡献加到输出中
+	output += someFunctionToCalculateDirectionalLight();
+	// 对所有的点光源也做相同的事情
+	for(int i = 0; i < nr_of_point_lights; i++)
+	output += someFunctionToCalculatePointLight();
+	// 也加上其它的光源（比如聚光）
+	output += someFunctionToCalculateSpotLight();
+	
+	FragColor = vec4(output, 1.0);
+}			
+		\end{lstlisting}
+		
+		\subsection{定向光-平行}
+			\begin{lstlisting}
+	struct DirLight {
+	    vec3 direction;
+	
+	    vec3 ambient;
+	    vec3 diffuse;
+	    vec3 specular;
+	};  
+	uniform DirLight dirLight;
+	
+	vec3 CalcDirLight(DirLight light, vec3 normal, vec3 viewDir)
+	{
+	    vec3 lightDir = normalize(-light.direction);
+	    // 漫反射着色
+	    float diff = max(dot(normal, lightDir), 0.0);
+	    // 镜面光着色
+	    vec3 reflectDir = reflect(-lightDir, normal);
+	    float spec = pow(max(dot(viewDir, reflectDir), 0.0), material.shininess);
+	    // 合并结果
+	    vec3 ambient  = light.ambient  * vec3(texture(material.diffuse, TexCoords));
+	    vec3 diffuse  = light.diffuse  * diff * vec3(texture(material.diffuse, TexCoords));
+	    vec3 specular = light.specular * spec * vec3(texture(material.specular, TexCoords));
+	    return (ambient + diffuse + specular);
+	}			
+			\end{lstlisting}
+		
+		
+		\subsection{点光源}
+			\begin{lstlisting}
+	struct PointLight {
+	    vec3 position;
+	
+	    float constant;
+	    float linear;
+	    float quadratic;
+	
+	    vec3 ambient;
+	    vec3 diffuse;
+	    vec3 specular;
+	};  
+	#define NR_POINT_LIGHTS 4
+	uniform PointLight pointLights[NR_POINT_LIGHTS];	
 	
 	
+	vec3 CalcPointLight(PointLight light, vec3 normal, vec3 fragPos, vec3 viewDir)
+	{
+	    vec3 lightDir = normalize(light.position - fragPos);
+	    // 漫反射着色
+	    float diff = max(dot(normal, lightDir), 0.0);
+	    // 镜面光着色
+	    vec3 reflectDir = reflect(-lightDir, normal);
+	    float spec = pow(max(dot(viewDir, reflectDir), 0.0), material.shininess);
+	    // 衰减
+	    float distance    = length(light.position - fragPos);
+	    float attenuation = 1.0 / (light.constant + light.linear * distance + 
+	                 light.quadratic * (distance * distance));    
+	    // 合并结果
+	    vec3 ambient  = light.ambient  * vec3(texture(material.diffuse, TexCoords));
+	    vec3 diffuse  = light.diffuse  * diff * vec3(texture(material.diffuse, TexCoords));
+	    vec3 specular = light.specular * spec * vec3(texture(material.specular, TexCoords));
+	    ambient  *= attenuation;
+	    diffuse  *= attenuation;
+	    specular *= attenuation;
+	    return (ambient + diffuse + specular);
+	}		
+			\end{lstlisting}
+			
+			
+		\subsection{合并}
+			\begin{lstlisting}
+	void main()
+	{
+	    // 属性
+	    vec3 norm = normalize(Normal);
+	    vec3 viewDir = normalize(viewPos - FragPos);
 	
+	    // 第一阶段：定向光照
+	    vec3 result = CalcDirLight(dirLight, norm, viewDir);
+	    // 第二阶段：点光源
+	    for(int i = 0; i < NR_POINT_LIGHTS; i++)
+	        result += CalcPointLight(pointLights[i], norm, FragPos, viewDir);    
+	    // 第三阶段：聚光
+	    //result += CalcSpotLight(spotLight, norm, FragPos, viewDir);    
+	
+	    FragColor = vec4(result, 1.0);
+	}			
+			\end{lstlisting}
+		
+	
+	\section{高级光照模型}
+		\subsection{Phong 模型}
+			
+		
+		\subsection{Blinn-Phong 模型}
+			
+		
 	
 	\section{Gamma 矫正}
+		经过矫正后的图像会更亮。
+	
+	
 	
 	
 	
 	
 	\section{阴影}
+		原理：\textbf{以光的位置为视角}进行渲染，我们能看到的东西都将被点亮，看不见的一定是在阴影之中了
+		
+		\begin{figure}[H]
+			\centering
+			\includegraphics[width=.89\linewidth]{shadow_mapping_theory}
+		\end{figure}
+		
+		这里的所有蓝线代表光源可以看到的fragment。黑线代表被遮挡的fragment：它们应该渲染为带阴影的。如果我们绘制一条从光源出发，到达最右边盒子上的一个片元上的线段或射线，那么射线将先击中悬浮的盒子，随后才会到达最右侧的盒子。结果就是悬浮的盒子被照亮，而最右侧的盒子将处于阴影之中。
+		
+		
+		
+		\subsection{阴影映射}
+			在深度缓冲里的一个值是摄像机视角下，对应于一个片元的一个0到1之间的深度值。\textbf{如果我们从光源的透视图来渲染场景}，\textbf{并把深度值的结果储存到纹理中}会怎样？通过这种方式，我们就能\textbf{对光源的透视图所见的最近的深度值进行采样}。最终，深度值就会显示从光源的透视图下见到的第一个片元了。我们管储存在纹理中的所有这些深度值，叫做深度贴图（depth map）或阴影贴图。
+		
+			\paragraph{深度贴图}
+				深度贴图是从光的透视图里渲染的深度纹理，用它计算阴影。因为我们需要将场景的渲染结果储存到一个纹理中，我们将再次需要帧缓冲。
+				
+				生成深度贴图不太复杂。因为我们只关心深度值，我们要把纹理格式指定为\verb|GL_DEPTH_COMPONENT|。我们还要把纹理的高宽设置为1024：这是深度贴图的解析度。
+				
+				合理配置将深度值渲染到纹理的帧缓冲后，我们就可以开始第一步了：生成深度贴图。
+				
+				\begin{lstlisting}
+	GLuint depthMapFBO;
+	glGenFramebuffers(1, &depthMapFBO);	
+	const GLuint SHADOW_WIDTH = 1024, SHADOW_HEIGHT = 1024;
+	
+	GLuint depthMap;
+	glGenTextures(1, &depthMap);
+	glBindTexture(GL_TEXTURE_2D, depthMap);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, 
+	             SHADOW_WIDTH, SHADOW_HEIGHT, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT); 
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO);
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, depthMap, 0);
+	glDrawBuffer(GL_NONE);	// 不需要颜色缓冲
+	glReadBuffer(GL_NONE);	// 不需要颜色缓冲
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	
 	
+	///////////////////////////LOOP////////////////////////////////////////
+	// 1. 首选渲染深度贴图
+	glViewport(0, 0, SHADOW_WIDTH, SHADOW_HEIGHT);
+	glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO);
+	    glClear(GL_DEPTH_BUFFER_BIT);
+	    ConfigureShaderAndMatrices();
+	    RenderScene();
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	// 2. 像往常一样渲染场景，但这次使用深度贴图
+	glViewport(0, 0, SCR_WIDTH, SCR_HEIGHT);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	ConfigureShaderAndMatrices();
+	glBindTexture(GL_TEXTURE_2D, depthMap);
+	RenderScene();			
+				\end{lstlisting}
+				
 	
 	
-	\section{法线贴图}
+	投影矩阵因为是平行光，所以使用正交投影； 因为是以光为观察视角，所以view矩阵使用light的lookAt().			
+				\begin{lstlisting}
+	GLfloat near_plane = 1.0f, far_plane = 7.5f;
+	glm::mat4 lightProjection = glm::ortho(-10.0f, 10.0f, -10.0f, 10.0f, near_plane, far_plane);
 	
+	glm::mat4 lightView = glm::lookAt(glm::vec(-2.0f, 4.0f, -1.0f), glm::vec3(0.0f), glm::vec3(1.0));
 	
+	glm::mat4 lightSpaceMatrix = lightProjection * lightView;				
+				\end{lstlisting}
+				
+				因而用于更新深度纹理贴图的顶点着色器类似于。
+				\begin{lstlisting}
+	#version 330 core
+	layout (location = 0) in vec3 position;
+	
+	uniform mat4 lightSpaceMatrix;
+	uniform mat4 model;
+	
+	void main()
+	{
+	    gl_Position = lightSpaceMatrix * model * vec4(position, 1.0f);
+	}
+				\end{lstlisting}
+				
+
+			\paragraph{渲染阴影}
+				正确地生成\textbf{深度贴图}以后我们就可以开始生成阴影了。这段代码在像素着色器中执行，\textit{用来检验一个片元是否在阴影之中}，不过我们在顶点着色器中进行光空间的变换：
+				
+				\begin{lstlisting}
+	#version 330 core
+	layout (location = 0) in vec3 position;
+	layout (location = 1) in vec3 normal;
+	layout (location = 2) in vec2 texCoords;
+	
+	out vec2 TexCoords;
+	
+	out VS_OUT {
+	    vec3 FragPos;
+	    vec3 Normal;
+	    vec2 TexCoords;
+	    vec4 FragPosLightSpace;
+	} vs_out;
+	
+	uniform mat4 projection;
+	uniform mat4 view;
+	uniform mat4 model;
+	uniform mat4 lightSpaceMatrix;
+	
+	void main()
+	{
+	    gl_Position = projection * view * model * vec4(position, 1.0f);
+	    vs_out.FragPos = vec3(model * vec4(position, 1.0));
+	    vs_out.Normal = transpose(inverse(mat3(model))) * normal;
+	    vs_out.TexCoords = texCoords;
+	    vs_out.FragPosLightSpace = lightSpaceMatrix * vec4(vs_out.FragPos, 1.0);
+	}				
+				\end{lstlisting}
+			
+				接着计算出一个shadow值，当fragment在阴影中时是1.0，在阴影外是0.0。然后，diffuse和specular颜色会乘以这个阴影元素。由于阴影不会是全黑的（由于散射），我们把ambient分量从乘法中剔除。
+				
+				\begin{lstlisting}
+	#version 330 core
+	out vec4 FragColor;
+	
+	in VS_OUT {
+	    vec3 FragPos;
+	    vec3 Normal;
+	    vec2 TexCoords;
+	    vec4 FragPosLightSpace;
+	} fs_in;
+	
+	uniform sampler2D diffuseTexture;
+	uniform sampler2D shadowMap;
+	
+	uniform vec3 lightPos;
+	uniform vec3 viewPos;
+	
+	float ShadowCalculation(vec4 fragPosLightSpace)
+	{
+	    [...]
+	}
+	
+	void main()
+	{           
+	    vec3 color = texture(diffuseTexture, fs_in.TexCoords).rgb;
+	    vec3 normal = normalize(fs_in.Normal);
+	    vec3 lightColor = vec3(1.0);
+	    // Ambient
+	    vec3 ambient = 0.15 * color;
+	    // Diffuse
+	    vec3 lightDir = normalize(lightPos - fs_in.FragPos);
+	    float diff = max(dot(lightDir, normal), 0.0);
+	    vec3 diffuse = diff * lightColor;
+	    // Specular
+	    vec3 viewDir = normalize(viewPos - fs_in.FragPos);
+	    vec3 reflectDir = reflect(-lightDir, normal);
+	    float spec = 0.0;
+	    vec3 halfwayDir = normalize(lightDir + viewDir);  
+	    spec = pow(max(dot(normal, halfwayDir), 0.0), 64.0);
+	    vec3 specular = spec * lightColor;    
+	    // 计算阴影
+	    float shadow = ShadowCalculation(fs_in.FragPosLightSpace);       
+	    `\color{blue}\textbf{vec3 lighting = (ambient + (1.0 - shadow) * (diffuse + specular)) * color;  }  `
+	
+	    FragColor = vec4(lighting, 1.0f);
+	}				
+				\end{lstlisting}
+			
+			像素着色器大部分是从高级光照教程中复制过来，只不过加上了个阴影计算。我们声明一个\verb|shadowCalculation()|函数，用它计算阴影。像素着色器的最后，我们我们把\verb|diffuse|和\verb|specular|\textbf{乘以(1-阴影元素)}，这表示这个片元有多大成分不在阴影中。这个像素着色器还需要两个额外输入，一个是光空间的片元位置和第一个渲染阶段得到的深度贴图。
+			
+			首先要检查一个片元是否在阴影中，把光空间片元位置转换为裁切空间的\textbf{标准化设备坐标}。当我们在顶点着色器输出一个裁切空间顶点位置到\verb|gl_Position|时，OpenGL自动进行一个透视除法，\textit{将裁切空间坐标的范围-w到w转为-1到1}，这要将x、y、z元素除以向量的w元素来实现。由于裁切空间的FragPosLightSpace并不会通过\verb|gl_Position|传到像素着色器里，我们必须自己做透视除法：
+			
+				\begin{lstlisting}
+	float ShadowCalculation(vec4 fragPosLightSpace)
+	{
+	    // 执行透视除法转换到[-1,1]范围
+	    vec3 projCoords = fragPosLightSpace.xyz / fragPosLightSpace.w;
+	    // 变换到[0,1]的范围
+	    projCoords = projCoords * 0.5 + 0.5;
+	    // 取得最近点的深度(使用[0,1]范围下的fragPosLight当坐标)
+	    float closestDepth = texture(shadowMap, projCoords.xy).r; 
+	    // 取得当前片元在光源视角下的深度
+	    float currentDepth = projCoords.z;
+	    // 检查当前片元是否在阴影中
+	    float shadow = currentDepth > closestDepth  ? 1.0 : 0.0;
+	
+	    return shadow;
+	}				
+				\end{lstlisting}
+			\paragraph{阴影失真}
+				shadow  Acne
+				
+		\subsection{点阴影}
+		
+		\subsection{CSM}
+		
+	
+	\section{法线(凹凸)贴图}
+		以光照算法的视角考虑的话，只有一件事决定物体的形状，这就是垂直于它的法线向量。砖块表面只有一个法线向量，表面完全根据这个法线向量被以一致的方式照亮。如果每个fragment都是用自己的不同的法线会怎样？这样我们就可以根据表面细微的细节对法线向量进行改变；这样就会获得一种表面看起来要复杂得多的幻觉：
+		
+		\begin{figure}[H]
+			\centering
+			\includegraphics[width=\linewidth]{normal_mapping_surfaces}
+		\end{figure}
+	
+		每个fragment使用了自己的法线，我们就可以让光照相信一个表面由很多微小的（垂直于法线向量的）平面所组成，物体表面的细节将会得到极大提升。这种每个fragment使用各自的法线，替代一个面上所有fragment使用同一个法线的技术叫做\textbf{法线贴图（normal mapping）或凹凸贴图（bump mapping）}。应用到砖墙上，效果像这样：		
+		
+		\begin{figure}[H]
+			\centering
+			\includegraphics[width=\linewidth]{normal_mapping_compare}
+		\end{figure}
+		
+		\begin{lstlisting}
+	uniform sampler2D normalMap;  
+	
+	void main()
+	{           
+	    // 从法线贴图范围[0,1]获取法线
+	    normal = texture(normalMap, fs_in.TexCoords).rgb;
+	    // 将法线向量转换为范围[-1,1]
+	    normal = normalize(normal * 2.0 - 1.0);   
+	
+	    [...]
+	    // 像往常那样处理光照
+	}		
+		\end{lstlisting}
+		
 	
 	\section{HDR}
 	
 	
-	
-	
 	\section{延迟着色法}
 
-
 	
-
+	\section{PBR}
+	
+	
+	
+	
 \chapter{三大测试}
 	\section{模版测试}
+		当片段着色器处理完一个片段之后，模板测试(Stencil Test)会开始执行，它可能会丢弃片段。接下来，被保留的片段会进入深度测试，它可能会丢弃更多的片段。模板测试是根据一个缓冲来进行的，它叫做模板缓冲(Stencil Buffer)
 	
+		一个模板缓冲中，（通常）每个模板值(Stencil Value)是\textbf{8位}的。所以每个像素/片段一共能有\textbf{256种}不同的\textbf{模板值}。我们可以将这些模板值设置为我们想要的值，然后\textbf{当某一个片段有某一个模板值的时候，我们就可以选择丢弃或是保留这个片段了}。
 	
+		模板缓冲的一个简单的例子如下：
+		\begin{figure}[H]
+			\centering
+			\includegraphics[width=.9\linewidth]{stencil_buffer}
+		\end{figure}
+		
+		\textit{模板缓冲首先会被清除为0，之后在模板缓冲中使用1填充了一个空心矩形。场景中的片段将会只在片段的模板值为1的时候会被渲染（其它的都被丢弃了）。}
+		
+		\subsection{模版测试API}
+			\paragraph{glStencilFunc()}
+				\fbox{glStencilFunc(GLenum func, GLint ref, GLuint mask)}一共包含三个参数：
+				
+				\begin{itemize}
+					\item \textbf{func}：\textbf{设置模板测试函数}(Stencil Test Function)。这个测试函数\textit{将会应用到已储存的模板值上和glStencilFunc函数的ref值上}。可用的选项有：\verb|GL_NEVER|、\verb|GL_LESS|、\verb|GL_LEQUAL|、\verb|GL_GREATER|、\verb|GL_GEQUAL|、\verb|GL_EQUAL|、\verb|GL_NOTEQUAL|和\verb|GL_ALWAYS|。
+					\item \textbf{ref}：设置了模板测试的参考值(Reference Value)。\textbf{模板缓冲的内容将会与这个值进行比较}。
+					\item \textbf{mask}：设置一个掩码，它将\textbf{会与}\underline{参考值}和\underline{储存的模板值}\textbf{在测试比较它们之前}\textit{进行与(AND)运算}。初始情况下所有位都为1。既，如果msak 全为0则表示关闭了。
+				\end{itemize}
+				
+			\paragraph{glStencilOp()}
+				\fbox{glStencilOp(GLenum sfail, GLenum dpfail, GLenum dppass)}一共包含三个选项,每个选项可以有以下如表所示的几种操作，默认执行\verb|GL_KEEP|:
+				
+				\begin{itemize}
+					\item \textbf{sfail}：模板测试失败时采取的行为。
+					\item \textbf{dpfail}：模板测试通过，但深度测试失败时采取的行为。
+					\item \textbf{dppass}：模板测试和深度测试都通过时采取的行为。
+				\end{itemize}	
+				
+				\begin{figure}[H]
+					\centering
+					\includegraphics[width=.9\linewidth]{stencilAct}
+				\end{figure}	
+		
+		\subsection{轮廓示例}
+			思路：\textit{启用模版测试，将物体的信息写入模版，关闭模版写入，关闭深度测试(不被扩大后遮挡)，将扩大后的物体用单色(轮廓颜色)表示，开启深度测试}。
+		
+			
+			启用模板测试，并设置测试通过或失败时的行为:	
+			\begin{lstlisting}
+	glEnable(GL_STENCIL_TEST);
+	glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);			
+			\end{lstlisting}
+			
+			在渲染的过程中分别先设置模版、然后关闭模版写入与深度测试，再使用单色着色器进行渲染。
+			\begin{lstlisting}
+    // 1st. render pass, draw objects as normal, writing to the stencil buffer
+    // --------------------------------------------------------------------
+    `\color{blue}\textbf{glStencilFunc(GL\_ALWAYS, 1, 0xFF);}`
+    `\color{blue}\textbf{glStencilMask(0xFF);}`
+    // cubes
+    glBindVertexArray(cubeVAO);
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, cubeTexture);
+    model = glm::translate(model, glm::vec3(-1.0f, 0.0f, -1.0f));
+    shader.setMat4("model", model);
+    glDrawArrays(GL_TRIANGLES, 0, 36);
+   `\color{blue}\textbf{model = glm::mat4(1.0f);}`
+     model = glm::translate(model, glm::vec3(2.0f, 0.0f, 0.0f));
+    shader.setMat4("model", model);
+    glDrawArrays(GL_TRIANGLES, 0, 36);
+
+    // 2nd. render pass: now draw slightly scaled versions of the objects, this time disabling stencil writing.
+    // Because the stencil buffer is now filled with several 1s. The parts of the buffer that are 1 are not drawn, thus only drawing 
+    // the objects' size differences, making it look like borders.
+    // -----------------------------------------------------------------------------------------------------------------------------
+    `\color{blue}\textbf{glStencilFunc(GL\_NOTEQUAL, 1, 0xFF);}`
+    `\color{blue}\textbf{glStencilMask(0x00);}`
+    `\color{blue}\textbf{glDisable(GL\_DEPTH\_TEST);}`
+    `\color{blue}\textbf{shaderSingleColor.use();}`
+    `\color{blue}\textbf{float scale = 1.1;}`
+    // cubes
+    glBindVertexArray(cubeVAO);
+    glBindTexture(GL_TEXTURE_2D, cubeTexture);
+    model = glm::mat4(1.0f);
+    model = glm::translate(model, glm::vec3(-1.0f, 0.0f, -1.0f));
+    `\color{blue}\textbf{model = glm::scale(model, glm::vec3(scale, scale, scale));}`
+    shaderSingleColor.setMat4("model", model);
+    glDrawArrays(GL_TRIANGLES, 0, 36);
+    model = glm::mat4(1.0f);
+    model = glm::translate(model, glm::vec3(2.0f, 0.0f, 0.0f));
+    model = glm::scale(model, glm::vec3(scale, scale, scale));
+    shaderSingleColor.setMat4("model", model);
+    glDrawArrays(GL_TRIANGLES, 0, 36);
+    glBindVertexArray(0);
+    `\color{blue}\textbf{glStencilMask(0xFF);}`
+    `\color{blue}\textbf{glEnable(GL\_DEPTH\_TEST);}`				
+			\end{lstlisting}
+			
+			
+			
+			
 	\section{深度测试}
+		深度缓冲是由窗口系统自动创建的，它会以16、24或32位float的形式储存它的深度值。在大部分的系统中，深度缓冲的精度都是24位的。
+		
+		\textbf{当深度测试(Depth Testing)被启用的时候，OpenGL会将一个片段的的深度值与深度缓冲的内容进行对比。OpenGL会执行一个深度测试，如果这个测试通过了的话，深度缓冲将会更新为新的深度值。如果深度测试失败了，片段将会被丢弃。}
 	
-	
+		深度缓冲是在\textbf{片段着色器}\textit{运行之后}、以及\textbf{模板测试(}Stencil Testing)\textit{运行之后}，在\textbf{屏幕空间}中运行的。
+		
+		屏幕空间坐标与通过OpenGL的\verb|glViewport()|所定义的视口密切相关，并且可以直接使用GLSL内建变量\verb|gl_FragCoord|从片段着色器中直接访问。\verb|gl_FragCoord|的x和y分量代表了片段的屏幕空间坐标（其中(0, 0)位于左下角）。\verb|gl_FragCoord|中也包含了一个z分量，它包含了片段真正的深度值。z值就是需要与深度缓冲内容所对比的那个值。
+		
+		深度测试\textbf{默认是禁用的}，所以如果要启用深度测试的话，我们需要用\verb|GL_DEPTH_TEST|选项来启用它：
+		\begin{lstlisting}
+	glEnable(GL_DEPTH_TEST);
+		\end{lstlisting}
+		
+		\textbf{当它启用的时候，如果一个片段通过了深度测试的话，OpenGL会在深度缓冲中储存该片段的z值；如果没有通过深度缓冲，则会丢弃该片段。}
+		
+		如果你启用了深度缓冲，\textbf{还应该在每个渲染迭代之前使用}\verb|GL_DEPTH_BUFFER_BIT|\textbf{来清除深度缓冲}，否则你会仍在使用上一次渲染迭代中的写入的深度值：
+		
+		\begin{lstlisting}
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);		
+		\end{lstlisting}
+		
+		\textit{在某些情况下你会需要对所有片段都执行深度测试并丢弃相应的片段，但不希望更新深度缓冲}。基本上来说，你在使用一个只读的(\textit{Read-only})深度缓冲。OpenGL允许我们\textbf{禁用深度缓冲的写入}，只需要设置它的深度掩码(\textit{Depth Mask})设置为\verb|GL_FALSE|就可以了
+		
+		\begin{lstlisting}
+	glDepthMask(GL_FALSE);		
+		\end{lstlisting}
+		
+		
+		\subsection{深度测试函数}
+			OpenGL允许我们修改深度测试中使用的比较运算符。这允许我们来控制OpenGL什么时候该\textbf{通过}\underline{或}\textbf{丢弃}一个片段，什么时候去更新深度缓冲。我们可以调用\verb|glDepthFunc()函数|来设置比较运算符（或者说\textbf{深度函数(Depth Function)}）：
+			\begin{lstlisting}
+	glDepthFunc(GL_LESS);			
+			\end{lstlisting}
+			
+			\begin{figure}[H]
+				\centering
+				\includegraphics[width=.95\linewidth]{depthTestFunc}
+				\caption{深度测试函数}
+			\end{figure}
+			
+			
+			在源代码中，使用下面设置深度函数。
+			\begin{lstlisting}
+	glEnable(GL_DEPTH_TEST);
+	glDepthFunc(GL_LESS);			
+			\end{lstlisting}
+			
+		\subsection{深度值精度}
+			深度缓冲包含了一个介于0.0和1.0之间的深度值，它将会与观察者视角所看见的场景中所有物体的z值进行比较。观察空间的z值可能是投影平截头体的近平面(Near)和远平面(Far)之间的任何值。我们需要一种方式来将这些观察空间的z值变换到[0, 1]范围之间，要想有正确的投影性质，需要使用一个非线性的深度方程，它是与 1/z 成正比的。它做的就是在z值很小的时候提供非常高的精度，而在z值很远的时候提供更少的精度。
+			
+			由于非线性方程与 1/z 成正比，在1.0和2.0之间的z值将会变换至1.0到0.5之间的深度值，这就是一个float提供给我们的一半精度了，这\textbf{在z值很小的情况下提供了非常大的精度}。在50.0和100.0之间的z值将会只占2\%的float精度，\textbf{在距离较大时提供较小的精度}。这样的一个考虑了远近距离的方程是这样的：
+			
+			$$ F_{depth} = \dfrac{1/z - 1/near}{1/far - 1/near}$$
+			
+			
+			\begin{figure}[H]
+				\centering
+				\includegraphics[width=.9\linewidth]{depth_non_linear_graph}
+				\caption{公式深度效果}
+			\end{figure}
+			
+			
+			
+		\subsection{深度冲突}
+			一个很常见的视觉错误会在两个平面或者三角形非常紧密地平行排列在一起时会发生，深度缓冲没有足够的精度来决定两个形状哪个在前面。结果就是这两个形状不断地在切换前后顺序，这会导致很奇怪的花纹。这个现象叫做深度冲突(Z-fighting)，因为它看起来像是这两个形状在争夺(Fight)谁该处于顶端。
+			
+			如何防止深度冲突，暂时有以下3种方法：
+			\begin{itemize}
+				\item 永远不要把多个物体摆得太靠近，以至于它们的一些三角形会重叠。
+				\item 尽可能将近平面设置远一些
+				\item 使用更高精度的深度缓冲
+			\end{itemize}
+		
+		
 	\section{混合}
+		\fbox{混合(Blending)}是\textbf{实现物体透明度(Transparency)}的一种技术。
 	
-	
-	
+		一个有色玻璃窗是一个透明的物体，玻璃有它自己的颜色，但它最终的颜色还包含了玻璃之后所有物体的颜色。这也是混合这一名字的出处，我们混合(Blend)（不同物体的）多种颜色为一种颜色。 透明度能让我们看穿物体。
+		
+		透明的物体可以是完全透明的（让所有的颜色穿过），或者是半透明的（它让颜色通过，同时也会显示自身的颜色）。一个物体的透明度是通过它颜色的\fbox{aplha值}来决定的。当alpha值为\verb|0.0|时物体将会是\textbf{完全透明}的。当alpha值为\verb|0.5|时，物体的颜色有\textbf{50\%是来自物体自身的颜色，50\%来自背后物体的颜色}。
+		
+		
+		注意，顺序很重要。
+		\begin{enumerate}[itemindent = 1em]
+			\item 先绘制所有不透明的物体。
+			\item 对所有透明的物体排序。
+			\item 按顺序绘制所有透明的物体。
+		\end{enumerate}
+		
+		\subsection{完全透明}
+			
+			在一帧的渲染中，最后绘画，并对alpha 小于阈值的纹理色素丢弃。
+			\begin{lstlisting}
+	#version 330 core
+	out vec4 FragColor;
+	in vec2 TexCoords;
+	uniform sampler2D texture1;
+	void main()
+	{             
+	    vec4 texColor = texture(texture1, TexCoords);
+	    `\color{blue}\textbf{if(texColor.a < 0.1)}`
+	        `\color{blue}\textbf{discard;}`
+	    FragColor = texColor;
+	}			
+			\end{lstlisting}
+		
+		
+		\subsection{部分透明-融合}
+			要想渲染有多个透明度级别的图像，我们需要启用混合(Blending)。混合是通过下面这个方程来实现的：
+				$$ C_{result} = C_{source}*F_{source} + C_{destination}*F_{destination}$$
+				
+			\begin{itemize}
+				\item $C_{source}$：源颜色向量。这是源自纹理的颜色向量。
+				\item $C_{destination}$：目标颜色向量。这是\textbf{当前储存在颜色缓冲中的颜色向量}。
+				\item $F_{source}$：源因子值。指定了alpha值对源颜色的影响。
+				\item $F_{destination}$：目标因子值。指定了alpha值对目标颜色的影响。
+			\end{itemize}
+		
+			如
+			\begin{figure}[H]
+				\centering
+				\includegraphics[width=.9\linewidth]{blending_equation.png}
+				\includegraphics[width=.59\linewidth]{blending_equation_mixed.png}				
+			\end{figure}
+			
+			\begin{equation}
+				\bar{C}_{result} = \begin{pmatrix} \color{red}{0.0} \\ \color{green}{1.0} \\ \color{blue}{0.0} \\ \color{purple}{0.6} \end{pmatrix} * \color{green}{0.6} + \begin{pmatrix} \color{red}{1.0} \\ \color{green}{0.0} \\ \color{blue}{0.0} \\ \color{purple}{1.0} \end{pmatrix} * \color{red}{(1 - 0.6)} 
+			\end{equation}
+			
+			那么问题来了，如何设置\fbox{0.6} 与 \fbox{1-0.6}，既该如何让OpenGL使用这样的因子呢？正好有一个专门的函数，叫做\fbox{glBlendFunc()}。\fbox{glBlendFunc(GLenum sfactor, GLenum dfactor)}函数接受两个参数，来\underline{设置}\textbf{源}和\textbf{目标}\underline{因子}。OpenGL为我们定义了很多个选项，我们将在下面列出大部分最常用的选项。注意常数颜色向量$C_{constant}$可以通过\verb|glBlendColor()函数|来另外设置。
+			
+			\begin{lstlisting}
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);			
+			\end{lstlisting}
+			
+			\begin{figure}[H]
+				\centering
+				\includegraphics[width=.95\linewidth]{blending_table}
+			\end{figure}
+			
 	
 \chapter{贴图}
 
@@ -2190,31 +3004,368 @@ uniform Material material;
 	
 
 	\section{光照贴图}
-
+		使用纹理代替物体颜色。
 
 	\section{阴影贴图}
 	
 
 	\section{立方体贴图}
-	
-	
-	
+		立方体贴图就是一个包含了6个2D纹理的纹理，每个2D纹理都组成了立方体的一个面：一个有纹理的立方体。
+		
+		立方体贴图有一个非常有用的特性，它可以\textbf{通过一个方向向量}来进行\textbf{索引/采样}->(\textit{表示纹理坐标，既而是三维})，\textbf{方向向量的大小并不重要，只要提供了方向}，OpenGL就会获取方向向量（最终）所击中的纹素，并返回对应的采样纹理值。
 
+		\begin{figure}[H]
+			\centering
+			\includegraphics[width=.68\linewidth]{cubemaps_sampling}
+		\end{figure}
+		
+		\subsection{6张纹理}
+			立方体贴图是和其它纹理一样的，所以如果想创建一个立方体贴图的话，需要生成一个纹理，并将其绑定到纹理目标上，之后再做其它的纹理操作。\textbf{这次要绑定到}\verb|GL_TEXTURE_CUBE_MAP|：
+			
+			\begin{lstlisting}
+	// 不同面对应顶点的采样向量
+	float skyboxVertices[] = {	
+        // positions          
+        -1.0f,  1.0f, -1.0f,
+        -1.0f, -1.0f, -1.0f,
+         1.0f, -1.0f, -1.0f,
+         1.0f, -1.0f, -1.0f,
+         1.0f,  1.0f, -1.0f,
+        -1.0f,  1.0f, -1.0f,
+
+        -1.0f, -1.0f,  1.0f,
+        -1.0f, -1.0f, -1.0f,
+        -1.0f,  1.0f, -1.0f,
+        -1.0f,  1.0f, -1.0f,
+        -1.0f,  1.0f,  1.0f,
+        -1.0f, -1.0f,  1.0f,
+	
+		...
+    };		
+    
+    // 立方体贴图纹理示例
+	unsigned int loadCubemap(vector<std::string> faces)
+	{
+	    unsigned int textureID;
+	    glGenTextures(1, &textureID);
+	    glBindTexture(GL_TEXTURE_CUBE_MAP, textureID);
+	
+	    int width, height, nrChannels;
+	    for (unsigned int i = 0; i < faces.size(); i++)
+	    {
+	        unsigned char *data = stbi_load(faces[i].c_str(), &width, &height, &nrChannels, 0);
+	        if (data)
+	        {
+	            glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 
+	                         0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data
+	            );
+	            stbi_image_free(data);
+	        }
+	        else
+	        {
+	            std::cout << "Cubemap texture failed to load at path: " << faces[i] << std::endl;
+	            stbi_image_free(data);
+	        }
+	    }
+	    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+	    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+	
+	    return textureID;
+	}	
+	
+	vector<std::string> faces
+	{
+	    "right.jpg",
+	    "left.jpg",
+	    "top.jpg",
+	    "bottom.jpg",
+	    "front.jpg",
+	    "back.jpg"
+	};
+	unsigned int cubemapTexture = loadCubemap(faces);
+			\end{lstlisting}
+		\subsection{着色器应用}
+			顶点着色器非常简单,只有一个顶点属性:
+			\begin{lstlisting}
+	#version 330 core
+	layout (location = 0) in vec3 aPos;
+	
+	out vec3 TexCoords;
+	
+	uniform mat4 projection;
+	uniform mat4 view;
+	
+	void main()
+	{
+	    TexCoords = aPos;
+	    gl_Position = projection * view * vec4(aPos, 1.0);
+	}			
+			\end{lstlisting}
+
+			顶点着色器中很有意思的部分是，我们将输入的位置向量作为输出给片段着色器的纹理坐标。片段着色器会将它作为输入来采样samplerCube：
+			\begin{lstlisting}
+	#version 330 core
+	out vec4 FragColor;
+	
+	in vec3 TexCoords;
+	
+	uniform samplerCube skybox;
+	
+	void main()
+	{    
+	    FragColor = texture(skybox, TexCoords);
+	}				
+			\end{lstlisting}
 
 \chapter{性能优化}	
 	\section{面剔除}
-	
-	
+		当我们以某一视角观察一个多面立体图形的时候，我们的肉眼只能看到一部分面积，也就是我们的视线正前方的面，观\textbf{察一个立方体最多也只能看到三个面，所以为了提高渲染性能(50\% 以上)，我们完全没有必要去绘制我们看不到的面}，在OpenGL中\textbf{面剔除}就可以实现这一需求。
+		
+		OpenGL\textit{能够检查所有面向(Front Facing)观察者的面，并渲染它们，而丢弃那些背向(Back Facing)的面}，节省我们很多的片段着色器调用（它们的开销很大！）。但我们\textbf{仍要告诉OpenGL哪些面是正向面(Front Face)，哪些面是背向面(Back Face)}。OpenGL使用了一个很聪明的技巧，\textbf{分析顶点数据的环绕顺序(Winding Order)}。
+		
+		\subsection{环绕顺序}
+			当我们定义一组三角形顶点时，我们会以特定的环绕顺序来定义它们，可能是顺时针(Clockwise)的，也可能是逆时针(Counter-clockwise)的。每个三角形由3个顶点所组成，我们会从三角形中间来看，为这3个顶点设定一个环绕顺序。
+			
+			\begin{figure}[H]
+				\centering
+				\includegraphics[width=.9\linewidth]{faceculling_windingorder}
+				\caption{环绕方向说明}
+			\end{figure}
+			
+			
+			\begin{lstlisting}
+	float vertices[] = {
+	    // 顺时针
+	    vertices[0], // 顶点1
+	    vertices[1], // 顶点2
+	    vertices[2], // 顶点3
+	    // 逆时针
+	    vertices[0], // 顶点1
+	    vertices[2], // 顶点3
+	    vertices[1]  // 顶点2  
+	};			
+			\end{lstlisting}
+			
+			每组组成三角形图元的三个顶点就包含了一个环绕顺序。OpenGL在渲染图元的时候将使用这个信息来决定一个三角形是一个正向三角形还是背向三角形。
+			
+			观察者所面向的所有三角形顶点就是我们所指定的正确环绕顺序了，而立方体另一面的三角形顶点则是以相反的环绕顺序所渲染的。这样的结果就是，我们所面向的三角形将会是正向三角形，而背面的三角形则是背向三角形。下面这张图显示了这个效果：
+			\begin{figure}[H]
+				\centering
+				\includegraphics[width=.9\linewidth]{faceculling_frontback}
+			\end{figure}
+			
+			
+		\subsection{面剔除}
+			要想启用面剔除，我们只需要启用OpenGL的\verb|GL_CULL_FACE|选项：
+			\begin{lstlisting}
+	glEnable(GL_CULL_FACE);			
+			\end{lstlisting}
+			
+			OpenGL允许我们改变需要剔除的面的类型。如果我们\textbf{只想剔除正向面而不是背向面}会怎么样？我们可以调用\verb|glCullFace()|来定义这一行为：
+			\begin{lstlisting}
+	glCullFace(GL_FRONT);
+			\end{lstlisting}
+			
+			glCullFace函数有三个可用的选项：
+			\begin{itemize}
+				\item\verb| GL_BACK|：只剔除背向面。
+				\item\verb| GL_FRONT|：只剔除正向面。
+				\item\verb| GL_FRONT_AND_BACK|：剔除正向面和背向面。
+			\end{itemize}
+			
+			除了需要剔除的面之外，也\textbf{可以通过调用glFrontFace，告诉OpenGL我们希望将顺时针的面（而不是逆时针的面）定义为正向面}：
+			
+			\begin{lstlisting}
+	glFrontFace(GL_CCW);			
+			\end{lstlisting}
+			
+			默认值是\verb|GL_CCW|，它代表的是\textbf{逆时针的环绕顺序}，另一个选项是\verb|GL_CW|，它代表的是\textbf{顺时针顺序}。
+			
+			
+		\subsection{示例}
+			\begin{lstlisting}
+	glEnable(GL_CULL_FACE);
+	glCullFace(GL_BACK);
+	glFrontFace(GL_CW);			
+			\end{lstlisting}
+			
+			
 	\section{帧缓冲}
-		已经使用了很多屏幕缓冲了：用于写入颜色值的颜色缓冲、用于写入深度信息的深度缓冲和允许我们根据一些条件丢弃特定片段的模板缓冲。这些缓冲结合起来叫做帧缓冲(Framebuffer)，它被储存在显存中。
+		OpenGL管道的最终呈现目标称为\textbf{帧缓冲区}（Framebuffer）。Framebuffer\textbf{是}OpenGL使用的2D数组或存储库的\textbf{集合}：\textit{彩色缓冲区，深度缓冲区，模板缓冲区和累积缓冲区}。默认情况下，OpenGL使用帧缓冲区作为由窗口系统完全创建和管理的rendering target。这个默认的帧缓冲区称为窗口系统提供的帧缓冲区。
+		
+		通过使用FBO，OpenGL应用程序可以将渲染输出\textbf{重定向到}除了传统的窗口系统提供的帧缓冲区之外的\textbf{应用程序创建的FBO}。而且，它完全由OpenGL控制。
+		
+		FBO包含一系列渲染缓冲区集合：颜色，深度和模板缓冲区。FBO中没有定义累加缓冲区。FBO中的逻辑缓冲区被称为framebuffer-attachable 图像，它们是可以附加到帧缓冲区对象FBO的二维像素数组。
+		
+		有两种类型的\verb|framebuffer-attachable images|：\textbf{纹理图像} 和 \textbf{renderbuffer图像}。
+		\begin{itemize}
+			\item 如果纹理对象的图像被附加到帧缓冲区，OpenGL将执行“渲染到纹理”
+			\item 如果renderbuffer对象的图像附加到帧缓冲区，则OpenGL会执行“屏幕外渲染”
+		\end{itemize}
+		
+		多个纹理对象或renderbuffer对象可以通过attachment point 附加到framebuffer对象。
+		\begin{figure}[H]
+			\centering
+			\includegraphics[width=.7\linewidth]{FBO}
+		\end{figure}
+		
+		其中需要注意的是：存在\verb|1~n|个颜色附着点，1个深度、1个模版。
+		
+		颜色连接点的数量取决于实现，但每个FBO必须至少具有一个颜色附着点。您可以使用\verb|GL_MAX_COLOR_ATTACHMENTS|查询最大数量的颜色附着点，这些数据由显卡支持。 \textit{FBO具有多个颜色附着点的原因是允许在同一时间将颜色缓冲区渲染到多个目的地}。请注意，framebuffer对象本身没有任何图像存储（数组），但它只有多个附件点。
+		
+		\subsection{创建帧缓冲-纹理类型}
+			\textbf{当把一个纹理附加到帧缓冲的时候，所有的渲染指令将会写入到这个纹理中}，就想它是一个普通的颜色/深度或模板缓冲一样。使用纹理的优点是，所有渲染操作的结果将会被储存在一个纹理图像中，我们之后可以在着色器中很方便地使用它。
+			
+			为帧缓冲创建一个纹理和创建一个普通的纹理差不多：
+			\begin{lstlisting}
+	unsigned int fbo;
+	glGenFramebuffers(1, &fbo);
+	glBindFramebuffer(GL_FRAMEBUFFER, fbo);
+	unsigned int texColorBuffer;
+	glGenTextures(1, &texColorBuffer);
+	glBindTexture(GL_TEXTURE_2D, texColorBuffer);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 800, 600, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glBindTexture(GL_TEXTURE_2D, 0);
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, texColorBuffer, 0);			
+			\end{lstlisting}
+		
+		\subsection{创建帧缓冲-RenderBufferObject}
+			渲染缓冲对象(Renderbuffer Object)是\textit{在纹理之后引入到OpenGL中}，作为一个可用的帧缓冲附件类型的，所以在过去纹理是唯一可用的附件。和纹理图像一样，渲染缓冲对象是一个真正的缓冲，即一系列的字节、整数、像素等。\textbf{渲染缓冲对象附加的好处是}，\textit{它会将数据储存为OpenGL原生的渲染格式，它是为离屏渲染到帧缓冲优化过的}。
+			
+			渲染缓冲对象直接将所有的渲染数据储存到它的缓冲中，不会做任何针对纹理格式的转换，让它变为一个更快的可写储存介质。然而，\textbf{渲染缓冲对象通常都是只写的}，所以你不能读取它们（比如使用纹理访问）。当然你仍然还是能够使用\verb|glReadPixels()|来读取它，这会从当前绑定的帧缓冲，而不是附件本身，中返回特定区域的像素。
+			
+			\textbf{因为它的数据已经是原生的格式了，当写入或者复制它的数据到其它缓冲中时是非常快的}。所以，交换缓冲这样的操作在使用渲染缓冲对象时会非常快。我们在每个渲染迭代最后使用的glfwSwapBuffers，也可以通过渲染缓冲对象实现：只需要写入一个渲染缓冲图像，并在最后交换到另外一个渲染缓冲就可以了。渲染缓冲对象对这种操作非常完美。
+			
+			\textbf{由于渲染缓冲对象通常都是只写的，它们会经常用于深度和模板附件，因为大部分时间我们都不需要从深度和模板缓冲中读取值，只关心深度和模板测试。}我们需要深度和模板值用于测试，但不需要对它们进行采样，所以渲染缓冲对象非常适合它们。
+			
+			\begin{lstlisting}
+	unsigned int rbo;
+	glGenRenderbuffers(1, &rbo);
+	glBindRenderbuffer(GL_RENDERBUFFER, rbo);
+	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, 1280, 720);
+	glBindRenderbuffer(GL_RENDERBUFFER, 0);
+	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, rbo);			
+			\end{lstlisting}
+			
+		\subsection{使用示例}
+			先绑定自己创建的帧缓冲来进行\textbf{离屏渲染}，渲染完毕后将framebuffer再次\textbf{绑定回系统默认的缓冲}，调用我们\textbf{刚刚}绑定在\textbf{帧缓冲上的纹理(渲染到纹理)}或者渲染缓冲来使用我们的framebuffer。
+		
+			\begin{lstlisting}
+	// 第一处理阶段(Pass)
+	glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
+	glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // 我们现在不使用模板缓冲
+	glEnable(GL_DEPTH_TEST);
+	DrawScene();    
+	
+	// 第二处理阶段
+	glBindFramebuffer(GL_FRAMEBUFFER, 0); // 返回默认
+	glClearColor(1.0f, 1.0f, 1.0f, 1.0f); 
+	glClear(GL_COLOR_BUFFER_BIT);
+	
+	screenShader.use();  
+	glBindVertexArray(quadVAO);
+	glDisable(GL_DEPTH_TEST);
+	glBindTexture(GL_TEXTURE_2D, textureColorbuffer);	// 第一阶段渲染到这个纹理上
+	glDrawArrays(GL_TRIANGLES, 0, 6); 				
+			\end{lstlisting}
+	
+			着色器直接以纹理形式使用帧缓冲输出的纹理处理即可。
+			\begin{lstlisting}
+	#version 330 core
+	out vec4 FragColor;
+	
+	in vec2 TexCoords;
+	
+	uniform sampler2D screenTexture;
+	
+	void main()
+	{ 
+	    FragColor = texture(screenTexture, TexCoords);
+	}			
+			\end{lstlisting}
+		
+		
+			其他类似的后期效果可以如下处理：
+			\begin{lstlisting}
+	void main()
+	{
+	    FragColor = texture(screenTexture, TexCoords);
+	    `\color{blue}\textbf{float average = (FragColor.r + FragColor.g + FragColor.b) / 3.0;}`
+	    FragColor = vec4(average, average, average, 1.0);
+	}			
+			\end{lstlisting}
+
 	
 	
-	\section{几何着色器}
+	\section{分批顶点属性}
+		见 \verb|LearnOpenGL/高级OpenGL/高级数据| 一节	
+	
+	
+	\section{Uniform 缓冲}
+		当使用多于一个的着色器时，尽管大部分的uniform变量都是相同的，我们还是需要不断地设置它们，所以为什么要这么麻烦地重复设置它们呢？
+		
+		OpenGL为我们提供了一个叫做Uniform缓冲对象(Uniform Buffer Object)的工具，它允许我们定义一系列在多个着色器中相同的全局Uniform变量。当使用Uniform缓冲对象的时候，我们\textbf{只需要设置相关的uniform一次}。
+		
+		因为Uniform缓冲对象仍是一个缓冲，我们可以使用\verb|glGenBuffers()|来创建它，将它绑定到\verb|GL_UNIFORM_BUFFER|缓冲目标，并将所有相关的uniform数据存入缓冲。
+		
+		如：我们将使用一个简单的顶点着色器，将projection和view矩阵存储到所谓的Uniform块(Uniform Block)中
+		\begin{lstlisting}
+	#version 330 core
+	layout (location = 0) in vec3 aPos;
+	
+	layout (std140) uniform Matrices
+	{
+	    mat4 projection;
+	    mat4 view;
+	};
+	
+	uniform mat4 model;
+	
+	void main()
+	{
+	    gl_Position = projection * view * model * vec4(aPos, 1.0);
+	}		
+		\end{lstlisting}
+		
+	\section{合批}
+
+	
+	\section{几何着色器-Geometry Shader}
+		在顶点和片段着色器之间有一个可选的几何着色器(Geometry Shader)，几何着色器的\textbf{输入是}一个图元（如点或三角形）的一组顶点。
+		几何着色器可以
+		
+		\begin{itemize}[itemindent = 1em]
+			\item 在顶点发送到下一着色器阶段之前对它们随意变换。
+			\item 将（这一组）顶点变换为完全不同的图元。
+			\item 生成比原来更多的顶点。
+		\end{itemize}
+					
+	
+	\section{适当的时候降分辨率}		
+		
+		
+		
 		
 		
 		
 		
 			
+\chapter{抗锯齿}
+	\section{多重采样}
+
+	\section{MSAA}
+
+	\section{离屏MSAA}
+
+
 			
 			
 \chapter{OpenGL基础编程-API解释}
@@ -2552,8 +3703,7 @@ void glVertexAttribPointer(
  	const GLvoid * pointer);			
 			\end{lstlisting}
 
-			
-		
+
 
 \chapter{MFC with OpenGL}
 	\section{环境配置}

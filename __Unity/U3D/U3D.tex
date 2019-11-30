@@ -1921,6 +1921,44 @@ using(WWW www =
 
 
 
+\chapter{AI}
+	Most game AI that currently exists is hand coded, consisting of decision-trees with sometimes up to thousands of rules. All of which must be maintained by hand, and thoroughly tested. In contrast, ML relies on algorithms which can make sense of raw data, without the need of an expert to define how to interpret that data.
+	
+	This automated learning can be applied specifically to game agent behavior a.k.a. NPCs. We can use Reinforcement Learning (RL) to train agents to estimate the value of taking actions within an environment. 
+	
+	\section{行为树}
+		
+	
+	\section{Machine Learing}
+		\url{https://blogs.unity3d.com/2017/09/19/introducing-unity-machine-learning-agents/?_ga=2.160895102.2116653917.1574651205-1790393125.1531538815}
+
+		
+		\subsection{BanditDungeon}
+			\url{https://github.com/Unity-Technologies/BanditDungeon}
+			
+			\url{https://blogs.unity3d.com/2017/06/26/unity-ai-themed-blog-entries/}
+			
+			在最简单的情况下，有一个包含两个箱子的房间。打开箱子会产生钻石（好东西）或鬼（坏东西）。多次打开相同的箱子会根据产生钻石的一些潜在概率产生不同的钻石和幻影序列。例如，概率为0.5的胸部表示将产生50-50的钻石和鬼影的混合，而概率为0.9的胸部则表示将产生十分之一的钻石（约十分之一）。注意，每个箱子都有其自己的真实概率，该主体（在这种情况下，是决定打开哪个箱子的实体）不知道的。代理人每次选择箱子时，在发现钻石的情况下要么获得正面奖励，要么在发现鬼影的情况下获得负面奖励。代理商的目标是在许多试验中最大化其总奖励-在每次试验中，代理商都可以选择任何箱子。
+			
+			如果探员知道每个箱子的真实潜在概率，那么它的任务就很简单，它要做的就是反复选择产生钻石可能性最高的箱子。但是，在没有此信息的情况下，最好的办法是在估计概率（称为探索）与选择具有最高估计概率的胸部（称为利用）之间进行明智的权衡。仅进行探索的特工将浪费所有估计每个箱子概率而不最大化其自身奖励的试验，而进行有限探索的特工将基于不准确的概率估算浪费大部分试验。这里的关键是如何有效地平衡勘探与开发。
+			
+			包含两个箱子的单个房间的最简单方案可以扩展为包括多个箱子的多个房间。在此演示中，您将可以在无状态的强盗（一个房间）或上下文的强盗（三个房间）之间进行选择。对于这两种情况中的任何一种，除了下面讨论的其他一些设置之外，您还可以选择每个房间的箱子数（2至5）。
+			
+			\textbf{最后收敛到一种策略获取到最大的Rewards.}
+		
+		
+		\subsection{Q-GridWorld}
+			\url{https://github.com/Unity-Technologies/Q-GridWorld}
+			
+			\url{https://blogs.unity3d.com/2017/08/22/unity-ai-reinforcement-learning-with-q-learning/}
+
+			在最简单的情况下，我们有一个5x5的网格世界，其中有一个特工（蓝色方块），一个目标（绿色方块）和障碍物（红色方块）。对于演示的每次运行，都会随机选择代理商，目标和障碍物的位置（但在同一演示运行中保持一致）。在这种网格世界环境中，代理的目标是学习一种策略，以有效地从其起始位置导航到目标位置，同时避免障碍。它通过学习针对每个状态所采取的最佳措施来实现这一目标（通常称为强化学习中的策略）。这里的动作是移动的方向（北，南，东和西），而这里的状态是其在网格世界中的位置。从本质上讲，它学习从起始位置到目标位置的最短无障碍路径。
+			
+			此处实施的Q学习算法通过为每个操作状态对维护一个数值来学习策略，该数值表示在处于特定状态时采取特定操作的程度。当代理探索网格世界时，每个操作状态对的此数字值都会增量更新。直观上讲，它执行几次试验，其中试验是一系列在障碍物或目标位置结束的动作。然后，对于它在整个试验中执行的每个动作状态对，如果是肯定试验（在目标位置结束），则将其值增加；如果是否定试验（与障碍物相撞），则将其值减小。代理还鼓励其发现每一条最短路径时所采取的每一个步骤都会得到少量的负面奖励。
+			
+			与我们之前的多臂匪徒演示类似，这里需要进行勘探与开发的权衡。当代理程序正在进行试验时，它会在随机选择操作和在给定状态下遵循当前对最佳操作的猜测之间进行混合。这种权衡是由一个从1开始的ε参数控制的（鼓励进行全面探索），并且在整个试验过程中将其逐渐减小到0.1（限制探索）。因此，在运行演示时，您会注意到，随着演示的进行和epsilon值的下降，代理的动作变得越来越可预测，\textbf{收敛到从其起始位置到目标位置的最佳路径}。
+
+
 
 \chapter{Unity 优化经验@实况}
 	\section{加载时间}
