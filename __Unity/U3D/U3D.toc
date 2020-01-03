@@ -1,0 +1,269 @@
+\contentsline {chapter}{\numberline {第一章\hspace {.3em}}基础}{11}{chapter.1}
+\contentsline {section}{\numberline {1.1}如何将脚本与具体对象绑定}{11}{section.1.1}
+\contentsline {section}{\numberline {1.2}序列化- [SerializedField]}{11}{section.1.2}
+\contentsline {section}{\numberline {1.3}常用技巧}{12}{section.1.3}
+\contentsline {section}{\numberline {1.4}MonoBehaviour 生命周期、渲染管线}{13}{section.1.4}
+\contentsline {subsection}{\numberline {1.4.1}脚本渲染流程}{13}{subsection.1.4.1}
+\contentsline {subsection}{\numberline {1.4.2}核心方法}{15}{subsection.1.4.2}
+\contentsline {paragraph}{如何让已经存在的GameObject在LoadScene()后不被卸载掉}{15}{lstlisting.1.-2}
+\contentsline {section}{\numberline {1.5}Unity 委托}{16}{section.1.5}
+\contentsline {paragraph}{定义}{16}{paragraph*.3}
+\contentsline {paragraph}{实例化委托}{16}{paragraph*.4}
+\contentsline {section}{\numberline {1.6}Unity 协程}{16}{section.1.6}
+\contentsline {subsection}{\numberline {1.6.1}开启方式}{16}{subsection.1.6.1}
+\contentsline {paragraph}{StartCoroutine(string MethodName)}{16}{paragraph*.5}
+\contentsline {paragraph}{StartCoroutine(IEnumerator method)}{17}{paragraph*.6}
+\contentsline {subsection}{\numberline {1.6.2}终止方式}{17}{subsection.1.6.2}
+\contentsline {paragraph}{StopCoroutine(string MethodName)}{17}{paragraph*.7}
+\contentsline {paragraph}{StopAllCoroutine()}{17}{paragraph*.8}
+\contentsline {subsection}{\numberline {1.6.3}yield 方式}{17}{subsection.1.6.3}
+\contentsline {paragraph}{yield return}{17}{paragraph*.9}
+\contentsline {paragraph}{yield break}{17}{paragraph*.10}
+\contentsline {subsection}{\numberline {1.6.4}执行原理}{18}{subsection.1.6.4}
+\contentsline {subparagraph}{总结}{18}{subparagraph*.11}
+\contentsline {paragraph}{委托+协程}{19}{paragraph*.12}
+\contentsline {chapter}{\numberline {第二章\hspace {.3em}}事件}{21}{chapter.2}
+\contentsline {section}{\numberline {2.1}必然事件}{21}{section.2.1}
+\contentsline {section}{\numberline {2.2}碰撞事件}{21}{section.2.2}
+\contentsline {section}{\numberline {2.3}触发器事件}{21}{section.2.3}
+\contentsline {chapter}{\numberline {第三章\hspace {.3em}}实体-人物、物体、组件}{23}{chapter.3}
+\contentsline {section}{\numberline {3.1}实体之间的关系}{23}{section.3.1}
+\contentsline {section}{\numberline {3.2}实体类}{23}{section.3.2}
+\contentsline {paragraph}{复制}{23}{paragraph*.13}
+\contentsline {paragraph}{销毁}{24}{paragraph*.14}
+\contentsline {paragraph}{可见否}{24}{paragraph*.15}
+\contentsline {paragraph}{游戏中获取或查找}{24}{paragraph*.16}
+\contentsline {section}{\numberline {3.3}Prefabs -预设体}{24}{section.3.3}
+\contentsline {subparagraph}{概念}{24}{subparagraph*.17}
+\contentsline {subparagraph}{作用}{25}{subparagraph*.18}
+\contentsline {subsection}{\numberline {3.3.1}预设动态加载到场景}{25}{subsection.3.3.1}
+\contentsline {paragraph}{预设体资源加载}{25}{paragraph*.19}
+\contentsline {paragraph}{预设体实例化}{25}{paragraph*.20}
+\contentsline {paragraph}{实例化对象属性设置}{26}{paragraph*.21}
+\contentsline {subparagraph}{简化写法}{27}{subparagraph*.22}
+\contentsline {paragraph}{预制体添加脚本}{27}{paragraph*.23}
+\contentsline {section}{\numberline {3.4}获取实体上的组件}{27}{section.3.4}
+\contentsline {paragraph}{调用方式}{27}{paragraph*.24}
+\contentsline {section}{\numberline {3.5}物理作用实体类}{27}{section.3.5}
+\contentsline {paragraph}{AddForce()}{28}{paragraph*.25}
+\contentsline {paragraph}{AddTorque()}{28}{paragraph*.26}
+\contentsline {paragraph}{Sleep()}{28}{paragraph*.27}
+\contentsline {paragraph}{WakeUp()}{28}{paragraph*.28}
+\contentsline {chapter}{\numberline {第四章\hspace {.3em}}世界空间相关3D基础}{29}{chapter.4}
+\contentsline {section}{\numberline {4.1}Transform 类}{29}{section.4.1}
+\contentsline {subsection}{\numberline {4.1.1}位置}{29}{subsection.4.1.1}
+\contentsline {subsection}{\numberline {4.1.2}旋转}{29}{subsection.4.1.2}
+\contentsline {subsection}{\numberline {4.1.3}缩放}{30}{subsection.4.1.3}
+\contentsline {subsection}{\numberline {4.1.4}平移}{30}{subsection.4.1.4}
+\contentsline {subsection}{\numberline {4.1.5}注意}{30}{subsection.4.1.5}
+\contentsline {section}{\numberline {4.2}Camera}{30}{section.4.2}
+\contentsline {subsection}{\numberline {4.2.1}Clear Flags}{30}{subsection.4.2.1}
+\contentsline {subsection}{\numberline {4.2.2}Culling Mask -剔除遮罩}{30}{subsection.4.2.2}
+\contentsline {subsection}{\numberline {4.2.3}Projection -透视模式}{30}{subsection.4.2.3}
+\contentsline {paragraph}{透视}{30}{paragraph*.29}
+\contentsline {paragraph}{正交}{31}{paragraph*.30}
+\contentsline {subsection}{\numberline {4.2.4}Clipping Planes -裁剪模式}{31}{subsection.4.2.4}
+\contentsline {subsection}{\numberline {4.2.5}Viewport Rect}{31}{subsection.4.2.5}
+\contentsline {subsection}{\numberline {4.2.6}Depth -控制渲染顺序}{31}{subsection.4.2.6}
+\contentsline {subsection}{\numberline {4.2.7}Rendering Path -渲染路径}{31}{subsection.4.2.7}
+\contentsline {subsection}{\numberline {4.2.8}Target Texture -目标纹理}{31}{subsection.4.2.8}
+\contentsline {subsection}{\numberline {4.2.9}HDR -高动态光照渲染}{32}{subsection.4.2.9}
+\contentsline {subsection}{\numberline {4.2.10}提高性问题}{32}{subsection.4.2.10}
+\contentsline {section}{\numberline {4.3}3D模型}{32}{section.4.3}
+\contentsline {subsection}{\numberline {4.3.1}Mesh}{32}{subsection.4.3.1}
+\contentsline {subsection}{\numberline {4.3.2}Texture}{32}{subsection.4.3.2}
+\contentsline {subsection}{\numberline {4.3.3}Material}{32}{subsection.4.3.3}
+\contentsline {subsection}{\numberline {4.3.4}骨骼动画}{32}{subsection.4.3.4}
+\contentsline {chapter}{\numberline {第五章\hspace {.3em}}键盘鼠标控制}{33}{chapter.5}
+\contentsline {section}{\numberline {5.1}普通按键 -keyDown(KeyCode xx)}{33}{section.5.1}
+\contentsline {paragraph}{方式一}{33}{paragraph*.31}
+\contentsline {paragraph}{方式二}{33}{paragraph*.32}
+\contentsline {section}{\numberline {5.2}根据输入设备 -getAxis()}{33}{section.5.2}
+\contentsline {paragraph}{一、触屏类}{33}{paragraph*.33}
+\contentsline {paragraph}{二、键盘类}{34}{paragraph*.34}
+\contentsline {paragraph}{三、继承IPointerDrag等}{34}{paragraph*.35}
+\contentsline {chapter}{\numberline {第六章\hspace {.3em}}时间}{35}{chapter.6}
+\contentsline {section}{\numberline {6.1}Time 类}{35}{section.6.1}
+\contentsline {chapter}{\numberline {第七章\hspace {.3em}}数学}{37}{chapter.7}
+\contentsline {section}{\numberline {7.1}Random 类}{37}{section.7.1}
+\contentsline {section}{\numberline {7.2}Mathf 类}{37}{section.7.2}
+\contentsline {section}{\numberline {7.3}坐标系}{37}{section.7.3}
+\contentsline {section}{\numberline {7.4}向量计算}{37}{section.7.4}
+\contentsline {section}{\numberline {7.5}矩阵计算}{37}{section.7.5}
+\contentsline {chapter}{\numberline {第八章\hspace {.3em}}光照}{39}{chapter.8}
+\contentsline {section}{\numberline {8.1}光照}{39}{section.8.1}
+\contentsline {section}{\numberline {8.2}烘培}{39}{section.8.2}
+\contentsline {paragraph}{简介}{39}{paragraph*.36}
+\contentsline {paragraph}{流程}{39}{paragraph*.37}
+\contentsline {chapter}{\numberline {第九章\hspace {.3em}}寻路}{41}{chapter.9}
+\contentsline {section}{\numberline {9.1}简介}{41}{section.9.1}
+\contentsline {section}{\numberline {9.2}流程}{41}{section.9.2}
+\contentsline {chapter}{\numberline {第十章\hspace {.3em}}UGUI}{43}{chapter.10}
+\contentsline {section}{\numberline {10.1}Spirit}{43}{section.10.1}
+\contentsline {section}{\numberline {10.2}Canvas}{43}{section.10.2}
+\contentsline {subsection}{\numberline {10.2.1}Screen Space-Overlay -覆盖模式}{44}{subsection.10.2.1}
+\contentsline {subsection}{\numberline {10.2.2}Screen Space-Camera -摄像机模式}{44}{subsection.10.2.2}
+\contentsline {subsection}{\numberline {10.2.3}World Space -世界空间模式}{45}{subsection.10.2.3}
+\contentsline {subsection}{\numberline {10.2.4}使用总结}{46}{subsection.10.2.4}
+\contentsline {subsection}{\numberline {10.2.5}Canvas Scalar}{46}{subsection.10.2.5}
+\contentsline {subsection}{\numberline {10.2.6}Layer}{47}{subsection.10.2.6}
+\contentsline {section}{\numberline {10.3}RectTransform}{47}{section.10.3}
+\contentsline {subsection}{\numberline {10.3.1}Pivot(中心)}{48}{subsection.10.3.1}
+\contentsline {subsection}{\numberline {10.3.2}锚点- 自适应屏幕}{48}{subsection.10.3.2}
+\contentsline {subparagraph}{需要注意}{49}{subparagraph*.38}
+\contentsline {paragraph}{锚点类型}{49}{paragraph*.39}
+\contentsline {subparagraph}{锚点在一块的时候}{49}{subparagraph*.40}
+\contentsline {subparagraph}{锚点单向（横或者纵）分开的时候}{49}{subparagraph*.41}
+\contentsline {subparagraph}{锚点双向分开的时候}{50}{subparagraph*.42}
+\contentsline {paragraph}{anchorMax、anchorMin}{50}{paragraph*.43}
+\contentsline {paragraph}{offsetMax 和 offsetMin 属性}{50}{paragraph*.44}
+\contentsline {subparagraph}{锚点 分开时}{50}{subparagraph*.45}
+\contentsline {subparagraph}{锚点 在一处时}{51}{subparagraph*.46}
+\contentsline {subparagraph}{求取}{51}{subparagraph*.47}
+\contentsline {paragraph}{anchoredPosition}{51}{paragraph*.48}
+\contentsline {subparagraph}{锚点 在一处时}{52}{subparagraph*.49}
+\contentsline {subparagraph}{锚点 分开时}{52}{subparagraph*.50}
+\contentsline {subsection}{\numberline {10.3.3}sizeDelta}{52}{subsection.10.3.3}
+\contentsline {subsection}{\numberline {10.3.4}RectTransform.rect}{52}{subsection.10.3.4}
+\contentsline {subsection}{\numberline {10.3.5}示例}{52}{subsection.10.3.5}
+\contentsline {subsection}{\numberline {10.3.6}FramDebug}{53}{subsection.10.3.6}
+\contentsline {section}{\numberline {10.4}按钮}{53}{section.10.4}
+\contentsline {subsection}{\numberline {10.4.1}RayCast Target-点击事件的获取原理}{53}{subsection.10.4.1}
+\contentsline {subsection}{\numberline {10.4.2}原始Button}{53}{subsection.10.4.2}
+\contentsline {subsection}{\numberline {10.4.3}Image等 -添加button 组件}{53}{subsection.10.4.3}
+\contentsline {subsection}{\numberline {10.4.4}添加事件处理脚本}{53}{subsection.10.4.4}
+\contentsline {section}{\numberline {10.5}文本- Text}{54}{section.10.5}
+\contentsline {subsection}{\numberline {10.5.1}添加文字阴影 -shadow 组件}{54}{subsection.10.5.1}
+\contentsline {subsection}{\numberline {10.5.2}添加文子边框 -outline 组件}{54}{subsection.10.5.2}
+\contentsline {section}{\numberline {10.6}图片- ImageView}{54}{section.10.6}
+\contentsline {section}{\numberline {10.7}选中标记- Toggle}{54}{section.10.7}
+\contentsline {paragraph}{Toggle 基本}{54}{paragraph*.51}
+\contentsline {paragraph}{Toggle Group}{54}{paragraph*.52}
+\contentsline {subparagraph}{选项栏设定}{54}{subparagraph*.53}
+\contentsline {subparagraph}{预设}{54}{subparagraph*.54}
+\contentsline {section}{\numberline {10.8}滚动区域、滚动条}{55}{section.10.8}
+\contentsline {section}{\numberline {10.9}其他工具条}{55}{section.10.9}
+\contentsline {section}{\numberline {10.10}布局- Layout}{55}{section.10.10}
+\contentsline {subsection}{\numberline {10.10.1}grid layout group}{55}{subsection.10.10.1}
+\contentsline {subsection}{\numberline {10.10.2}horizontal layout group}{55}{subsection.10.10.2}
+\contentsline {subsection}{\numberline {10.10.3}vertical layout group}{55}{subsection.10.10.3}
+\contentsline {section}{\numberline {10.11}提高性问题}{55}{section.10.11}
+\contentsline {chapter}{\numberline {第十一章\hspace {.3em}}物理}{57}{chapter.11}
+\contentsline {section}{\numberline {11.1}具体相关类}{57}{section.11.1}
+\contentsline {subsection}{\numberline {11.1.1}Rigidbody}{57}{subsection.11.1.1}
+\contentsline {subsection}{\numberline {11.1.2}Collider}{57}{subsection.11.1.2}
+\contentsline {section}{\numberline {11.2}碰撞器、触发器}{57}{section.11.2}
+\contentsline {paragraph}{发起碰撞的物体}{57}{paragraph*.55}
+\contentsline {paragraph}{接收碰撞的物体}{58}{paragraph*.56}
+\contentsline {paragraph}{物体发生碰撞的必要条件}{58}{paragraph*.57}
+\contentsline {paragraph}{CharacterController和Rigidbody的区别}{58}{paragraph*.58}
+\contentsline {paragraph}{碰撞过程}{58}{paragraph*.59}
+\contentsline {paragraph}{施加力的方式}{58}{paragraph*.60}
+\contentsline {section}{\numberline {11.3}物理材质}{58}{section.11.3}
+\contentsline {section}{\numberline {11.4}射线}{58}{section.11.4}
+\contentsline {paragraph}{射线 Ray}{58}{paragraph*.61}
+\contentsline {paragraph}{射线检测 Physics.Raycast()}{59}{paragraph*.62}
+\contentsline {section}{\numberline {11.5}关节}{59}{section.11.5}
+\contentsline {chapter}{\numberline {第十二章\hspace {.3em}}动画}{61}{chapter.12}
+\contentsline {section}{\numberline {12.1}游戏动画有哪几种，以及其原理}{61}{section.12.1}
+\contentsline {subsection}{\numberline {12.1.1}关节动画}{61}{subsection.12.1.1}
+\contentsline {subsection}{\numberline {12.1.2}单一网格模型动画}{61}{subsection.12.1.2}
+\contentsline {subsection}{\numberline {12.1.3}骨骼动画}{61}{subsection.12.1.3}
+\contentsline {section}{\numberline {12.2}Avatar}{61}{section.12.2}
+\contentsline {section}{\numberline {12.3}Animation}{62}{section.12.3}
+\contentsline {section}{\numberline {12.4}Animator}{62}{section.12.4}
+\contentsline {paragraph}{打开动画状态机界面}{62}{paragraph*.63}
+\contentsline {paragraph}{属性编辑}{62}{paragraph*.64}
+\contentsline {section}{\numberline {12.5}iTween 动画用法}{63}{section.12.5}
+\contentsline {chapter}{\numberline {第十三章\hspace {.3em}}粒子系统}{65}{chapter.13}
+\contentsline {chapter}{\numberline {第十四章\hspace {.3em}}资源管理}{67}{chapter.14}
+\contentsline {section}{\numberline {14.1}资源}{67}{section.14.1}
+\contentsline {subsection}{\numberline {14.1.1}GUID 与 fileID}{67}{subsection.14.1.1}
+\contentsline {subsection}{\numberline {14.1.2}InstanceID}{70}{subsection.14.1.2}
+\contentsline {subsection}{\numberline {14.1.3}资源的生命周期}{71}{subsection.14.1.3}
+\contentsline {subsection}{\numberline {14.1.4}MonoScripts}{71}{subsection.14.1.4}
+\contentsline {section}{\numberline {14.2}资源文件夹}{71}{section.14.2}
+\contentsline {subsection}{\numberline {14.2.1}Assets 文件夹}{71}{subsection.14.2.1}
+\contentsline {subsection}{\numberline {14.2.2}Resources 文件夹}{72}{subsection.14.2.2}
+\contentsline {paragraph}{资源载入}{72}{paragraph*.65}
+\contentsline {paragraph}{相关机制}{72}{paragraph*.66}
+\contentsline {paragraph}{资源卸载}{72}{paragraph*.67}
+\contentsline {subsection}{\numberline {14.2.3}StreamingAssets 文件夹}{73}{subsection.14.2.3}
+\contentsline {paragraph}{简介}{73}{paragraph*.68}
+\contentsline {paragraph}{文件读取}{73}{paragraph*.69}
+\contentsline {subparagraph}{IO Stream 方式}{74}{subparagraph*.70}
+\contentsline {subparagraph}{WWW 方式}{74}{subparagraph*.71}
+\contentsline {subparagraph}{AssetBundle 特有读取方式}{74}{subparagraph*.72}
+\contentsline {paragraph}{PersistentDataPath}{74}{paragraph*.73}
+\contentsline {section}{\numberline {14.3}WWW 载入资源}{75}{section.14.3}
+\contentsline {paragraph}{简介}{75}{paragraph*.74}
+\contentsline {paragraph}{相关机制}{75}{paragraph*.75}
+\contentsline {subparagraph}{通过new WWW、Try}{75}{subparagraph*.76}
+\contentsline {subparagraph}{通过Using}{75}{subparagraph*.77}
+\contentsline {paragraph}{LoadFromCacheOrDownload}{76}{paragraph*.78}
+\contentsline {section}{\numberline {14.4}AssetBundle}{76}{section.14.4}
+\contentsline {subsection}{\numberline {14.4.1}工作流程}{76}{subsection.14.4.1}
+\contentsline {paragraph}{图例}{77}{paragraph*.79}
+\contentsline {subsection}{\numberline {14.4.2}关键路径说明}{77}{subsection.14.4.2}
+\contentsline {paragraph}{Resources -只读}{77}{paragraph*.80}
+\contentsline {paragraph}{StreamingAssets -只读}{77}{paragraph*.81}
+\contentsline {paragraph}{Application.dataPath -只读}{78}{paragraph*.82}
+\contentsline {paragraph}{Application.persistentDataPath -读写}{78}{paragraph*.83}
+\contentsline {subsection}{\numberline {14.4.3}热更新原理}{78}{subsection.14.4.3}
+\contentsline {paragraph}{Notice}{80}{paragraph*.84}
+\contentsline {subsection}{\numberline {14.4.4}AB包之间的关系}{80}{subsection.14.4.4}
+\contentsline {subsubsection}{AssetBundle之间的依赖}{80}{subsubsection*.85}
+\contentsline {subsubsection}{加载依赖关系}{81}{subsubsection*.86}
+\contentsline {subsection}{\numberline {14.4.5}创建}{81}{subsection.14.4.5}
+\contentsline {subsubsection}{BuildAssetBundle}{81}{subsubsection*.87}
+\contentsline {subsubsection}{BuildStreamedSceneAssetBundle}{82}{subsubsection*.88}
+\contentsline {subsubsection}{BuildAssetBundleExplicitAssetNames}{82}{subsubsection*.89}
+\contentsline {subsection}{\numberline {14.4.6}下载方式}{82}{subsection.14.4.6}
+\contentsline {subsection}{\numberline {14.4.7}AssetBundle压缩类型}{83}{subsection.14.4.7}
+\contentsline {subsection}{\numberline {14.4.8}LZMA 与 LZ4压缩对比}{83}{subsection.14.4.8}
+\contentsline {subsection}{\numberline {14.4.9}选择策略}{83}{subsection.14.4.9}
+\contentsline {subsection}{\numberline {14.4.10}加载方式}{83}{subsection.14.4.10}
+\contentsline {subsection}{\numberline {14.4.11}加载优先级}{84}{subsection.14.4.11}
+\contentsline {subsection}{\numberline {14.4.12}缓存}{85}{subsection.14.4.12}
+\contentsline {subsection}{\numberline {14.4.13}使用}{85}{subsection.14.4.13}
+\contentsline {subsection}{\numberline {14.4.14}释放资源-卸载}{85}{subsection.14.4.14}
+\contentsline {subsection}{\numberline {14.4.15}内存模型}{86}{subsection.14.4.15}
+\contentsline {section}{\numberline {14.5}资源打包}{86}{section.14.5}
+\contentsline {subsection}{\numberline {14.5.1}降低包体准则}{87}{subsection.14.5.1}
+\contentsline {subsection}{\numberline {14.5.2}针对删除无用资源的方案}{87}{subsection.14.5.2}
+\contentsline {section}{\numberline {14.6}参考}{88}{section.14.6}
+\contentsline {chapter}{\numberline {第十五章\hspace {.3em}}Editor 扩展}{89}{chapter.15}
+\contentsline {section}{\numberline {15.1}流程}{89}{section.15.1}
+\contentsline {section}{\numberline {15.2}在编辑器上增加一个MenuItem}{89}{section.15.2}
+\contentsline {section}{\numberline {15.3}创建一个对话框}{89}{section.15.3}
+\contentsline {section}{\numberline {15.4}扩展Inspector面板}{89}{section.15.4}
+\contentsline {section}{\numberline {15.5}编辑器插件常用函数}{89}{section.15.5}
+\contentsline {subsection}{\numberline {15.5.1}资源导入回调函数}{89}{subsection.15.5.1}
+\contentsline {section}{\numberline {15.6}一些常用的Inspector属性设置}{90}{section.15.6}
+\contentsline {section}{\numberline {15.7}参考}{90}{section.15.7}
+\contentsline {chapter}{\numberline {第十六章\hspace {.3em}}跨平台发布apk}{91}{chapter.16}
+\contentsline {section}{\numberline {16.1}流程}{91}{section.16.1}
+\contentsline {section}{\numberline {16.2}Apk 安装常见错误}{91}{section.16.2}
+\contentsline {chapter}{\numberline {第十七章\hspace {.3em}}AI}{93}{chapter.17}
+\contentsline {section}{\numberline {17.1}行为树}{93}{section.17.1}
+\contentsline {section}{\numberline {17.2}Machine Learing}{93}{section.17.2}
+\contentsline {subsection}{\numberline {17.2.1}BanditDungeon}{93}{subsection.17.2.1}
+\contentsline {subsection}{\numberline {17.2.2}Q-GridWorld}{94}{subsection.17.2.2}
+\contentsline {chapter}{\numberline {第十八章\hspace {.3em}}Unity 优化经验@实况}{97}{chapter.18}
+\contentsline {section}{\numberline {18.1}加载时间}{97}{section.18.1}
+\contentsline {section}{\numberline {18.2}内存分类}{97}{section.18.2}
+\contentsline {subsection}{\numberline {18.2.1}内存问题}{97}{subsection.18.2.1}
+\contentsline {subsection}{\numberline {18.2.2}内存工具}{98}{subsection.18.2.2}
+\contentsline {section}{\numberline {18.3}资源缩减}{98}{section.18.3}
+\contentsline {chapter}{\numberline {第十九章\hspace {.3em}}GC-Garbage Collection}{99}{chapter.19}
+\contentsline {section}{\numberline {19.1}}{99}{section.19.1}
+\contentsline {section}{\numberline {19.2}}{99}{section.19.2}
+\contentsline {section}{\numberline {19.3}}{99}{section.19.3}
+\contentsline {chapter}{\numberline {第二十章\hspace {.3em}}调试技巧}{101}{chapter.20}
+\contentsline {section}{\numberline {20.1}以父类为基点}{101}{section.20.1}
+\contentsline {section}{\numberline {20.2}Android 与 Unity 互相调用}{101}{section.20.2}
+\contentsline {subsection}{\numberline {20.2.1}Unity 调用 Android 非静态方法}{101}{subsection.20.2.1}
+\contentsline {subsection}{\numberline {20.2.2}Unity 调用 Android 静态方法}{102}{subsection.20.2.2}
+\contentsline {subsection}{\numberline {20.2.3}Android 调用 Unity}{102}{subsection.20.2.3}
+\contentsline {chapter}{\numberline {第二十一章\hspace {.3em}}书籍推荐}{105}{chapter.21}
+\contentsline {section}{\numberline {21.1}Unity AB包 入门参考}{105}{section.21.1}
