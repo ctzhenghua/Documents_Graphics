@@ -1354,6 +1354,8 @@ private void MoveNext()
 			这些程序库会被MonoScripts所引用，并在程序第一次启动时被加载。
 	
 	\section{资源文件夹}	
+		\url{https://blog.csdn.net/Yao_jianlun/article/details/94839024}
+		
 		\subsection{Assets 文件夹}
 		
 		    为Unity编辑器下的资源文件夹，Unity项目编辑时的所有资源都将置入此文件夹内。在编辑器下，可以使用以下方法获得资源对象：
@@ -1800,6 +1802,9 @@ using(WWW www =
 			\item StreamingAssets下的所有文件
 			\item AB包打成大包的时候会打进包体
 		\end{itemize}
+	
+	
+		打包成功后，没有在特殊目录的文件都会打到Resource 中，而Resource 中的资源都会引用一份目前的文件副本，所以如果引用的热更资源、但是本身又被打入Resource，那么热更是不起作用的。
 		
 		\subsection{降低包体准则}
 			\begin{itemize}
@@ -1903,7 +1908,7 @@ using(WWW www =
 		\url{http://blog.sina.com.cn/s/blog_471132920101n8cr.html}
 		
 \chapter{跨平台发布apk}
-	\section{流程}
+	\section{操作流程}
 		\begin{itemize}
 			\item 安装 JavaSDK、Android Studio 并在SDK manager 里添加对应的API包
 			\item 在unity 中的\verb|edit |选项下的\verb|preferences|, 并选中\verb|External Tools| 选项，配置\verb|JDK |和\verb|Android SDK| 安装位置。
@@ -1921,7 +1926,7 @@ using(WWW www =
 	\section{Apk 安装常见错误}
 		\url{http://mumu.163.com/2017/03/30/25905_680657.html}
 
-
+	
 
 \chapter{AI}
 	Most game AI that currently exists is hand coded, consisting of decision-trees with sometimes up to thousands of rules. All of which must be maintained by hand, and thoroughly tested. In contrast, ML relies on algorithms which can make sense of raw data, without the need of an expert to define how to interpret that data.
