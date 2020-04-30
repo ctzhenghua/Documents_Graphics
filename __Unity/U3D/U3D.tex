@@ -1089,7 +1089,7 @@ private void MoveNext()
 	
 	\section{其他工具条}
 	
-	\section{布局- Layout}
+	\section{布局- Layout、AutoLayout}
 		\begin{itemize}
 			\item 具体页面下创建空物体 \verb| GameObject|
 			\item 其次在\verb|GameObject 下|添加组件 \verb|-> grid layout group|
@@ -1105,7 +1105,15 @@ private void MoveNext()
 		\subsection{horizontal layout group}
 		
 		\subsection{vertical layout group}
-
+	
+	
+		\subsection{Auto Layout}
+			AutoLayout:\url{https://blog.csdn.net/qq_28849871/article/details/79528697}
+			
+			Understanding LayoutElements And Layout Controller:\url{https://docs.unity3d.com/Packages/com.unity.ugui@1.0/manual/UIAutoLayout.html}
+		
+		
+		
 	\section{提高性问题}
 		\begin{itemize}
 			\item 为什么UI摄像机和场景摄像机能协同工作
@@ -1621,6 +1629,8 @@ using(WWW www =
 					\item 建立一个队列，队列中有加载AB的请求时，去加载，加载完成后移出队列，加载下一个直到完成
 					\item Unity5.0之后的AB资源是分开的，加载时难以判断依赖关系，而且AB资源在内存中只能有一个，所以\textbf{使用单线程加载}
 				\end{itemize}
+				
+				
 		\subsection{AB包之间的关系}
 			\begin{figure}[H]
 				\centering
@@ -1645,6 +1655,17 @@ using(WWW www =
      AssetBundleManifest manifest = _manAB.LoadAsset<AssetBundleManifest>("AssetBundleManifest");
      string[] dependencies = manifest.GetAllDependencies(ABName);
 				\end{lstlisting}
+	
+	
+	
+		\subsection{AB包查看编辑的官方工具}
+		 AssetBundle Browser.
+		 
+		 \url{https://docs.unity3d.com/Manual/AssetBundles-Browser.html}
+	
+	
+	
+	
 				
 		\subsection{创建}
 			通过编译管线BuildPipeline来创建AssetBundle文件，总共有三种方法,具体如下所示。
@@ -1791,6 +1812,12 @@ using(WWW www =
 				\includegraphics[scale=0.7]{assetBundel}
 				\caption{AssetBundle 内存模型}
 		\end{figure}
+	
+	\section{资源引用查看}
+		使用如下便可查看具体AB包的引用关系。
+	
+		\verb|string[] result = UnityEditor.AssetDatabase.GetAssetBundleDependencies(assetBundleName, true);|
+	
 		
 	\section{资源打包}
 		Unity  以下资源会被打进包里。
@@ -1967,6 +1994,20 @@ using(WWW www =
 
 
 
+
+\chapter{Profile}
+	\section{Editor Profile}
+		模拟器火焰图
+		
+		alt+7
+		
+	\section{Remote Profile}
+		真机火焰图
+		
+		buildSetting--> platform --> autoConnect
+		
+		\url{https://blog.csdn.net/aiyan1111111/article/details/52912551}
+		
 \chapter{Unity 优化经验@实况}
 	\section{加载时间}
 		\begin{itemize}
