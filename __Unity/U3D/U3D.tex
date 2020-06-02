@@ -17,6 +17,7 @@
 \usepackage{algorithmic}%format of the algorithm
 \usepackage{multirow}   %multirow for format of table
 \usepackage{tabularx} 	%表格排版格式控制
+\usepackage{longtable}
 \usepackage{array}	%表格排版格式控制
 \usepackage{hyperref} %超链接 \url{URL}
 \usepackage{tikz}
@@ -729,6 +730,12 @@ private void MoveNext()
 		\end{itemize}
 	
 \chapter{UGUI}
+
+	使用及原理(腾讯游戏学院)：\url{https://gameinstitute.qq.com/community/tag/UGUI}
+
+	大佬总结要点：\url{https://gameinstitute.qq.com/community/detail/100047}
+	
+	
 	在脚本中使用时记得加上\verb|using UnityEngine.UI |
 	
 	\url{https://blog.csdn.net/wangmeiqiang/article/category/6364468}
@@ -1112,7 +1119,9 @@ private void MoveNext()
 			
 			Understanding LayoutElements And Layout Controller:\url{https://docs.unity3d.com/Packages/com.unity.ugui@1.0/manual/UIAutoLayout.html}
 		
-		
+			父组件根据子组建调整大小 Content size Fitter， 还有就是子组建根据父组件大小进行自动调解的Aspect Ratio Filter.
+			
+			\url{https://gameinstitute.qq.com/community/detail/117690}
 		
 	\section{提高性问题}
 		\begin{itemize}
@@ -1122,7 +1131,39 @@ private void MoveNext()
 			\item 屏幕适配有什么好主意
 		\end{itemize}
 		
+	
+	\section{源码分析}
+		源码： \url{https://github.com/ctzhenghua/Unity-Technologies-ui/tree/master/UnityEngine.UI}
+	
 		
+		编译： \url{https://blog.csdn.net/andyqingliu/article/details/54600961}
+		
+		
+		分析：\url{https://blog.csdn.net/qq_28820675/article/details/105619250}
+			
+		\url{https://blog.csdn.net/qq826364410/category_9285080.html}
+		
+		
+		\subsection{EventSystem}包括3个方面的内容
+			
+			\begin{enumerate}
+			\item Input 模块 用于输入的录入
+			\item Raycast 模块 用于确定点击涉及的物体：这个一般会挂载UI上
+			\item 事件分发
+			\end{enumerate}
+		
+		
+			参考：\url{https://www.jianshu.com/p/3e51f64452d2}
+		
+			BaseInputModule接收用户的输入；
+			
+			BaseRaycaster根据用户的输入，找到目标物体；
+			
+			根据用户的输入事件，调用目标物体上的对应接口实现。
+		
+			
+		
+
 		
 \chapter{物理}
 	\section{具体相关类}
@@ -1279,7 +1320,12 @@ private void MoveNext()
 
 	\section{iTween 动画用法}
 		
-
+	
+	\section{DoTween 动画}
+		\url{http://dotween.demigiant.com/getstarted.php}
+	
+	
+	
 \chapter{粒子系统}
 
 		
@@ -2059,11 +2105,10 @@ using(WWW www =
 \chapter{GC-Garbage Collection}
 	介绍性：\url{https://blog.csdn.net/znybn1/article/details/76464896}
 	优化减少GC：\url{https://blog.csdn.net/chenxuezhi123/article/details/45249935}
-	\section{}
-	
-	\section{}
-	
-	\section{}
+
+
+\chapter{Job System}
+
 		
 
 \chapter{调试技巧}
@@ -2149,6 +2194,15 @@ using(WWW www =
 			\item AB加载 \url{https://www.cnblogs.com/u3ddjw/p/9120430.html}
 			\item AB资源关系 \url{https://www.cnblogs.com/u3ddjw/p/9120430.html}
 		\end{itemize}
+
+
+
+
+
+
+
+
+
 		
 \end{document} 
  		    

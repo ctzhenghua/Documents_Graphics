@@ -1,0 +1,241 @@
+\documentclass[UTF8,a4paper,12pt]{ctexart} 
+
+\usepackage{graphicx}%学习插入图
+\usepackage{verbatim}%学习注释多行
+\usepackage{booktabs}%表格
+\usepackage{geometry}%图片
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{listings}%代码
+\usepackage{xcolor}  %颜色
+\usepackage{enumitem}%列表格式
+\setenumerate[1]{itemsep=0pt,partopsep=0pt,parsep=\parskip,topsep=5pt}
+\setitemize[1]{itemsep=0pt,partopsep=0pt,parsep=\parskip,topsep=5pt}
+\setdescription{itemsep=0pt,partopsep=0pt,parsep=\parskip,topsep=5pt}
+\usepackage{tcolorbox}
+\usepackage{algorithm}  %format of the algorithm
+\usepackage{algorithmic}%format of the algorithm
+\usepackage{multirow}   %multirow for format of table
+\usepackage{tabularx} 	%表格排版格式控制
+\usepackage{longtable}
+\usepackage{array}	%表格排版格式控制
+\usepackage{hyperref} %超链接 \url{URL}
+\usepackage{tikz}
+\usepackage{dirtree}
+
+
+\usetikzlibrary{intersections,
+	positioning,
+	petri,
+	backgrounds,
+	fit,
+	decorations.pathmorphing,
+	arrows,
+	arrows.meta,
+	bending,
+	calc,
+	intersections,
+	through,
+	backgrounds,
+	shapes.geometric,
+	quotes,
+	matrix,
+	trees,
+	shapes.symbols,
+	graphs,
+	math,
+	patterns,
+	external}
+\CTEXsetup[format+={\flushleft}]{section}
+
+%%%% 设置图片目录
+\graphicspath{{figure/}}
+
+%%%% 段落首行缩进两个字 %%%%
+\makeatletter
+\let\@afterindentfalse\@afterindenttrue
+\@afterindenttrue
+\makeatother
+\setlength{\parindent}{2em}  %中文缩进两个汉字位
+
+%%%% 下面的命令重定义页面边距，使其符合中文刊物习惯 %%%%
+\addtolength{\topmargin}{-54pt}
+\setlength{\oddsidemargin}{0.63cm}  % 3.17cm - 1 inch
+\setlength{\evensidemargin}{\oddsidemargin}
+\setlength{\textwidth}{14.66cm}
+\setlength{\textheight}{24.00cm}    % 24.62
+
+%%%% 下面的命令设置行间距与段落间距 %%%%
+\linespread{1.4}
+\setlength{\parskip}{0.5\baselineskip}
+\geometry{left=1.6cm,right=1.8cm,top=2cm,bottom=1.7cm} %设置文章宽度
+\pagestyle{plain} 		  %设置页面布局
+
+%代码效果定义
+\definecolor{mygreen}{rgb}{0,0.6,0}
+\definecolor{mygray}{rgb}{0.5,0.5,0.5}
+\definecolor{mymauve}{rgb}{0.58,0,0.82}
+\lstset{ %
+	backgroundcolor=\color{white},   % choose the background color
+	basicstyle=\footnotesize\ttfamily,      % size of fonts used for the code
+	%stringstyle=\color{codepurple},
+	%basicstyle=\footnotesize,
+	%breakatwhitespace=false,         
+	%breaklines=true,                 
+	%captionpos=b,                    
+	%keepspaces=true,                 
+	%numbers=left,                    
+	%numbersep=5pt,                  
+	%showspaces=false,                
+	%showstringspaces=false,
+	%showtabs=false,        
+	columns=fullflexible,
+	breaklines=true,                 % automatic line breaking only at whitespace
+	captionpos=b,                    % sets the caption-position to bottom
+	tabsize=4,
+	commentstyle=\color{mygreen},    % comment style
+	escapeinside={\%*}{*)},          % if you want to add LaTeX within your code
+	keywordstyle=\color{blue},       % keyword style
+	stringstyle=\color{mymauve}\ttfamily,     % string literal style
+	frame=L,
+	xleftmargin = .079\textwidth,
+	rulesepcolor=\color{red!20!green!20!blue!20},
+	% identifierstyle=\color{red},
+	language=c++,
+}
+ \title{\heiti U3D BugFix 统计表}
+ 
+\begin{document}          %正文排版开始
+ 	\maketitle
+
+		\begin{longtable}{p{2cm}|p{14cm}}
+			\toprule
+				类别 &  修复问题及版本	\\
+			\midrule
+				\verb|2D| &  
+											\begin{itemize}
+												\item 修复了在不同机器上构建图集时，存储图集哈希值的更改
+												\item Fixed an issue where Sprite Atlases are modified after building
+												\item Fixed a crash when selecting SpriteRenderer with tiling enabled in SceneView
+												\item Fixed an exception when accessing ISpriteEditorDataProvider during AssetPostProcessor on new asset
+											\end{itemize}	\\
+				\hline
+				\verb|UI| & 
+											\begin{itemize}
+											\item 修复了CanvasRenderer不遵守当前排序层/同级顺序的问题。
+											\item Fixed an issue where EventSystem not being created when an EventSystem prefab was loaded but not in the scene
+											\item Fixed an issue where Nested Canvases using the wrong display id when calculating the ProjectionMatrix. 
+											\item Fixed an issue with IME properly. 
+											\item Fixed a crash that occurred when importing prefabs with broken Canvas
+											\end{itemize}			\\
+				\hline
+				\textbf{Asset 
+				Pipeline} & 	
+											\begin{itemize}
+											\item 修复了重新序列化对嵌套式预制件进行更改的问题
+											\item Fixed an assert thrown during RecompressAssetBundleAsync.
+											\item Fixed an issue where asset bundles could fail to load when using async loading methods.
+											\item Fixed an issue where calling SaveAssets() in play mode could cause an exception to be thrown.
+											\item Fixed an issue where AssetBundle Recompression not verifying the CRC of bundle contents when requested.
+											\item Optimised copying an asset, so that a refresh of the asset database is not triggered.
+											\end{itemize}			\\
+				\hline
+				\verb|Editor| & 	
+											\begin{itemize}
+											\item 增加了对在批处理模式下执行异步方法的支持
+											\item 修复了“ stackTraceLogType”命令行参数。
+											\item 修复了2018.3。中引入的测试运行器api结果报告中的性能回归问题。
+											\item 修复了崩溃报告将不可用的错误。
+											\item 修复了针对相同纹理两次调用RenderTexture.ReleaseTemporary时崩溃的问题。
+											\item 修复了使用空参数调用TextureImporter.ReadTextureSettings时崩溃的问题。
+											\item 修复了当项目包含具有定义约束的dll资产时，切换目标平台时编辑器崩溃的问题。
+											\item 修复了如果Profiler无法连接至Player时冻结编辑器的问题。
+											\item 修复了UnityEngine.MinAttribute在使用Inspector窗口时不限制变量值的问题。
+											\item Fixec creating an empty array in EditorBuildSettings.scenes crashing the Editor
+											\end{itemize}			\\
+				\hline
+				\verb|Graphics| & 	
+											\begin{itemize}
+											\item 修复了启用保持四边形的网格无法渲染的问题。
+											\item 修复了当网格仍具有索引但缺少顶点数据时动态批处理崩溃的问题。
+											\item 修复了Metal Editor支持中的精灵伪像。
+											\item Fixed an issue where per-platform QualitySettings could be stripped on disk when entering Playmode
+											\item Fixed for GPU memory leak when deleting a texture while async upload in progress
+											\item Fixed performance regression in Editor when processing shaders with errors.
+											\end{itemize}			\\
+				\hline
+				\verb|Animation |  &	
+											\begin{itemize}
+											\item Fixed editor crash with WalkTypeTree when enforcing T-Pose to avatar after clearing all bones mapping
+											\item 
+											\end{itemize}			\\											
+				\hline
+				\verb|IL2CPP| & 			
+											\begin{itemize}
+											\item  修复了使用2017或更早版本的Unity构建的资产捆绑包中的着色器损坏的问题。
+											\item 
+											\end{itemize}			\\											
+				\hline
+				\verb|Physics| & 		
+											\begin{itemize}
+											\item 修复了当与触发器重叠的MeshCollider将其sharedMesh设置为null然后立即销毁时发生的崩溃。
+											\item 修复了Cloth的问题，在Cloth中，更改SkinnedMeshRenderer的Mesh会导致编辑器崩溃。
+											\end{itemize}			\\
+				\hline
+				\verb|Scripting| & 			
+											\begin{itemize}
+											\item 日志记录方法中的GC分配提高了50％。
+											\item 修复了域重新加载后调用System.Diagnostics.Process API时崩溃的问题。
+											\end{itemize}			\\
+				\hline
+				\verb|Profile| & 			
+											\begin{itemize}
+											\item 修复了在探查器窗口中显示UI详细信息时出现控制台错误的问题
+											\item 修复了CPU事件探查器在进入PlayMode时将其视图类型更改回时间轴的问题。
+											\item 固定的探查器窗口在所有图表均关闭时重新打开到“ CPU探查器详细信息”窗格。
+											\end{itemize}			\\											
+				\hline
+				\verb|Shaders| & 			
+											\begin{itemize}
+											\item  修复了使用2017或更早版本的Unity构建的资产捆绑包中的着色器损坏的问题。
+											\item 
+											\end{itemize}			\\
+				\hline
+				\verb|Timeline| & 		
+											\begin{itemize}
+											\item 修复了在播放模式抛出异常期间复制控制剪辑的问题。
+											\item 
+											\end{itemize}			\\
+				\hline
+				\verb|iOS| & 		
+											\begin{itemize}
+											\item 现在，“编辑器”和Xcode项目中的“自动签名”设置处于“同步”状态，而“编辑器”中的默认“自动签名”设置现在设置为False。
+											\item 固定的加速度计并未完全从陀螺仪上解耦。
+											\item 修复了iPhone 11 pro上显示的错误dpi
+											\item 
+											\end{itemize}			\\											
+				\hline
+				\verb|Windows| &	
+											\begin{itemize}
+											\item 修复了未从Proxy中排除的“ localhost”导致编辑器组件失败的问题。
+											\item 多重显示：固定在窗口模式下的非主要显示纵横比。
+											\end{itemize}			\\
+				\hline
+				\verb|Android| & 	
+											\begin{itemize}
+												\item 修复了非全屏模式和拆分视图下的Android抠图
+												\item 修复了POSIX平台上的FatalError和AccessViolation ForcedCrashCategory的功能。
+												\item Fixed application paths (dataPath, streamingAssetsPath) to point to base apk when App Bundle is used.
+												\item Set opaque windows for unset translucency attribute. 
+											\end{itemize}		\\											
+				\hline
+				\verb|XR |  &	
+											\begin{itemize}
+											\item 修复了全息仿真窗口远程处理错误，该错误导致在选择Hololens 2时导致Unity远程访问Hololens 1设备。
+											\item 修复了从UWP x64应用程序远程处理到V2设备的问题
+											\end{itemize}			\\
+																																				
+			\bottomrule
+		\end{longtable}
+
+\end{document}

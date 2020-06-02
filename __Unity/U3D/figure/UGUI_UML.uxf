@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<diagram program="umlet" version="14.3.0">
+  <zoom_level>10</zoom_level>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>640</x>
+      <y>50</y>
+      <w>400</w>
+      <h>310</h>
+    </coordinates>
+    <panel_attributes>bg=yellow
+/UIBehaviour/
+--
+Awake() :virtual void protected
+OnEnable() :virtual void protected
+Start():virtual void protected
+OnDisable():virtual void protected
+OnDestroy():virtual void protected
+IsActive():virtual bool protected
+OnRectTransformDimensionsChange():virtual void protected
+OnBeforeTransformParentChanged():virtual void protected
+OnTransformParentChanged():virtual void protected
+OnDidApplyAnimationProperties():virtual void protected
+OnCanvasGroupChanged():virtual void protected
+OnCanvasHierarchyChanged():virtual void protected
+IsDestroyed(): bool public
+#if UNITY_EDITOR
+*OnValidate():virtual void protected*
+*Reset():virtual void protected*
+#endif</panel_attributes>
+    <additional_attributes/>
+  </element>
+</diagram>
