@@ -249,7 +249,20 @@ int main()
 
 
 \newpage
-\chapter{图形学基础}
+\chapter{图形学概述}
+	\section{描述框架}
+		顶点着色器决定顶点最终在那里显示
+		
+		组装几何图元(内部实现)
+		
+		光栅化决定怎么把图元拆分成像素
+		
+		片元着色器决定像素显示什么颜色
+	
+
+
+\newpage
+\chapter{OpenGL 基础}
 	完全指南：\url{https://www.jianshu.com/p/6bda18e953f6}
 	
 	API：\url{https://www.khronos.org/opengl/wiki/Category:Core_API_Reference}
@@ -762,16 +775,20 @@ glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 			\end{lstlisting}
 			
 			
-		\subsection{输入输出}
+		\subsection{存储限制符号}
 			
 			\paragraph{in-out 关键字}
 				GLSL定义了\verb|in |和\verb|out |关键字专门来实现这个目的。每个着色器使用这两个关键字设定输入和输出，只要一个输出变量与下一个着色器阶段的输入匹配.
 			
-			\paragraph{layout (location = 0)标识符}
-				\textbf{顶点着色器}应该接收的是一种特殊形式的输入，否则就会效率低下。顶点着色器的输入特殊在，它从顶点数据中(CPU)直接接收输入。为了定义顶点数据该如何管理，我们使用\verb|location|这一元数据指定输入变量，这样我们才可以在CPU上配置顶点属性。
+			\paragraph{buffer 关键字}
+				可读写的应用程序的共享内存，这块内存也作为着色器中的存储缓存使用。
+				
+			\paragraph{shared 关键字}
+				在着色器中使用，设置变量在本地工作组中共享。
 			
+			\paragraph{uniform 关键字}
+				在应用程序中设置，在着色器中使用，并且在各个阶段都是共享的，但不可以修改。
 			
-		
 		\subsection{Uniform}
 		
 			\paragraph{概述}
