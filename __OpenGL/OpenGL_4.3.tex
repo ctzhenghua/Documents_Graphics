@@ -1171,7 +1171,83 @@ Shader(const char* vertexPath, const char* fragmentPath)
 	}				
 				\end{lstlisting}
 
+	
+	
+	\section{帧缓冲}
+		ref:\url{https://zhuanlan.zhihu.com/p/109107214}
+	
+		帧缓冲是OpenGL中非常重要的一部分，计算机图形学中有\textit{很多效果的实现用到了帧缓冲}（虽然所有的OpenGL程序都要使用帧缓冲，但是有些效果需要灵活的使用帧缓冲才行），比如屏幕后处理、延迟渲染、阴影等等。
+	
+		统计一下暂时屏幕缓冲：用于写入颜色值的\textbf{颜色缓冲}、用于写入深度信息的\textbf{深度缓冲}和允许我们根据一些条件丢弃特定片段的\textbf{模板缓冲}。\textbf{这些缓冲结合起来叫做帧缓冲(Framebuffer)}，它被储存在内存中。OpenGL允许我们定义我们自己的帧缓冲，也就是说我们能够定义我们自己的颜色缓冲，甚至是深度缓冲和模板缓冲。
+		
+		目前所做的所有操作都是在\textbf{默认帧缓冲}的\underline{渲染缓冲}上进行的。默认的帧缓冲是在你创建窗口的时候生成和配置的（GLFW帮我们做了这些）。有了我们自己的帧缓冲，我们就能够有更多方式(离屏渲染)来渲染了。
+	
+	
+		\subsection{使用}
+			\dirtree{%
+				.1 创建一个帧缓冲 .
+				.2 unsigned int fbo .
+				.2 glGenFramebuffers(1, \&fbo) .
+				.2 glBindFramebuffer(GL\_FRAMVYFFER, fbo) // 使用这个帧缓冲 .
+				.2 绑定一个附件(将这帧渲染至帧缓冲中的何处) .
+				.3 glFramebufferTexture2D(GL\_FRAMEBUFFER, GL\_COLOR\_ATTACHMENT0, GL\_TEXTURE\_2D, texture, 0) // 用户可读模式 .
+				.3 glFramebufferRenderbuffer(GL\_FRAMEBUFFER, GL\_DEPTH\_STENCIL\_ATTACHMENT,\\ GL\_RENDERBUFFER, rbo) // 原生，速度快，只写 .
+				.2 glBindFramebuffer(GL\_FRAMEBUFFER, 0) // 使用默认帧缓冲 .
+				.2 glDeleteFramebuffers(1, \&fbo) .
+			}
+			
+			\textbf{帧缓冲}区对象并不是一个真正的缓冲区，但包含一个或多个附件，它通过轮到自己，是实际的缓冲区的聚合对象。您可以将Framebuffer理解为C结构，其中每个成员都是\textbf{指向缓冲区的指针}。没有任何附件，Framebuffer对象的占用空间非常小。
+			
+			现在，连接到\textbf{Framebuffer}的每个缓冲区可以是\underline{Renderbuffer}或\underline{纹理}。
+		
+		
+		\subsection{帧缓冲-纹理附件  示例}
+			当把一个纹理附加到帧缓冲的时候，所有的渲染指令将会写入到这个纹理中，就想它是一个普通的颜色/深度或模板缓冲一样。使用纹理的优点是，所有渲染操作的结果将会被储存在一个纹理图像中，我们之后可以在着色器中很方便地使用它。
+			
+			为帧缓冲创建一个纹理如同创建一个普通的纹理：
+			\begin{lstlisting}
+unsigned int texture;
+glGenTextures(1, &texture);
+glBindTexture(GL_TEXTURE_2D, texture);
 
+glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 800, 600, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
+glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, texture, 0);			
+			\end{lstlisting}
+			
+			主要的区别就是，\textit{将维度设置为了屏幕大小（尽管这不是必须的）}，并且\textit{给纹理的data参数传递了NULL}。对于这个纹理，仅仅分配了内存而没有填充它。填充这个纹理将会在渲染到帧缓冲之后来进行。\textit{同样并不需要关心环绕方式或多级渐远纹理，在大多数情况下都不会需要它们}。
+			
+			如果想将屏幕渲染到一个更小或更大的纹理上，需要（在渲染到你的帧缓冲之前）再次调用glViewport，使用纹理的新维度作为参数，否则只有一小部分的纹理或屏幕会被渲染到这个纹理上。
+			
+			\textbf{创建好一个纹理了后，将它附加到帧缓冲上即可，下次渲染时，就会将内容离屏渲染到这张纹理上}。
+			
+			
+		\subsection{帧缓冲-渲染缓冲附件 示例}
+			和纹理图像一样，渲染缓冲对象是一个真正的缓冲，即一系列的字节、整数、像素等。渲染缓冲对象附加的好处是，它会将数据储存为OpenGL原生的渲染格式，它是为离屏渲染到帧缓冲优化过的。
+		
+			渲染缓冲对象直接将所有的渲染数据储存到它的缓冲中，\textbf{不会做任何针对纹理格式的转换，让它变为一个更快的可写储存介质}。然而，渲染缓冲对象通常都是只写的，所以你不能读取它们（比如使用纹理访问）。\textit{因为它的数据已经是原生的格式了，当写入或者复制它的数据到其它缓冲中时是非常快的}。所以，交换缓冲这样的操作在使用渲染缓冲对象时会非常快。在每个渲染迭代最后使用的glfwSwapBuffers，也可以通过\textbf{渲染缓冲对象}实现：只需要写入一个渲染缓冲图像，并在最后交换到另外一个渲染缓冲就可以了。渲染缓冲对象对这种操作非常完美。
+			
+			创建一个渲染缓冲对象的代码和帧缓冲的代码很类似：
+			\begin{lstlisting}
+unsigned int rbo;
+glGenRenderbuffers(1, &rbo);
+glBindRenderbuffer(GL_RENDERBUFFER, rbo);
+
+glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, 800, 600);
+
+glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, rbo);
+			\end{lstlisting}
+			
+			由于渲染缓冲对象通常都是只写的，它们会经常用于深度和模板附件,因为大部分时间我们都不需要从深度和模板缓冲中读取值，只关心深度和模板测试。需要深度和模板值用于测试，但不需要对它们进行采样，所以渲染缓冲对象非常适合它们。
+			
+			\textbf{渲染缓冲区}是一个相对较新的概念。在此之前，使用了帧缓冲区来渲染纹理，\textbf{由于纹理使用标准格式，因此渲染速度可能较慢}。当需要在每个像素上执行多次传递以构建场景或在另一个场景的表面上绘制场景时，这非常有用！
+	
+	
+	
+	
+	
 \chapter{三大变换-3D转换}
 	从这个教程开始我们开始研究各种各样的图形变换，\textbf{图形变换就可以让一个3d物体在屏幕中变换的的时候看上去保持有深度的错觉}，也就是立体的投影效果。
 	
@@ -2916,7 +2992,7 @@ void main()
 	
 		深度缓冲是在\textbf{片段着色器}\textit{运行之后}、以及\textbf{模板测试(}Stencil Testing)\textit{运行之后}，在\textbf{屏幕空间}中运行的。
 		
-		屏幕空间坐标与通过OpenGL的\verb|glViewport()|所定义的视口密切相关，并且可以直接使用GLSL内建变量\verb|gl_FragCoord|从片段着色器中直接访问。\verb|gl_FragCoord|的x和y分量代表了片段的屏幕空间坐标（其中(0, 0)位于左下角）。\verb|gl_FragCoord|中也包含了一个z分量，它包含了片段真正的深度值。z值就是需要与深度缓冲内容所对比的那个值。
+		屏幕空间坐标与通过OpenGL的\verb|glViewport()|所定义的视口密切相关，并且可以直接使用GLSL内建变量\verb|gl_FragCoord|从片段着色器中直接访问。\verb|gl_FragCoord|的x和y分量代表了片段的屏幕空间坐标（其中(0, 0)位于左下角）。\verb|gl_FragCoord|中也包含了一个z分量，它包含了片段真正的深度值。\textbf{z值就是需要与深度缓冲内容所对比的那个值}。
 		
 		深度测试\textbf{默认是禁用的}，所以如果要启用深度测试的话，我们需要用\verb|GL_DEPTH_TEST|选项来启用它：
 		\begin{lstlisting}
@@ -2958,7 +3034,7 @@ void main()
 			\end{lstlisting}
 			
 		\subsection{深度值精度}
-			深度缓冲包含了一个介于0.0和1.0之间的深度值，它将会与观察者视角所看见的场景中所有物体的z值进行比较。观察空间的z值可能是投影平截头体的近平面(Near)和远平面(Far)之间的任何值。我们需要一种方式来将这些观察空间的z值变换到[0, 1]范围之间，要想有正确的投影性质，需要使用一个非线性的深度方程，它是与 1/z 成正比的。它做的就是在z值很小的时候提供非常高的精度，而在z值很远的时候提供更少的精度。
+			\textbf{深度缓冲的深度值z值}\textit{是一个介于0.0和1.0之间}，它将会与观察者视角所看见的场景中所有物体的z值进行比较。\textbf{观察空间的z值}可能是投影平截头体的\textit{近平面(Near)和远平面(Far)之间的任何值}。\textbf{需要一种方式来将这些观察空间的z值变换到[0, 1]范围之间}，\textit{要想有正确的投影性质，需要使用一个非线性的深度方程，它是与 1/z 成正比的}。它做的就是在\textit{z值很小的时候提供非常高的精度}，而在\textit{z值很远的时候提供更少的精度}。
 			
 			由于非线性方程与 1/z 成正比，在1.0和2.0之间的z值将会变换至1.0到0.5之间的深度值，这就是一个float提供给我们的一半精度了，这\textbf{在z值很小的情况下提供了非常大的精度}。在50.0和100.0之间的z值将会只占2\%的float精度，\textbf{在距离较大时提供较小的精度}。这样的一个考虑了远近距离的方程是这样的：
 			
