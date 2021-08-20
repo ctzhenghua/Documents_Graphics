@@ -113,7 +113,22 @@
 
 \chapter{GamePlay}
 	\section{基础世界观}
-	
+		\begin{figure}[H]
+			\centering
+			\includegraphics[width=\linewidth]{Base}
+			\caption{Gameplay Framwork}
+		\end{figure}
+		
+		\begin{itemize}
+			\item Game Instance: 从游戏开始到游戏结束，可保存跨场景数据等。
+			\item Game Mode: 储存游戏中不经常被修改的数据
+			\item Pawn Class:人物、AI 载体实体
+			\item HUD Class:二维显示信息
+			\item Player Controller Class; 代表玩家的控制：包括输入操作、AI控制等
+			\item Player State Class: 玩家的状态信息
+			\item Game State Class: 任务状态等
+		\end{itemize}
+		
 	\section{基础元素与组件}
 	
 	\section{控制}
