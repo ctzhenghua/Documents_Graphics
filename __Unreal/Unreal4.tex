@@ -134,6 +134,41 @@
 	\section{控制}
 	
 	\section{迭代}
+
+
+
+\chapter{蓝图}
+	\section{基本概念}
+	
+		蓝图类，类似于prefab，定义一种基于事件的预工作流。
+		
+		\subsection{分类}
+			
+			\begin{itemize}
+				\item 类蓝图 Blueprint Class：是一种允许内容创建者轻松地基于现有游戏性类添加功能的资源。
+				\item 纯数据蓝图 Data-Only Blueprint：是指仅包含\underline{代码(以节点图表的形式)}、\textbf{变量}及\textbf{从其父类继承的组件}的\textit{类蓝图}。
+				\item 关卡蓝图 Level Blueprint：用作关卡范围的\textbf{全局事件}图。
+			\end{itemize}
+		
+		\subsection{蓝图接口}
+			蓝图接口（Blueprint Interface） 是一个或多个函数的集合 - 只有名称，没有实施-可以添加到其他蓝图中。
+		
+		\subsection{蓝图宏库}
+			蓝图宏库（Blueprint Macro Library） 是一个容器，它包含一组 宏 或自包含的图表，这些图表可以 作为节点放置在其他蓝图中。它们可以节省时间，因为它们可以存储常用的节点序列， 包括执行和数据传输所需的输入和输出。
+		
+		\subsection{蓝图工具}
+			\textbf{蓝图编辑器（Blueprint Editor） 中}的 \textbf{组件（Components） 窗口}允许您\underline{将组件添加到蓝图}。这提供了以下方法： 通过胶囊组件（CapsuleComponent）、盒体组件（BoxComponent）或球体组件（SphereComponent）添加碰撞几何体， 以静态网格体组件（StaticMeshComponent）或金属网格体组件（SkeletalMeshComponent）形式添加渲染几何体， 使用移动组件（MovementComponent）控制移动。还可以将组件（Components）列表中添加的组件 指定给实例变量，以便您在此蓝图或其他蓝图的图表中访问它们。
+		
+		
+		\subsection{核心组件}
+			\begin{itemize}
+				\item 构造函数 
+				\item 事件图表：事件驱动
+				\item 函数
+				\item 变量
+			\end{itemize}
+	\section{使用规则}
+	
 	
 
 \chapter{基础}
