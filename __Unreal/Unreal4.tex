@@ -130,17 +130,98 @@
 		\end{itemize}
 		
 	\section{基础元素与组件}
-	
+		\subsection{UObject}
+			UObject类提供了以下功能：
+			\begin{itemize}
+				\item 垃圾收集
+				\item 引用自动更新
+				\item 反射
+				\item 序列化
+				\item 自动检测 默认变量的更改
+				\item 自动变量初始化
+				\item 和虚幻引擎编辑器的自动交互
+				\item 运行时类型识别
+				\item 网络复制
+			\end{itemize}
+		
+		\subsection{Actor}
+			Actor类在场景中拥有一个位置坐标和旋转量。
+			
+			Actor类拥有这样的能力：\textbf{它能够被挂载组件} 。
+			
+			
+		\subsection{Pawn}
+			现Pawn类提供了\textit{被“操作”的 特性}。
+			
+			它能够被一个Controller操纵。这个Controller可以是玩家，当然 也可以是AI（人工智能）。这就像是一个棋手，操作着这个棋子。
+			
+			这就是Pawn类，一个被操纵的兵或卒，一个一旦脱离棋手就无法 自主行动的、悲哀的肉体。
+			
+		\subsection{Controller}
+			既然是灵魂，那么肉体就不唯一，因此灵魂（Controller） 可以通过 Possess/UnPossess来控制一个肉体，或者从一个肉体上离开。
+		
+		\subsection{Character}
+			Character类代表一个角色，它继承自Pawn类。
+			
+			Character类提供了一个特殊的组件，Character Movement。这个组 件提供了一个基础的、基于胶囊体的角色移动功能。包括移动和跳跃， 以及如果你需要，还能扩展出更多，例如蹲伏和爬行。
+
+
 	\section{控制}
+		
+	
 	
 	\section{迭代}
-
+		
+	
+	
+	
+	\section{命名规则}
+		常用的前缀如下：
+		\begin{itemize}
+			\item F 纯C++类
+			\item U 继承自UObject，但不继承自Actor
+			\item A 继承自Actor
+			\item S Slate控件相关类
+			\item H HitResult相关类
+		\end{itemize}
+		
+		
+	\section{对象}
+		
+		\subsection{生成}
+			在标准C++中，一个类产生一个对象，被称为“实例化”。实例化对 象的方法是通过new关键字。 而在虚幻引擎中，这一个问题变得略微复杂。对于某些类型，我们 不得不通过调用某些函数来产生出对象。具体而言：
+			
+			\begin{itemize}
+				\item 如果你的类是一个\textbf{纯C++类}型（F开头），你可以通过\textbf{new}来产生对 象。
+				\item 如果你的类\textbf{继承自UObject}但不继承自Actor，你需要通过 \textbf{NewObject函数}来产生出对象。 \verb|NewObject<T>()|
+				\item 如果你的类\textbf{继承自AActor}，你需要通过\textbf{SpawnActor函数}来产生出对 象。\verb|GetWorld()-> SpawnActor<AYourActorClass>()|
+				\item 如果你需要产生出一个\textbf{Slate类}，需要使用\textbf{SNew函数}。
+			\end{itemize}
+		
+		\subsection{获取}：
+		
+			1· 通过new 获取引用或者指针。
+			
+			2·间接的通过遍历对象获取。
+			
+			\begin{lstlisting}
+	for(TActorIterator <AActor> Iterator(GetWorld()); Iterator; ++Iterator) 
+	{ ...//do something }			
+			\end{lstlisting}
+		
+		\subsection{销毁}
+			\begin{itemize}
+				\item 纯C++ 类：符合C++ 基本语法
+				\item UObject类：UObject采用自动垃圾回收机制。当一个\textbf{类的成员} 变量包含\textit{指向UObject的对象}，\textit{同时又带有UPROPERTY宏定义}，那么 这个成员变量将会触发引用计数机制。 垃圾回收器会定期从根节点Root开始检查，当一个UObject没有被 别的任何UObject引用，就会被垃圾回收。你可以通过AddToRoot函数来 让一个UObject一直不被回收。
+				\item Actor 类：可以通过\textbf{调用Destory函数}来请求销毁，这样的销毁意 味着将当前Actor从所属的世界中“摧毁”。但是对象对应\textit{内存的回收依然 是由系统决定}。
+			\end{itemize}
+		
 
 
 \chapter{蓝图}
 	\section{基本概念}
 	
-		蓝图类，类似于prefab，定义一种基于事件的预工作流。
+		蓝图类，类似于prefab，定义一种\textbf{基于事件}的预工作流。
 		
 		\subsection{分类}
 			
@@ -167,24 +248,123 @@
 				\item 函数
 				\item 变量
 			\end{itemize}
+			
 	\section{使用规则}
+		基于事件。
+		
+		控制流、数据流。
+		
+		
+	\section{调用C++}
+		如何让蓝图能够调用我的 C++类中的函数呢？
+		
+		\begin{itemize}
+			\item \verb|UPROPERTY宏|:注册一个变量到蓝图中\verb|UPROPERTY(BlueprintReadWrite,VisibleAnywhere,Category="Object")|
+			\item \verb|UFUNCTION宏|:注册函数到蓝图中 \verb|UFUNCTION(BlueprintCallable,Category="Test")|
+		\end{itemize}
 	
-	
-
-\chapter{基础}
 		
 \chapter{事件}
 
-\chapter{实体-人物、物体、组件}
-		
-\chapter{世界空间相关3D基础}
 
-\chapter{键盘鼠标控制}
-
-\chapter{时间}
-
-\chapter{数学}
+\chapter{引擎系统}
+	\section{正则}
+		\verb|#include"Regex.h"|
 	
+	\section{FPaths}:
+		\begin{itemize}
+			\item 具体路径类 ，如：\verb|FPaths::GameDir()|可以获取到游戏根目录。
+			\item 工具类 ，如：\verb|FPaths::FileExists()|用于判断一个文件是否存在。
+			\item 路径转换类 ，如：\verb|FPaths::ConvertRelativePathToFull()|用于将相对 路径转换为绝对路径。
+		\end{itemize}
+	
+		
+	\section{XML、Json}
+		\verb|Include"Json.h"|
+	
+	\section{GConfig}
+		写配置、读配置
+		
+		\begin{lstlisting}
+	GConfig->SetString( TEXT("MySection"), TEXT("Name"), TEXT("李白"), FPaths::GameDir()/ "MyConfig.ini");
+	
+	FString Result; 
+	GConfig->GetString( TEXT("MySection"), TEXT("Name"), Result, FPaths::GameDir() / "MyConfig.ini");
+		\end{lstlisting}
+	
+	\section{File}
+		虚幻引擎提供了与平台无关的文件读写与访问接口，即\verb| FPlatformFileManager|。
+	
+	\section{UE\_LOG}
+		\subsection{查看log}:
+			Log窗口（\verb|Window->DeveloperTools- >OutputLog|）
+		
+		\subsection{log 类型}：
+			UE\_LOG宏输出Log，第一个参数为Log的分类（需要预先定义）。 第二个参数为类型，有Log、Warning、Error 三种类型。
+			
+			\textbf{自定义Category}:\verb|DEFINE_LOG_CATEGORY_STATIC(LogMyCategory,Warning,All);|
+			
+		\subsection{打印log}:
+			\begin{lstlisting}
+	UE_LOG(LogMy, Warning, TEXT("Hell World")); 
+	UE_LOG(LogMy, Warning, TEXT("Show a String %s"),*FString("Hello")); 
+	UE_LOG(LogMy, Warning, TEXT("Show a Int %d"),100);			
+			\end{lstlisting}
+			
+	\section{string}
+		“文字”类型其实是一组类型：\textit{FName，FText和 FString。}这\textbf{三种类型}可以互相转换。
+		
+		\subsection{FName}
+			FName是\textit{无法被修改的字符串}，大小写不敏感。
+			
+		\subsection{FText}
+			FText表示一个\textit{“被显示的字符串”}。所有你希望“显示”的字符串都应 该是FText。因为FText提供了内置的本地化支持，也通过一张查找表来 支持运行时本地化。FText不提供任何的更改操作，对于被显示的字符 串来说，“修改”是一个非常不安全的操作。
+			
+		\subsection{FString}
+			FString是\textit{唯一提供修改操作的字符串类}。同时也意味着FString的消 耗要高于FName和FText。
+		
+	\section{Images}
+	
+	
+	\section{编译器相关}
+	
+
+\chapter{AI-行为树}
+	\section{行为-基础元素}
+	
+		\subsection{流程控制}:
+			\begin{itemize}
+				\item \verb|Selector|: 选择器 IF
+				
+					Selector节点会 从左到右逐个执行下面的子树，如果有一个子树返回true，它就会返回 true，只有所有的子树均返回false，它才会返回false。这就类似于日常 生活中“几个方案都试一试”的概念。
+				\item \verb|Sequence|: 顺序执行器 STATEMENT
+				
+					Sequence节点会按顺序执行自己的子树，只有当前子树返回true，才会去执行下一个子树，直到 全部执行完毕，才会向上一级返回true。任何一个子树返回了false，它 就会停止执行，返回false。类似于日常生活中“依次执行”的概念。
+				\item \verb|Parallel|: 并行执行 THREAD
+			\end{itemize}
+		
+		\subsection{装饰器}：对子树的返回结果进行处理的节点。	
+		
+		\subsection{执行节点}：执行节点必然是\textit{叶子节点，执行具体的任务}，并在任务 执行一段时间后\textit{，根据任务执行成功与否，返回true或者false}。
+	
+	
+	\section{行为-细节}
+		\subsection{Selector}
+			终止条件：当某一个执行成功返回True。
+			
+			优先级：
+		
+		\subsection{Sequence}
+			
+		
+		\subsection{Parallel}
+		
+		
+
+\chapter{AI-强化学习}	
+
+
+
 \chapter{光照}
 	
 \chapter{寻路}
@@ -203,13 +383,15 @@
 		
 \chapter{跨平台发布apk}
 
-\chapter{AI}
-
 \chapter{Profile}
 	
 \chapter{UE4 优化}
 
 \chapter{调试技巧}
+	
+	
+	
+	
 	
 \end{document} 
  		    
