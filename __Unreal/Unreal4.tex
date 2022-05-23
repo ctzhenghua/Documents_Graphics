@@ -498,6 +498,9 @@
 
 
 \chapter{编译}
+	\section{参考}
+		ref \url{https://zhuanlan.zhihu.com/p/384522097}
+
 	\section{模块、UnrealBuildTool}
 		虚幻引擎的源码目录，会发现其按照四大部分： Runtime、Development、Editor、Plugin来进行规划，而\textit{每个部分内部， 则包含了一个一个的小文件夹。每个文件夹即对应一个模块}。
 		
@@ -510,15 +513,45 @@
 	\section{编译问题}
 	
 	
-
-
-
-
+\chapter{输入}
+	\section{流程概述}
+	
+	
+	\section{参考}
+		ref UE 输入系统之：概览 及 WindowApplication \url{https://zhuanlan.zhihu.com/p/374436426}
+			
+		ref UE4 获取 Win系统输入 \url{https://blog.csdn.net/xuyongqi/article/details/117227528}
+		
+		ref UE 输入系统之：PlayerInput \url{https://zhuanlan.zhihu.com/p/378329221}
+		
+		ref UE 输入系统之：InputComponent \url{https://zhuanlan.zhihu.com/p/378184485}
+		
+		ref UE 输入系统之：PlayerController \url{https://zhuanlan.zhihu.com/p/377113527}
+		
+		ref 高速输入 帧输入判定 \url{https://km.netease.com/article/420666}
+		
+		ref \textbf{策略模式}-SetInputMode \url{https://zhuanlan.zhihu.com/p/384522097}
+		
+		
 \chapter{光照}
+	
+	
+	
+	
 	
 \chapter{寻路}
 	
+	
+	
+	
 \chapter{UMG}
+	\section{入门概述}
+	
+	
+	\section{参考}
+		\url{https://zhuanlan.zhihu.com/p/30867943}
+	
+	
 		
 \chapter{物理}
 		
@@ -826,6 +859,29 @@
 	\section{深入}
 	
 	
+
+
+
+
+\chapter{模块}
+	\section{概述}
+		ue4 的代码是以模块的形式来组织，在源码层面，一个包含\verb|*.build.cs| 的目录就是一个模块。
+		
+		不论这个模块最后编译的结果为 静态库lib,或是动态库dll. 都需要给一个外部访问操作的接口，也就是IModuleInterface 指针。
+		
+		这个IModuleInteface 指针是用来操作作为整体的模块本身的，比如模块的加载、初始化以及卸载。
+		
+		而外部获取这个指针只有一个办法：\verb|FModuleManager::LoadModule()/GetModule()|。
+		
+		而为了方便让FModuleManager 统一管理，所以需要一些约定，或者特定的方法接口，这时就需要宏\verb|IMPLEMENT_MODULE| 来实现。
+		
+	
+	\section{参考}
+		\url{https://wenku.baidu.com/view/90a0314cac1ffc4ffe4733687e21af45b307feee.html}
+
+
+\section{反射及反射应用}
+
 	
 \chapter{粒子系统}
 							
